@@ -1,47 +1,67 @@
 import React, { useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
+import { LoginForm } from './LoginForm';
+import { SignUpForm } from './SignUpForm';
+import { SignUpParams, useSignUp } from '../hooks/useSignUp';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [showSignUp, toggleSignUp] = useState(false);
   const [password, setPassword] = useState('');
-  const { login, loading, error } = useLogin();
+  const [username, setUsername] = useState('');
 
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const response = await login(email, password);
+  const { login, loading: loginLoading, error: loginError } = useLogin();
+  const { signUp, loading: signUpLoading, error: signUpError } = useSignUp();
+
+  const handleLogin = async () => {
+    const response = await login({ email, password });
 
     if (response) {
       console.log('Login successful:', response);
     }
   };
 
+  const handleSignUp = async ({ email, username, password }: SignUpParams) => {
+    const response = await signUp({ email, username, password });
+
+    if (response) {
+      console.log('Sign up successful:', response);
+    }
+  }
+
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+    <div className="flex justify-center items-center min-h-screen w-full">
+      <div className="w-full max-w-md p-4 bg-white shadow-md rounded-md mb-20">
+        {!showSignUp &&
+          <LoginForm
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            error={loginError}
+            handleLogin={handleLogin}
+            loading={loginLoading}
+            toggleSignUp={toggleSignUp}
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-      </form>
+        }
+        {
+          showSignUp &&
+          <>
+            <SignUpForm
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+              error={signUpError}
+              handleSignUp={() => handleSignUp({ email, username, password })}
+              toggleSignUp={toggleSignUp}
+              loading={signUpLoading}
+              username={username}
+              setUsername={setUsername}
+            />
+          </>
+        }
+      </div>
     </div>
   );
 };

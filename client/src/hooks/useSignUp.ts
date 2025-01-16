@@ -1,52 +1,55 @@
 import { useState } from 'react';
 
-interface LoginResponse {
+interface SignUpResponse {
   message: string;
   username: string;
-}
-
-export interface LoginParams {
   email: string;
-  password: string
 }
 
-const useLogin = () => {
+export interface SignUpParams {
+  email: string;
+  username: string;
+  password: string;
+}
+
+const useSignUp = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = async ({ email, password }: LoginParams): Promise<LoginResponse | null> => {
+  const signUp = async ({ email, username, password }: SignUpParams): Promise<SignUpResponse | null> => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3000/auth/login', {
+      const response = await fetch('http://localhost:3000/auth/signUp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email, // TODO: Accept either email or username
+          email,
+          username,
           password,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        throw new Error('Sign up failed');
       }
 
-      const data: LoginResponse = await response.json();
+      const data: SignUpResponse = await response.json();
       setLoading(false);
 
       return data;
     } catch (err) {
       setLoading(false);
-      setError('Login failed. Please try again.');
+      setError('Sign up failed. Please try again.');
 
       return null;
     }
   };
 
-  return { login, loading, error };
+  return { signUp, loading, error };
 };
 
-export { useLogin };
+export { useSignUp };
