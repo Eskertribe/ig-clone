@@ -15,6 +15,18 @@ interface LoginFormProps {
 
 const SignUpForm: React.FC<LoginFormProps> = ({ error, handleSignUp, email, setEmail, password, setPassword, toggleSignUp, loading, setUsername, username }) => {
   const [passwordCheck, setPasswordCheck] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Crude validation to ensure passwords match
+  // TODO: Use Yup or other validation library
+  function ValidateSingUp(): void {
+    if (password && passwordCheck && password === passwordCheck) {
+      setValidationError(null)
+      handleSignUp()
+    } else {
+      setValidationError('Passwords do not match')
+    }
+  }
 
   return (
     <>
@@ -65,7 +77,7 @@ const SignUpForm: React.FC<LoginFormProps> = ({ error, handleSignUp, email, setE
             type="button"
             disabled={loading}
             className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            onClick={() => handleSignUp()}
+            onClick={() => ValidateSingUp()}
           >
             {loading ? 'Submitting...' : 'Submit'}
           </button>
@@ -77,7 +89,9 @@ const SignUpForm: React.FC<LoginFormProps> = ({ error, handleSignUp, email, setE
           >
             Cancel
           </button>
-          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+        </div>
+        <div>
+          {error || validationError && <p className="mt-2 text-sm text-red-600">{error || validationError}</p>}
         </div>
       </form>
     </>
