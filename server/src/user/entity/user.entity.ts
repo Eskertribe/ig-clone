@@ -1,6 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, DeleteDateColumn } from 'typeorm';
 import { OneToMany } from 'typeorm';
-import { Image } from '../../image/image.entity';
+import { Comment } from '../../comment/entity/comment.entity';
+import { Like } from '../../like/entity/like.entity';
+import { Post } from '../../post/entity/post.entity';
 
 @Entity()
 export class User {
@@ -16,8 +18,14 @@ export class User {
   @Column()
   password: string; // TODO: Hash the password before saving it
 
-  @OneToMany(() => Image, image => image.user)
-  images: Image[];
+  @OneToMany(() => Post, post => post.user)
+  posts: Post[];
+
+  @OneToMany(() => Comment, comment => comment.user)
+  comments: Comment[];
+
+  @OneToMany(() => Like, like => like.user)
+  likes: Like[];
 
   @CreateDateColumn()
   createdAt: Date;
