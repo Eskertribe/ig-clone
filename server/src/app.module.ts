@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { User } from './user/entity/user.entity';
-import { FilesController } from './upload/files.controller';
+import { FilesController } from './upload/upload.controller';
 
 @Module({
   imports: [
