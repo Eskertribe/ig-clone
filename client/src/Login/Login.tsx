@@ -4,7 +4,11 @@ import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
 import { SignUpParams, useSignUp } from '../hooks/useSignUp';
 
-const Login: React.FC = () => {
+interface LoginProps {
+  login: () => void;
+}
+
+const Login: React.FC<LoginProps> = ({ login: loginCallBack }) => {
   const [email, setEmail] = useState('');
   const [showSignUp, toggleSignUp] = useState(false);
   const [password, setPassword] = useState('');
@@ -16,8 +20,11 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     const response = await login({ email, password });
 
+    console.log('response:', response);
+
     if (response) {
       console.log('Login successful:', response);
+      loginCallBack();
     }
   };
 

@@ -11,8 +11,9 @@ input {
 body, input, button, textarea {
   font-family: Arial, sans-serif;
 }
+
 button {
-  color: #f0f0f0; /* Light grey color */
+  color: #f0f0f0;
 }
 
 html, body {
@@ -23,4 +24,13 @@ html, body {
 
 #root {
   min-height: 100%;
+}
+
+.custom-class-file-upload  {
+  /* margin-bottom: 2rem; */
+}
+
+.custom-class-file-upload label,
+.custom-class-file-upload label input {
+  height: 100%;
 }
