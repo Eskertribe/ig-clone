@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto, SignUpDto } from './dto';
 import { User } from '../user/entity/user.entity';
 import { Repository } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -11,11 +12,23 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
   ) { }
 
-  async login(loginDto: LoginDto): Promise<any> { // TODO: Fix the return type
+  async login(loginDto: LoginDto): Promise<{ valid: boolean, token?: string }> {
     const { email, password } = loginDto;
-    console.log(`email: ${email}, Password: ${password}`);
+    const user = await this.userRepository.findOne({ where: { email } });
 
-    return { message: 'Login successful', email };
+    if (!user) {
+      return { valid: false }
+    }
+
+    const isPasswordValid = user.password === password; // TODO: A better hash comparison
+
+    if (!isPasswordValid) {
+      return { valid: false }
+    }
+
+    const token = uuidv4();
+
+    return { valid: true, token };
   }
 
   async signUp(signUpDto: SignUpDto): Promise<any> { // TODO: Fix the return type

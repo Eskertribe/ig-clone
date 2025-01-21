@@ -28,6 +28,7 @@ const useLogin = () => {
           email, // TODO: Accept either email or username
           password,
         }),
+        credentials: 'include',
       });
 
       if (!response.ok) {
