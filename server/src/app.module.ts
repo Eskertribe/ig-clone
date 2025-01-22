@@ -4,8 +4,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
-import { User } from './user/entity/user.entity';
 import { FilesController } from './upload/upload.controller';
+import { loadEntities } from './utils/loadEntities';
+
+const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entities
 
 @Module({
   imports: [
@@ -16,12 +18,13 @@ import { FilesController } from './upload/upload.controller';
       username: 'postgres', // TODO: Set in .env file
       password: 'password', // TODO: Set in .env file
       database: 'mydatabase', // TODO: Set in .env file
-      entities: [User],
+      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: true, // Set to false in production
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature(entities),
   ],
   controllers: [AppController, AuthController, FilesController],
   providers: [AppService, AuthService],
 })
+
 export class AppModule { }

@@ -13,7 +13,7 @@ export class Comment {
   @Column('text')
   text: string;
 
-  @ManyToOne(() => Post, post => post.likes)
+  @ManyToOne(() => Post, post => post.comments)
   post: Post;
 
   @CreateDateColumn()

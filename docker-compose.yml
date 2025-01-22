@@ -28,6 +28,8 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
     command: npm run start:dev
+    depends_on:
+      - db
 
   db:
     build:

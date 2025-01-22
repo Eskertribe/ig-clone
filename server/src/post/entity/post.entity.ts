@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, ManyToOne, OneToMany, Column, ManyToMany, JoinTable } from 'typeorm';
-import { User } from '../../user/entity/user.entity'
+import { User } from '../../user/entity/user.entity';
 import { Like } from '../../like/entity/like.entity';
 import { Comment } from '../../comment/entity/comment.entity';
-import { Hashtag } from 'src/hashtag/entity/hashtag.entity';
+import { Hashtag } from '../../hashtag/entity/hashtag.entity';
 
 @Entity()
 export class Post {

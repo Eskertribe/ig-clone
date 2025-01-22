@@ -1,9 +1,9 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
-import { Post } from "../../post/entity/post.entity";
-import { ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Post } from '../../post/entity/post.entity';
 
+@Entity()
 export class Hashtag {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()

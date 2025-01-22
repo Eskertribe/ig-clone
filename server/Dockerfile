@@ -1,6 +1,9 @@
 # server/Dockerfile
 FROM node:18-alpine
 
+# Install PostgreSQL client utilities
+RUN apk add --no-cache postgresql-client
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -11,6 +14,10 @@ COPY . .
 
 RUN npm run build
 
+COPY entrypoint.sh /app/entrypoint.sh
+
 EXPOSE 3000
+
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 CMD ["nodemon", "--watch", "src", "--exec", "ts-node", "src/main.ts"]
