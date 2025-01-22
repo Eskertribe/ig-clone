@@ -1,18 +1,21 @@
-import { Hashtag } from 'src/hashtag/entity/hashtag.entity';
-import { Post } from 'src/post/entity/post.entity';
-import { User } from 'src/user/entity/user.entity';
-import { Like } from 'src/like/entity/like.entity';
-import { Comment } from 'src/comment/entity/comment.entity';
-import { DataSource } from 'typeorm';
+import { registerAs } from "@nestjs/config";
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { loadEntities } from "../utils/loadEntities";
 
-export const AppDataSource = new DataSource({
+const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entitie
+
+const config = {
   type: 'postgres',
   host: 'db',
   port: 5432,
   username: 'postgres',
   password: 'password',
   database: 'mydatabase',
-  entities: [User, Post, Comment, Like, Hashtag],
-  migrations: ['src/database/migrations/*-migration.ts'],
+  entities: entities,
+  migrations: ["dist/database/migrations/*{.ts,.js}"],
+  autoLoadEntities: true,
   synchronize: false,
-});
+};
+
+export default registerAs('typeorm', () => config);
+export const connectionSource = new DataSource(config as DataSourceOptions);
