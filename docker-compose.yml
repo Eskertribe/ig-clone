@@ -15,6 +15,8 @@ services:
     command: npm run dev -- --host
 
   server:
+    env_file:
+      - "./.env"
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -24,23 +26,25 @@ services:
       - ./server:/app
       - /app/node_modules
     environment:
-      - NODE_ENV=development
+      - NODE_ENV={NODE_ENV}
       - CHOKIDAR_USEPOLLING=true
-      - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
+      - DATABASE_URL=postgresql://{DB_USER}:{DB_PASSWORD}@db:{DB_PORT}/{DB_NAME}
     command: npm run start:dev
     depends_on:
       - db
 
   db:
+    env_file:
+      - "./.env"
     build:
       context: ./db
       dockerfile: Dockerfile
     ports:
       - '5432:5432'
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER={DB_USER}
+      - POSTGRES_PASSWORD={DB_PASSWORD}
+      - POSTGRES_DB={DB_NAME}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db/db-init:/docker-entrypoint-initdb.d
