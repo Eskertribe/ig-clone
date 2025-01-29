@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   client:
+    env_file:
+      - "./client/.env"
     build:
       context: ./client
       dockerfile: Dockerfile
     ports:
       - '5173:5173'
-    environment:
-      - REACT_APP_API_URL=http://server:3000
     volumes:
       - ./client:/app
       - /app/node_modules
@@ -28,7 +28,6 @@ services:
     environment:
       - NODE_ENV={NODE_ENV}
       - CHOKIDAR_USEPOLLING=true
-      - DATABASE_URL=postgresql://{DB_USER}:{DB_PASSWORD}@db:{DB_PORT}/{DB_NAME}
     command: npm run start:dev
     depends_on:
       - db

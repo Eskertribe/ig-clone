@@ -4,13 +4,15 @@ import { loadEntities } from "../utils/loadEntities";
 
 const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entitie
 
+const { DB, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE } = process.env
+
 const config = {
   type: 'postgres',
-  host: 'db',
-  port: 5432,
-  username: 'postgres',
-  password: 'password',
-  database: 'mydatabase',
+  host: DB,
+  port: DB_PORT,
+  username: DB_USERNAME,
+  password: DB_PASSWORD,
+  database: DB_DATABASE,
   entities: entities,
   migrations: ["dist/database/migrations/*{.ts,.js}"],
   autoLoadEntities: true,

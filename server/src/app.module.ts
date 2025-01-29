@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { FilesController } from './upload/upload.controller';
@@ -20,11 +18,13 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => configService.get('typeorm'),
+      useFactory: async (configService: ConfigService) => ({
+        ...configService.get('typeorm'),
+      }),
     }),
     TypeOrmModule.forFeature(entities),
   ],
-  controllers: [AppController, AuthController, FilesController],
-  providers: [AppService, AuthService],
+  controllers: [AuthController, FilesController],
+  providers: [AuthService],
 })
 export class AppModule { }

@@ -1,42 +1,49 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LoginDto, SignUpDto } from './dto';
-import { User } from '../user/entity/user.entity';
 import { Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { User } from '../user/entity/user.entity';
+import { OAuth2Client } from 'google-auth-library';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly configService: ConfigService,
   ) { }
+  private readonly googleClientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
+  private client = new OAuth2Client(this.googleClientId);
 
-  async login(loginDto: LoginDto): Promise<{ valid: boolean, token?: string }> {
-    const { email, password } = loginDto;
-    const user = await this.userRepository.findOne({ where: { email } });
+  async verifyGoogleToken(token: string) {
+    try {
+      const ticket = await this.client.verifyIdToken({
+        idToken: token,
+        audience: this.googleClientId,
+      });
 
-    if (!user) {
-      return { valid: false }
+      const payload = ticket.getPayload();
+
+      return {
+        success: true,
+        user: {
+          email: payload?.email,
+          name: payload?.name,
+          picture: payload?.picture,
+        },
+      };
+    } catch (err) {
+      console.error('Token verification failed:', err);
+      return { success: false, message: 'Invalid token' };
     }
-
-    const isPasswordValid = user.password === password; // TODO: A better hash comparison
-
-    if (!isPasswordValid) {
-      return { valid: false }
-    }
-
-    const token = uuidv4();
-
-    return { valid: true, token };
   }
 
-  async signUp(signUpDto: SignUpDto): Promise<any> { // TODO: Fix the return type
-    const { username, email, password } = signUpDto;
-    const user = this.userRepository.create({ email, username, password });
+  async validateUser(email: string): Promise<User> {
+    return this.userRepository.findOne({ where: { email } });
+  }
 
-    await this.userRepository.save(user);
-
-    return { message: 'Sign up successful', username };
+  async createUser(user: Partial<User>): Promise<User> {
+    const newUser = this.userRepository.create(user);
+    return this.userRepository.save(newUser);
   }
 }
