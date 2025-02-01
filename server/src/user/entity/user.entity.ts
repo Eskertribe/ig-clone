@@ -14,8 +14,8 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column()
-  password: string; // TODO: Hash the password before saving it
+  @Column({ nullable: true })
+  password?: string; // TODO: Hash the password before saving it
 
   @OneToMany(() => Post, post => post.user)
   posts: Post[];

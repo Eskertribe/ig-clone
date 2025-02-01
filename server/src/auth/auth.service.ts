@@ -1,41 +1,58 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../user/entity/user.entity';
 import { OAuth2Client } from 'google-auth-library';
-import { ConfigService } from '@nestjs/config';
+
+import { User } from '../user/entity/user.entity';
 
 @Injectable()
 export class AuthService {
+  private client: OAuth2Client;
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly configService: ConfigService,
-  ) { }
-  private readonly googleClientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
-  private client = new OAuth2Client(this.googleClientId);
+    private readonly jwtService: JwtService,
+  ) {
+    this.client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  }
 
   async verifyGoogleToken(token: string) {
-    try {
-      const ticket = await this.client.verifyIdToken({
-        idToken: token,
-        audience: this.googleClientId,
+    if (!token) {
+      throw new Error('Token is required');
+    }
+
+    const ticket = await this.client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name } = payload;
+
+    let user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user && token) {
+      user = this.userRepository.create({
+        email,
+        username: name,
       });
 
-      const payload = ticket.getPayload();
-
-      return {
-        success: true,
-        user: {
-          email: payload?.email,
-          name: payload?.name,
-          picture: payload?.picture,
-        },
-      };
-    } catch (err) {
-      console.error('Token verification failed:', err);
-      return { success: false, message: 'Invalid token' };
+      await this.userRepository.save(user);
     }
+
+    const jwtToken = this.jwtService.sign({ email: user.email, sub: user.id });
+
+    return { user, token: jwtToken };
+  }
+
+  // TODO: Fix the return type
+  async generateJwtToken(user: any) {
+    const payload = { email: user.email, sub: user.id };
+    const token = this.jwtService.sign(payload);
+
+    return { token };
   }
 
   async validateUser(email: string): Promise<User> {
@@ -45,5 +62,23 @@ export class AuthService {
   async createUser(user: Partial<User>): Promise<User> {
     const newUser = this.userRepository.create(user);
     return this.userRepository.save(newUser);
+  }
+
+  // TODO: Fix the profile type
+  async validateGoogleUser(profile: any): Promise<User> {
+    const { id, emails, displayName } = profile;
+    const email = emails[0].value;
+
+    let user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      user = this.userRepository.create({
+        email,
+        username: displayName,
+      });
+      await this.userRepository.save(user);
+    }
+
+    return user;
   }
 }

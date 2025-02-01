@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthController } from './auth/auth.controller';
-import { AuthService } from './auth/auth.service';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from './auth/auth.module';
 import { FilesController } from './upload/upload.controller';
 import { loadEntities } from './utils/loadEntities';
 import typeorm from './config/typeorm.config';
@@ -23,8 +23,13 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
       }),
     }),
     TypeOrmModule.forFeature(entities),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1h' },
+    }),
+    AuthModule,
   ],
-  controllers: [AuthController, FilesController],
-  providers: [AuthService],
+  controllers: [FilesController],
+  providers: [],
 })
 export class AppModule { }

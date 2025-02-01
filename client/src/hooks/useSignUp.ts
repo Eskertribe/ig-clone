@@ -31,6 +31,7 @@ const useSignUp = () => {
           username,
           password,
         }),
+        credentials: 'include',
       });
 
       if (!response.ok) {
