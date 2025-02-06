@@ -29,8 +29,7 @@ function App() {
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     console.log("CREDENTIAL RESPONSE", credentialResponse);
     try {
-      // TODO: URI from .env
-      const response = await fetch('http://localhost:3000/auth/google', {
+      const response = await fetch(import.meta.env.VITE_GOOGLE_AUTH_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
