@@ -3,8 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OAuth2Client } from 'google-auth-library';
-
 import { User } from '../user/entity/user.entity';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -33,12 +34,11 @@ export class AuthService {
 
     let user = await this.userRepository.findOne({ where: { email } });
 
-    if (!user && token) {
+    if (!user) {
       user = this.userRepository.create({
         email,
         username: name,
       });
-
       await this.userRepository.save(user);
     }
 
@@ -47,7 +47,31 @@ export class AuthService {
     return { user, token: jwtToken };
   }
 
-  // TODO: Fix the return type
+  async signup(createUserDto: CreateUserDto) {
+    const { email, password, username } = createUserDto;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = this.userRepository.create({ email, password: hashedPassword, username });
+    await this.userRepository.save(user);
+    return user;
+  }
+
+  async login(loginUserDto: CreateUserDto) {
+    const { email, password } = loginUserDto;
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      throw new Error('Invalid credentials');
+    }
+
+    return user;
+  }
+
   async generateJwtToken(user: any) {
     const payload = { email: user.email, sub: user.id };
     const token = this.jwtService.sign(payload);
