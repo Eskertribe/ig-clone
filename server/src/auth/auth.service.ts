@@ -48,11 +48,12 @@ export class AuthService {
   }
 
   async signup(createUserDto: CreateUserDto) {
-    const { email, password, username } = createUserDto;
+    const { email: newEmail, password, username: newUserName } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = this.userRepository.create({ email, password: hashedPassword, username });
-    await this.userRepository.save(user);
-    return user;
+    const user = this.userRepository.create({ email: newEmail, password: hashedPassword, username: newUserName });
+    const { username, email, id } = await this.userRepository.save(user);
+
+    return { username, email, id };
   }
 
   async login(loginUserDto: CreateUserDto) {
