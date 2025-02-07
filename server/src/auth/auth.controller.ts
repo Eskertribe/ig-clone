@@ -8,21 +8,6 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
-  // @Get('google/callback')
-  // @UseGuards(AuthGuard('jwt'))
-  // async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-  //   console.log("GOOGLE/CALLBACK");
-  //   const user = req.user;
-  //   const { token } = await this.authService.generateJwtToken(user);
-
-  //   res.cookie('auth-cookie', token, {
-  //     httpOnly: true,
-  //     secure: process.env.NODE_ENV === 'production',
-  //     sameSite: 'lax',
-  //   });
-  //   res.redirect(process.env.CLIENT_HOST);
-  // }
-
   @Post('google')
   async googleAuth(@Req() req) {
     const { token } = req.body;
