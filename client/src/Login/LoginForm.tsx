@@ -1,4 +1,6 @@
-import React from "react"
+import React, { useContext } from "react"
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { AuthContext } from "../AuthContext/AuthContext";
 
 interface LoginFormProps {
   error: string | null;
@@ -12,6 +14,39 @@ interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ error, handleLogin, email, setEmail, password, setPassword, loading, toggleSignUp }) => {
+  const { setToken } = useContext(AuthContext);
+
+  const handleSuccess = async (credentialResponse: CredentialResponse) => {
+    try {
+      const response = await fetch(import.meta.env.VITE_GOOGLE_AUTH_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: credentialResponse.credential,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok'); // TODO: BETTER ERROR HANDLING
+      }
+
+      const data = await response.json();
+
+      const { user, token } = data;
+
+      setToken(token);
+    } catch (error) {
+      console.error('--- Login failed --- :', error); // TODO: BETTER ERROR HANDLING
+    }
+  };
+
+  // TODO: Implement error handling
+  const handleError = () => {
+    console.log('Login Failed');
+  };
+
   return (
     <>
       <h2 className="text-2xl mb-4 text-gray-800">Login</h2>
@@ -53,6 +88,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ error, handleLogin, email, setEma
           >
             Sign Up
           </button>
+        </div>
+        <div className="flex justify-center mt-4">Or sign in with Google</div>
+        <div className="flex justify-center mt-4">
+          <GoogleLogin
+            onSuccess={credentialResponse => handleSuccess(credentialResponse)}
+            onError={handleError}
+          />
         </div>
         {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </form>

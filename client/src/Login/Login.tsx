@@ -4,11 +4,7 @@ import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
 import { SignUpParams, useSignUp } from '../hooks/useSignUp';
 
-interface LoginProps {
-  login: () => void;
-}
-
-const Login: React.FC<LoginProps> = ({ login: loginCallBack }) => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [showSignUp, toggleSignUp] = useState(false);
   const [password, setPassword] = useState('');
@@ -18,22 +14,14 @@ const Login: React.FC<LoginProps> = ({ login: loginCallBack }) => {
   const { signUp, loading: signUpLoading, error: signUpError } = useSignUp();
 
   const handleLogin = async () => {
-    const response = await login({ email, password });
+    await login({ email, password });
 
-    console.log('response:', response);
-
-    if (response) {
-      console.log('Login successful:', response);
-      loginCallBack();
-    }
   };
 
   const handleSignUp = async ({ email, username, password }: SignUpParams) => {
     const response = await signUp({ email, username, password });
 
-    if (response) {
-      console.log('Sign up successful:', response);
-    }
+    // TODO: LOGIN USER AFTER SIGNUP
   }
 
   return (
