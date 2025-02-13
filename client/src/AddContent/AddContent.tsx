@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
-import { FileUploader } from "react-drag-drop-files";
 import { useSubmitFile } from '../hooks/useSubmitFile';
-
-const fileTypes = ["JPG", "PNG", "GIF"];
-const styles = {
-  contentHeight: {
-    height: '80%',
-  },
-};
+import { SingleFileUploader } from './FileUploader';
 
 interface AddContentProps {
   isOpen: boolean;
@@ -15,7 +8,7 @@ interface AddContentProps {
 }
 
 const AddContent: React.FC<AddContentProps> = ({ isOpen, toggleModal }) => {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | undefined>();
   const [disableComments, setDisableComments] = useState<boolean>(false);
   const [disableLikes, setDisableLikes] = useState<boolean>(false);
 
@@ -32,24 +25,22 @@ const AddContent: React.FC<AddContentProps> = ({ isOpen, toggleModal }) => {
   }
 
   const handleToggleModal = () => {
-    setFile(null);
+    setFile(undefined);
     toggleModal();
   }
-
-  console.log(file)
 
   return (
     isOpen && (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-        <div className="bg-[rgb(59,57,57)] p-4 w-1/2 aspect-square rounded-lg ">
+        <div className="bg-[rgb(59,57,57)] p-4 w-1/3 aspect-square rounded-lg ">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-white">Upload file</h2>
             <button onClick={handleToggleModal} className="text-white">X</button>
           </div>
           {
             !file &&
-            <div className="custom-class-file-upload h-2/5 mb-4">
-              <FileUploader handleChange={handleChange} name="file" types={fileTypes} mutiple={false} />
+            <div className="custom-class-file-upload h-2/5 mb-4 w-full">
+              <SingleFileUploader handleChange={handleChange} />
             </div>
           }
           {
