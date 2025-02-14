@@ -3,9 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
-import { FilesController } from './upload/upload.controller';
 import { loadEntities } from './utils/loadEntities';
 import typeorm from './config/typeorm.config';
+import { PostModule } from './post/post.module';
 
 const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entities
 // TODO: dynamically load all controllers and services
@@ -28,8 +28,9 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
       signOptions: { expiresIn: '1h' },
     }),
     AuthModule,
+    PostModule,
   ],
-  controllers: [FilesController],
+  controllers: [],
   providers: [],
 })
 export class AppModule { }

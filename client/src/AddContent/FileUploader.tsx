@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ALLOWED_FILE_TYPES = ['image/png', 'image/jpeg', 'image/svg', 'video/mp4'];
+const ALLOWED_FILE_TYPES = ['image/png', 'image/jpeg', 'video/mp4'];
 
 const SingleFileUploader: React.FC<{ handleChange: (file: File) => void }> = ({ handleChange }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

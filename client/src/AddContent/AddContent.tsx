@@ -11,6 +11,7 @@ const AddContent: React.FC<AddContentProps> = ({ isOpen, toggleModal }) => {
   const [file, setFile] = useState<File | undefined>();
   const [disableComments, setDisableComments] = useState<boolean>(false);
   const [disableLikes, setDisableLikes] = useState<boolean>(false);
+  const [description, setDescription] = useState<string>();
 
   const { uploadFile, error, loading } = useSubmitFile();
 
@@ -20,7 +21,7 @@ const AddContent: React.FC<AddContentProps> = ({ isOpen, toggleModal }) => {
 
   const submitFile = () => {
     if (file && !loading) {
-      uploadFile({ file })
+      uploadFile({ file, disableComments, disableLikes, description: description ?? '' }); //TODO: Show error if description is empty
     }
   }
 
@@ -48,7 +49,7 @@ const AddContent: React.FC<AddContentProps> = ({ isOpen, toggleModal }) => {
             <div className="flex flex-col space-y-2 mb-4">
               <p className="text-white mb-4">{file.name}</p>
               <img src={URL.createObjectURL(file)} alt="preview" className="mb-4" />
-              <textarea className="p-2 border rounded-md bg-[rgb(59,57,57)] text-white mb-4" placeholder="Add a description..." />
+              <textarea className="p-2 border rounded-md bg-[rgb(59,57,57)] text-white mb-4" placeholder="Add a description..." onChange={(e) => setDescription(e.target.value)} value={description} />
               <label className="flex items-center space-x-2 mb-4">
                 <input name="disableComments" onClick={() => setDisableComments(!disableComments)} type="checkbox" className="bg-[rgb(59,57,57)]" />
                 <span className="text-white">Disable Comments</span>

@@ -6,6 +6,9 @@ interface UploadResponse {
 }
 
 export interface UploadParams {
+  description: string;
+  disableComments: boolean;
+  disableLikes: boolean;
   file: File;
 }
 
@@ -13,15 +16,18 @@ const useSubmitFile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const uploadFile = async ({ file }: UploadParams): Promise<UploadResponse | null> => {
+  const uploadFile = async ({ file, disableComments, disableLikes, description }: UploadParams): Promise<UploadResponse | null> => {
     setLoading(true);
     setError(null);
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('description', description);
+    formData.append('disableComments', disableComments.toString());
+    formData.append('disableLikes', disableLikes.toString());
 
     try {
-      const response = await fetch('http://localhost:3000/files/upload', {
+      const response = await fetch('http://localhost:3000/post/createPost', {
         method: 'POST',
         body: formData,
         credentials: 'include',
