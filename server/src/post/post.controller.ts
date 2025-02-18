@@ -7,7 +7,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4'];
+const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4']; // TODO: No hardcoded values
 
 @Controller('post')
 export class PostController {
@@ -23,7 +23,7 @@ export class PostController {
       },
     }),
   }))
-  async createPost(@UploadedFile() file, @Body() post: CreatePostDto, @Res() res: Response) {
+  async createPost(@UploadedFile() file: Express.Multer.File, @Body() post: CreatePostDto, @Res() res: Response) {
     if (!file) {
       return res.status(400).json({ message: 'File is required' });
     }
@@ -31,9 +31,13 @@ export class PostController {
     if (!allowedMimeTypes.includes(file.mimetype)) {
       return res.status(400).json({ message: 'Invalid file type' });
     }
-    // TODO: Implement
-    const result = await this.postService.createPost(file, post);
 
-    return res.json({ message: 'Post created successfully' });
+    try {
+      await this.postService.createPost(file, post);
+
+      return res.status(200).json({ message: 'Post created successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
   }
 }
