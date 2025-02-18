@@ -6,6 +6,9 @@ import { AuthModule } from './auth/auth.module';
 import { loadEntities } from './utils/loadEntities';
 import typeorm from './config/typeorm.config';
 import { PostModule } from './post/post.module';
+import { User } from './user/entity/user.entity';
+import { Post } from './post/entity/post.entity';
+import { PostService } from './post/post.service';
 
 const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entities
 // TODO: dynamically load all controllers and services
@@ -22,7 +25,7 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
         ...configService.get('typeorm'),
       }),
     }),
-    TypeOrmModule.forFeature(entities),
+    TypeOrmModule.forFeature([...entities, User, Post]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },
@@ -31,6 +34,6 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
     PostModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [PostService],
 })
 export class AppModule { }
