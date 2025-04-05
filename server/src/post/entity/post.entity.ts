@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, ManyToOne, OneToMany, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, ManyToOne, OneToMany, Column, ManyToMany, JoinTable, OneToOne, JoinColumn } from 'typeorm';
 import { User } from '../../user/entity/user.entity';
 import { Like } from '../../like/entity/like.entity';
 import { Comment } from '../../comment/entity/comment.entity';
 import { Hashtag } from '../../hashtag/entity/hashtag.entity';
+import { File } from '../../file/entity/file.entity';
 
 @Entity()
 export class Post {
@@ -18,8 +19,9 @@ export class Post {
   @Column()
   disableLikes: boolean;
 
-  @Column()
-  fileId: string;
+  @OneToOne(() => File, file => file.post, { eager: true, cascade: true })
+  @JoinColumn()
+  file: File;
 
   @CreateDateColumn()
   createdAt: Date;
