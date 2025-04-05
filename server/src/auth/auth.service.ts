@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -21,7 +21,7 @@ export class AuthService {
 
   async verifyGoogleToken(token: string) {
     if (!token) {
-      throw new Error('Token is required');
+      throw new ForbiddenException('Token is required');
     }
 
     const ticket = await this.client.verifyIdToken({
@@ -30,6 +30,11 @@ export class AuthService {
     });
 
     const payload = ticket.getPayload();
+
+    if (!payload) {
+      throw new ForbiddenException('Invalid token payload');
+    }
+
     const { email, name } = payload;
 
     let user = await this.userRepository.findOne({ where: { email } });
@@ -61,13 +66,13 @@ export class AuthService {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new BadRequestException('User not found');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      throw new Error('Invalid credentials');
+      throw new BadRequestException('Invalid credentials');
     }
 
     return user;
@@ -80,7 +85,7 @@ export class AuthService {
     return { token };
   }
 
-  async validateUser(email: string): Promise<User> {
+  async validateUser(email: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { email } });
   }
 
