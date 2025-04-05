@@ -1,43 +1,59 @@
-import { Controller, Post, Body, Res, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseInterceptors,
+  UploadedFile,
+  Get,
+  Req,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/post.dto';
-import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiResponse } from '../decorators/ApiResponse';
 
 const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4']; // TODO: No hardcoded values
 
 @Controller('post')
 export class PostController {
-  constructor(private readonly postService: PostService) { }
+  constructor(private readonly postService: PostService) {}
 
   @Post('createPost')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads',
-      filename: (_, file, cb) => {
-        const uniqueSuffix = `${uuidv4()}${extname(file.originalname)}`;
-        cb(null, uniqueSuffix);
-      },
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (_, file, cb) => {
+          const uniqueSuffix = `${uuidv4()}${extname(file.originalname)}`;
+          cb(null, uniqueSuffix);
+        },
+      }),
     }),
-  }))
-  async createPost(@UploadedFile() file: Express.Multer.File, @Body() post: CreatePostDto, @Res() res: Response) {
+  )
+  async createPost(@UploadedFile() file: Express.Multer.File, @Body() post: CreatePostDto) {
     if (!file) {
-      return res.status(400).json({ message: 'File is required' });
+      throw new BadRequestException('File is required');
     }
 
     if (!allowedMimeTypes.includes(file.mimetype)) {
-      return res.status(400).json({ message: 'Invalid file type' });
+      throw new BadRequestException('Invalid file type');
     }
 
-    try {
-      await this.postService.createPost(file, post);
+    return this.postService.createPost(file, post);
+  }
 
-      return res.status(200).json({ message: 'Post created successfully' });
-    } catch (error) {
-      return res.status(500).json({ message: 'Internal server error' });
-    }
+  @Get('getPosts')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiResponse('posts')
+  async getPosts(@Req() req) {
+    const { user } = req;
+
+    return this.postService.getPosts(user.id);
   }
 }

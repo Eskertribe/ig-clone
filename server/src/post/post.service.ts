@@ -9,7 +9,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) { }
+  ) {}
 
   async createPost(file: Express.Multer.File, postDto: CreatePostDto): Promise<Post> {
     const { description, user, disableComments, disableLikes } = postDto;
@@ -21,5 +21,9 @@ export class PostService {
       disableLikes,
       file: { name: file.filename, mimeType: file.mimetype },
     });
+  }
+
+  async getPosts(userId: string): Promise<Post[]> {
+    return this.postRepository.find({ where: { user: { id: userId } }, relations: ['file'] }) ?? [];
   }
 }
