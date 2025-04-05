@@ -47,7 +47,10 @@ export class AuthService {
       await this.userRepository.save(user);
     }
 
-    const jwtToken = this.jwtService.sign({ email: user.email, sub: user.id }, { secret: process.env.JWT_SECRET });
+    const jwtToken = this.jwtService.sign(
+      { email: user.email, sub: user.id },
+      { secret: process.env.JWT_SECRET },
+    );
 
     return { user, token: jwtToken };
   }
@@ -55,7 +58,11 @@ export class AuthService {
   async signUp(createUserDto: CreateUserDto) {
     const { email: newEmail, password, username: newUserName } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = this.userRepository.create({ email: newEmail, password: hashedPassword, username: newUserName });
+    const user = this.userRepository.create({
+      email: newEmail,
+      password: hashedPassword,
+      username: newUserName,
+    });
     const { username, email, id } = await this.userRepository.save(user);
 
     return { username, email, id };

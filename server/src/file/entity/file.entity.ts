@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
-import { Post } from "../../post/entity/post.entity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Post } from '../../post/entity/post.entity';
 
 @Entity()
 export class File {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -12,6 +12,6 @@ export class File {
   @Column()
   mimeType: string;
 
-  @OneToOne(() => Post, post => post.file)
+  @OneToOne(() => Post, (post) => post.file)
   post: Post;
 }

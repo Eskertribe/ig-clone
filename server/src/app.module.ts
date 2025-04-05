@@ -15,7 +15,7 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [typeorm]
+      load: [typeorm],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -34,4 +34,4 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
   controllers: [],
   providers: [PostService],
 })
-export class AppModule { }
+export class AppModule {}

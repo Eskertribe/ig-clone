@@ -1,4 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, ManyToOne, OneToMany, Column, ManyToMany, JoinTable, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
+  ManyToOne,
+  OneToMany,
+  Column,
+  ManyToMany,
+  JoinTable,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../../user/entity/user.entity';
 import { Like } from '../../like/entity/like.entity';
 import { Comment } from '../../comment/entity/comment.entity';
@@ -19,11 +31,11 @@ export class Post {
   @Column()
   disableLikes: boolean;
 
-  @OneToOne(() => File, file => file.post, {
+  @OneToOne(() => File, (file) => file.post, {
     eager: true,
     cascade: true,
     nullable: false,
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   file: File;
@@ -34,16 +46,16 @@ export class Post {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => User, user => user.posts)
+  @ManyToOne(() => User, (user) => user.posts)
   user: User;
 
-  @OneToMany(() => Like, like => like.post)
+  @OneToMany(() => Like, (like) => like.post)
   likes: Like[];
 
-  @OneToMany(() => Comment, comment => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
 
-  @ManyToMany(() => Hashtag, hashtag => hashtag.posts)
+  @ManyToMany(() => Hashtag, (hashtag) => hashtag.posts)
   @JoinTable()
   hashtags: Hashtag[];
 }

@@ -9,7 +9,7 @@ export class Hashtag {
   @Column()
   name: string;
 
-  @ManyToMany(() => Post, post => post.hashtags)
+  @ManyToMany(() => Post, (post) => post.hashtags)
   @JoinTable()
   posts: Post[];
 }

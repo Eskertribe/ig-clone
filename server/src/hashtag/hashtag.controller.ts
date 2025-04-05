@@ -8,7 +8,7 @@ export class HashtagService {
   constructor(
     @InjectRepository(Hashtag)
     private readonly hashtagRepository: Repository<Hashtag>,
-  ) { }
+  ) {}
 
   async createHashtag(name: string): Promise<Hashtag> {
     const hashtag = this.hashtagRepository.create({ name });

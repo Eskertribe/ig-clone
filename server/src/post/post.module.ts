@@ -20,4 +20,4 @@ import { PostService } from './post.service';
   controllers: [PostController],
   exports: [PostService],
 })
-export class PostModule { }
+export class PostModule {}

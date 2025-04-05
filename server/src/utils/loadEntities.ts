@@ -7,7 +7,7 @@ export function loadEntities(pattern: string): Function[] {
   const entities: Function[] = [];
   const files = globSync(pattern);
 
-  files.forEach(file => {
+  files.forEach((file) => {
     const entity = require(join(process.cwd(), file));
     const entityClass = Object.values(entity)[0];
     //@ts-ignore
