@@ -1,8 +1,6 @@
-import { Controller, Get, Post, Req, Res, Body, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Post, Req } from '@nestjs/common';
+import { CreateUserDto } from '../user/dto/user.dto';
 import { AuthService } from './auth.service';
-import { Request, Response } from 'express';
-import { CreateUserDto } from '../user/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -15,9 +13,9 @@ export class AuthController {
     return await this.authService.verifyGoogleToken(token);
   }
 
-  @Post('signup')
+  @Post('signUp')
   async signup(@Body() createUserDto: CreateUserDto) {
-    const user = await this.authService.signup(createUserDto);
+    const user = await this.authService.signUp(createUserDto);
     const { token } = await this.authService.generateJwtToken(user);
 
     return { user, token };

@@ -1,11 +1,11 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { OAuth2Client } from 'google-auth-library';
-import { User } from '../user/entity/user.entity';
-import { CreateUserDto } from '../user/dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
+import { OAuth2Client } from 'google-auth-library';
+import { Repository } from 'typeorm';
+import { CreateUserDto, LoginUserDto, UserDto } from '../user/dto/user.dto';
+import { User } from '../user/entity/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -47,12 +47,12 @@ export class AuthService {
       await this.userRepository.save(user);
     }
 
-    const jwtToken = this.jwtService.sign({ email: user.email, sub: user.id });
+    const jwtToken = this.jwtService.sign({ email: user.email, sub: user.id }, { secret: process.env.JWT_SECRET });
 
     return { user, token: jwtToken };
   }
 
-  async signup(createUserDto: CreateUserDto) {
+  async signUp(createUserDto: CreateUserDto) {
     const { email: newEmail, password, username: newUserName } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = this.userRepository.create({ email: newEmail, password: hashedPassword, username: newUserName });
@@ -61,7 +61,7 @@ export class AuthService {
     return { username, email, id };
   }
 
-  async login(loginUserDto: CreateUserDto) {
+  async login(loginUserDto: LoginUserDto): Promise<UserDto> {
     const { email, password } = loginUserDto;
     const user = await this.userRepository.findOne({ where: { email } });
 
@@ -78,7 +78,7 @@ export class AuthService {
     return user;
   }
 
-  async generateJwtToken(user: any) {
+  async generateJwtToken(user: UserDto) {
     const payload = { email: user.email, sub: user.id };
     const token = this.jwtService.sign(payload);
 
