@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../AuthContext/AuthContext';
+import { toast } from 'react-toastify';
 
 interface UploadResponse {
   message: string;
@@ -15,12 +16,29 @@ export interface UploadParams {
 
 const useSubmitFile = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { token } = useContext(AuthContext);
 
   const uploadFile = async ({ file, disableComments, disableLikes, description }: UploadParams): Promise<UploadResponse | null> => {
     setLoading(true);
-    setError(null);
+
+    if (!token) {
+      toast.error('You must be logged in to upload files.');
+      setLoading(false);
+      return null;
+    }
+
+    if (!file) {
+      toast.error('Please select a file to upload.');
+      setLoading(false);
+      return null;
+    }
+
+    if (!description) {
+      toast.error('Please add a description.');
+      setLoading(false);
+      return null;
+    }
+
 
     const formData = new FormData();
     formData.append('file', file);
@@ -44,17 +62,18 @@ const useSubmitFile = () => {
 
       const data: UploadResponse = await response.json();
       setLoading(false);
+      toast.success('File uploaded successfully!');
 
       return data;
     } catch (err) {
       setLoading(false);
-      setError('File upload failed. Please try again.');
+      toast.error('File upload failed. Please try again.');
 
       return null;
     }
   };
 
-  return { uploadFile, loading, error };
+  return { uploadFile, loading };
 };
 
 export { useSubmitFile };

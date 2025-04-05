@@ -6,6 +6,7 @@ import { UserPage } from './UserPage/UserPage';
 import { SideNav } from './SideNav/SideNav';
 import { AddContent } from './AddContent/AddContent';
 import { AuthRouter } from './AuthRouter/AuthRouter';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [showAddContent, toggleShowAddContent] = useState(false);
@@ -15,6 +16,7 @@ function App() {
       <Router>
         <AuthRouter>
           <>
+            <ToastContainer />
             {showAddContent && <AddContent isOpen={showAddContent} toggleModal={() => toggleShowAddContent(!showAddContent)} />}
             <SideNav toggleShowAddContent={() => toggleShowAddContent(!showAddContent)} />
             <div className="w-4/6">
