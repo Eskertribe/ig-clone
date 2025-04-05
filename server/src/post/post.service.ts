@@ -11,15 +11,15 @@ export class PostService {
     private readonly postRepository: Repository<Post>,
   ) { }
 
-  async createPost(file: Express.Multer.File, postDto: CreatePostDto): Promise<void> {
+  async createPost(file: Express.Multer.File, postDto: CreatePostDto): Promise<Post> {
     const { description, user, disableComments, disableLikes } = postDto;
 
-    this.postRepository.save({
+    return this.postRepository.save({
       description,
       user,
       disableComments,
       disableLikes,
-      fileId: file.filename,
+      file: { name: file.filename, mimeType: file.mimetype },
     });
   }
 }

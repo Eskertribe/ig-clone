@@ -19,7 +19,12 @@ export class Post {
   @Column()
   disableLikes: boolean;
 
-  @OneToOne(() => File, file => file.post, { eager: true, cascade: true })
+  @OneToOne(() => File, file => file.post, {
+    eager: true,
+    cascade: true,
+    nullable: false,
+    onDelete: 'CASCADE'
+  })
   @JoinColumn()
   file: File;
 
