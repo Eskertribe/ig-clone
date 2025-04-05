@@ -22,7 +22,7 @@ const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4']; // TODO: No h
 
 @Controller('post')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(private readonly postService: PostService) { }
 
   @Post('createPost')
   @UseInterceptors(
@@ -36,7 +36,8 @@ export class PostController {
       }),
     }),
   )
-  async createPost(@UploadedFile() file: Express.Multer.File, @Body() post: CreatePostDto) {
+  @UseGuards(AuthGuard('jwt'))
+  async createPost(@Req() req, @UploadedFile() file: Express.Multer.File, @Body() post: CreatePostDto) {
     if (!file) {
       throw new BadRequestException('File is required');
     }
@@ -45,7 +46,7 @@ export class PostController {
       throw new BadRequestException('Invalid file type');
     }
 
-    return this.postService.createPost(file, post);
+    return this.postService.createPost({ file, post, user: req.user });
   }
 
   @Get('getPosts')

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../AuthContext/AuthContext';
 
 interface UploadResponse {
   message: string;
@@ -15,6 +16,7 @@ export interface UploadParams {
 const useSubmitFile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { token } = useContext(AuthContext);
 
   const uploadFile = async ({ file, disableComments, disableLikes, description }: UploadParams): Promise<UploadResponse | null> => {
     setLoading(true);
@@ -31,6 +33,9 @@ const useSubmitFile = () => {
         method: 'POST',
         body: formData,
         credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {

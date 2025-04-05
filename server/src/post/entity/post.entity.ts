@@ -47,6 +47,7 @@ export class Post {
   deletedAt: Date;
 
   @ManyToOne(() => User, (user) => user.posts)
+  @JoinColumn()
   user: User;
 
   @OneToMany(() => Like, (like) => like.post)

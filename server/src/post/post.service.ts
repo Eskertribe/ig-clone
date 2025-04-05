@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Post } from './entity/post.entity';
-import { CreatePostDto } from './dto/post.dto';
+import { CreatePostRequest } from './post.types';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) {}
+  ) { }
 
-  async createPost(file: Express.Multer.File, postDto: CreatePostDto): Promise<Post> {
-    const { description, user, disableComments, disableLikes } = postDto;
+  async createPost({ file, post, user }: CreatePostRequest): Promise<Post> {
+    const { description, disableComments, disableLikes } = post;
 
     return this.postRepository.save({
       description,
@@ -24,6 +24,6 @@ export class PostService {
   }
 
   async getPosts(userId: string): Promise<Post[]> {
-    return this.postRepository.find({ where: { user: { id: userId } }, relations: ['file'] }) ?? [];
+    return this.postRepository.find({ where: { user: { id: userId }, deletedAt: IsNull() }, relations: ['file'] }) ?? [];
   }
 }
