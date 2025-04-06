@@ -9,7 +9,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) { }
+  ) {}
 
   async createPost({ file, post, user }: CreatePostRequest): Promise<Post> {
     const { description, disableComments, disableLikes } = post;
@@ -24,6 +24,9 @@ export class PostService {
   }
 
   async getPosts(userId: string): Promise<Post[]> {
-    return this.postRepository.find({ where: { user: { id: userId }, deletedAt: IsNull() }, relations: ['file'] }) ?? [];
+    return this.postRepository.find({
+      where: { user: { id: userId }, deletedAt: IsNull() },
+      relations: ['file'],
+    });
   }
 }

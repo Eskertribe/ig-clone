@@ -16,13 +16,13 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiResponse } from '../decorators/ApiResponse';
+import { ApiResponse } from '../middleware/ApiResponse';
 
 const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4']; // TODO: No hardcoded values
 
 @Controller('post')
 export class PostController {
-  constructor(private readonly postService: PostService) { }
+  constructor(private readonly postService: PostService) {}
 
   @Post('createPost')
   @UseInterceptors(
@@ -37,7 +37,11 @@ export class PostController {
     }),
   )
   @UseGuards(AuthGuard('jwt'))
-  async createPost(@Req() req, @UploadedFile() file: Express.Multer.File, @Body() post: CreatePostDto) {
+  async createPost(
+    @Req() req,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() post: CreatePostDto,
+  ) {
     if (!file) {
       throw new BadRequestException('File is required');
     }
