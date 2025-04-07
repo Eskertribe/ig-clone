@@ -1,3 +1,6 @@
+import { UUID } from 'crypto';
+import { Post } from 'src/post/entity/post.entity';
+
 export class CreateUserDto {
   username: string;
   email: string;
@@ -16,4 +19,12 @@ export class UserDto {
   email: string;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export class UserProfileDataDto {
+  id: string;
+  username: string;
+  email: string;
+  profilePicture: UUID;
+  posts: Post[];
 }

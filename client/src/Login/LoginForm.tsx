@@ -14,7 +14,7 @@ interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ error, handleLogin, email, setEmail, password, setPassword, loading, toggleSignUp }) => {
-  const { setToken } = useContext(AuthContext);
+  const { setToken, setUser } = useContext(AuthContext);
 
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
@@ -37,6 +37,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ error, handleLogin, email, setEma
       const { user, token } = data;
 
       setToken(token);
+      setUser(user);
     } catch (error) {
       console.error('--- Login failed --- :', error); // TODO: BETTER ERROR HANDLING
     }

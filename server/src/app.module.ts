@@ -4,8 +4,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import typeorm from './config/typeorm.config';
+import { FileModule } from './file/file.module';
 import { PostModule } from './post/post.module';
 import { PostService } from './post/post.service';
+import { UserModule } from './user/user.module';
 import { loadEntities } from './utils/loadEntities';
 
 const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entities
@@ -30,6 +32,8 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
     }),
     AuthModule,
     PostModule,
+    FileModule,
+    UserModule,
   ],
   controllers: [],
   providers: [PostService],

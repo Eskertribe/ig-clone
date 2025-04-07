@@ -10,6 +10,7 @@ import {
 import { Comment } from '../../comment/entity/comment.entity';
 import { Like } from '../../like/entity/like.entity';
 import { Post } from '../../post/entity/post.entity';
+import { UserProfileDataDto } from '../dto/user.dto';
 
 @Entity()
 export class User {
@@ -42,4 +43,14 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  toUserProfileDataDto(): UserProfileDataDto {
+    return {
+      id: this.id,
+      username: this.username,
+      email: this.email,
+      profilePicture: this.profilePicture,
+      posts: this.posts,
+    };
+  }
 }
