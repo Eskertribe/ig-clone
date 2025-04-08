@@ -15,6 +15,7 @@ export class UserService {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['posts'],
+      order: { posts: { createdAt: 'DESC' } },
     });
 
     if (!user) {
