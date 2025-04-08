@@ -17,7 +17,7 @@ const Post = ({ post }: any) => {
   }
 
   return (
-    <div key={post.id} className="border m-1">
+    <div key={post.id} className="border m-1 flex items-center justify-center h-full">
       <img src={image} alt={post.title} />
     </div>
   );

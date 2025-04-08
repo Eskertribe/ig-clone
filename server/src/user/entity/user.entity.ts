@@ -5,12 +5,14 @@ import {
   DeleteDateColumn,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Comment } from '../../comment/entity/comment.entity';
-import { Like } from '../../like/entity/like.entity';
-import { Post } from '../../post/entity/post.entity';
+import { Comment } from 'src/comment/entity/comment.entity';
+import { Like } from 'src/like/entity/like.entity';
+import { Post } from 'src/post/entity/post.entity';
 import { UserProfileDataDto } from '../dto/user.dto';
+import { File } from 'src/file/entity/file.entity';
 
 @Entity()
 export class User {
@@ -35,8 +37,14 @@ export class User {
   @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
 
-  @Column()
-  profilePicture: UUID;
+  @OneToOne(() => File, (file) => file.user, {
+    eager: true,
+    cascade: true,
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  profilePicture: File;
 
   @CreateDateColumn()
   createdAt: Date;

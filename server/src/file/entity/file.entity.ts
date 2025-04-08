@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
-import { Post } from '../../post/entity/post.entity';
+import { Post } from 'src/post/entity/post.entity';
+import { User } from 'src/user/entity/user.entity';
 
 @Entity()
 export class File {
@@ -14,4 +15,7 @@ export class File {
 
   @OneToOne(() => Post, (post) => post.file)
   post: Post;
+
+  @OneToOne(() => User, (user) => user.profilePicture)
+  user: User;
 }

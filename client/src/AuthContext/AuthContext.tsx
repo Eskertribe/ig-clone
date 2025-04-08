@@ -2,9 +2,12 @@ import { createContext, useState, ReactNode } from "react";
 
 export type User = {
   id: string;
-  name: string;
+  username: string;
   email: string;
   posts: Post[];
+  profilePicture: {
+    name: string;
+  }
 };
 
 export type Post = {
