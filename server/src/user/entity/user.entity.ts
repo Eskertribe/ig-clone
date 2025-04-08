@@ -1,9 +1,11 @@
-import { UUID } from 'crypto';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -25,6 +27,12 @@ export class User {
   @Column({ unique: true })
   username: string;
 
+  @Column()
+  name: string;
+
+  @Column({ nullable: true })
+  bio: string;
+
   @Column({ nullable: true })
   password?: string; // TODO: Hash the password before saving it
 
@@ -45,6 +53,17 @@ export class User {
   })
   @JoinColumn()
   profilePicture: File;
+
+  @ManyToMany(() => User, (user) => user.following)
+  @JoinTable({
+    name: 'user_followers',
+    joinColumn: { name: 'userId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'followerId', referencedColumnName: 'id' },
+  })
+  followers: User[];
+
+  @ManyToMany(() => User, (user) => user.followers)
+  following: User[];
 
   @CreateDateColumn()
   createdAt: Date;
