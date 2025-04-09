@@ -13,7 +13,7 @@ import {
 import { Comment } from 'src/comment/entity/comment.entity';
 import { Like } from 'src/like/entity/like.entity';
 import { Post } from 'src/post/entity/post.entity';
-import { UserProfileDataDto } from '../dto/user.dto';
+import { UserDto, UserProfileDataDto } from '../dto/user.dto';
 import { File } from 'src/file/entity/file.entity';
 
 @Entity()
@@ -71,13 +71,25 @@ export class User {
   @DeleteDateColumn()
   deletedAt: Date;
 
+  toUserDto(): UserDto {
+    return {
+      id: this.id,
+      email: this.email,
+      username: this.name,
+    };
+  }
+
   toUserProfileDataDto(): UserProfileDataDto {
     return {
       id: this.id,
       username: this.username,
+      name: this.name,
+      bio: this.bio,
       email: this.email,
       profilePicture: this.profilePicture,
       posts: this.posts,
+      following: this.following,
+      followers: this.followers,
     };
   }
 }

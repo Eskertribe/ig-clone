@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface SignUpResponse {
   message: string;
@@ -10,32 +11,53 @@ export interface SignUpParams {
   email: string;
   username: string;
   password: string;
+  profilePicture?: File;
 }
 
 const useSignUp = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const signUp = async ({ email, username, password }: SignUpParams): Promise<SignUpResponse | null> => {
+  const signUp = async ({
+    email,
+    username,
+    password,
+    profilePicture,
+  }: SignUpParams): Promise<SignUpResponse | null> => {
     setLoading(true);
-    setError(null);
+
+    if (!email) {
+      toast.error("Please provide a valid email.");
+      setLoading(false);
+      return null;
+    }
+
+    if (!username) {
+      toast.error("Please provide a username.");
+      setLoading(false);
+      return null;
+    }
+
+    if (!profilePicture) {
+      toast.error("Please provide a profile picture.");
+      setLoading(false);
+      return null;
+    }
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("username", username);
+    formData.append("password", password);
+    formData.append("profilePicture", profilePicture);
 
     try {
-      const response = await fetch('http://localhost:3000/auth/signUp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          username,
-          password,
-        }),
-        credentials: 'include',
+      const response = await fetch("http://localhost:3000/auth/signUp", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
       });
 
       if (!response.ok) {
-        throw new Error('Sign up failed');
+        toast.error("Sign up failed");
       }
 
       const data: SignUpResponse = await response.json();
@@ -44,13 +66,13 @@ const useSignUp = () => {
       return data;
     } catch (err) {
       setLoading(false);
-      setError('Sign up failed. Please try again.');
+      toast.error("Sign up failed. Please try again.");
 
       return null;
     }
   };
 
-  return { signUp, loading, error };
+  return { signUp, loading };
 };
 
 export { useSignUp };

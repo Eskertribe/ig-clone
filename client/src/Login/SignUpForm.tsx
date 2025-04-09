@@ -1,7 +1,8 @@
 import React, { useState } from "react"
+import { SingleFileUploader } from "../AddContent/FileUploader";
+import { toast } from "react-toastify";
 
 interface LoginFormProps {
-  error: string | null;
   handleSignUp: () => void;
   email: string;
   setEmail: (email: string) => void;
@@ -11,21 +12,36 @@ interface LoginFormProps {
   loading: boolean;
   username: string;
   setUsername: (username: string) => void
+  profilePicture?: File
+  setProfilePicture: (file: File) => void
 }
 
-const SignUpForm: React.FC<LoginFormProps> = ({ error, handleSignUp, email, setEmail, password, setPassword, toggleSignUp, loading, setUsername, username }) => {
+const SignUpForm: React.FC<LoginFormProps> = ({ handleSignUp, email, setEmail, password, setPassword, toggleSignUp, loading, setUsername, username, profilePicture, setProfilePicture }) => {
   const [passwordCheck, setPasswordCheck] = useState('');
-  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const handleChange = (file: File) => {
+    setProfilePicture(file);
+  };
 
   // Crude validation to ensure passwords match
   // TODO: Use Yup or other validation library
-  function ValidateSingUp(): void {
-    if (password && passwordCheck && password === passwordCheck) {
-      setValidationError(null)
-      handleSignUp()
-    } else {
-      setValidationError('Passwords do not match')
+  function validateSingUp(): void {
+    if (!email || !username || !password) {
+      toast.error('Please fill in all fields')
+      return;
     }
+
+    if (password !== passwordCheck) {
+      toast.error('Passwords do not match')
+      return;
+    }
+
+    if (!profilePicture) {
+      toast.error('Please upload a profile picture')
+      return;
+    }
+
+    handleSignUp()
   }
 
   return (
@@ -71,13 +87,16 @@ const SignUpForm: React.FC<LoginFormProps> = ({ error, handleSignUp, email, setE
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
         </div>
-        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+        <div className="custom-class-file-upload h-2/5 mb-4 w-full">
+          <label className="block text-sm font-medium text-gray-700">Upload a profile picture</label>
+          <SingleFileUploader handleChange={handleChange} />
+        </div>
         <div className="flex space-x-4 mt-4">
           <button
             type="button"
             disabled={loading}
             className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            onClick={() => ValidateSingUp()}
+            onClick={() => validateSingUp()}
           >
             {loading ? 'Submitting...' : 'Submit'}
           </button>
@@ -89,9 +108,6 @@ const SignUpForm: React.FC<LoginFormProps> = ({ error, handleSignUp, email, setE
           >
             Cancel
           </button>
-        </div>
-        <div>
-          {error || validationError && <p className="mt-2 text-sm text-red-600">{error || validationError}</p>}
         </div>
       </form>
     </>

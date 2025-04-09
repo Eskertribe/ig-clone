@@ -5,17 +5,36 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ApiResponseInterceptor implements NestInterceptor {
-  constructor(private readonly key: string) {}
+  constructor(
+    private readonly key: string,
+    private readonly type: unknown,
+  ) {}
 
   intercept(_: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((data) => {
-        return { [this.key]: data };
+        if (!Array.isArray(data)) {
+          return { [this.key]: applyFilter(data, this.type) };
+        }
+
+        return {
+          [this.key]: data.map(applyFilter),
+        };
       }),
     );
   }
 }
 
-export function ApiResponse(key: string) {
-  return applyDecorators(UseInterceptors(new ApiResponseInterceptor(key)));
+function applyFilter(data, type) {
+  return Object.keys(type ?? {}).reduce((acc, key) => {
+    if (key in data) {
+      acc[key] = data[key];
+    }
+
+    return acc;
+  }, {});
+}
+
+export function ApiResponse(key: string, type: unknown) {
+  return applyDecorators(UseInterceptors(new ApiResponseInterceptor(key, type)));
 }

@@ -55,17 +55,21 @@ export class AuthService {
     return { user, token: jwtToken };
   }
 
-  async signUp(createUserDto: CreateUserDto) {
+  async signUp(
+    createUserDto: CreateUserDto,
+    profilePicture: Express.Multer.File,
+  ): Promise<UserDto> {
     const { email: newEmail, password, username: newUserName } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = this.userRepository.create({
+    const newUser = this.userRepository.create({
       email: newEmail,
       password: hashedPassword,
       username: newUserName,
+      profilePicture: { name: profilePicture.filename, mimeType: profilePicture.mimetype },
     });
-    const { username, email, id } = await this.userRepository.save(user);
+    const user = await this.userRepository.save(newUser);
 
-    return { username, email, id };
+    return user.toUserDto();
   }
 
   async login(loginUserDto: LoginUserDto): Promise<UserDto> {
@@ -96,7 +100,7 @@ export class AuthService {
     return this.userRepository.findOne({ where: { email } });
   }
 
-  async createUser(user: Partial<User>): Promise<User> {
+  async createUser(user: CreateUserDto): Promise<UserDto> {
     const newUser = this.userRepository.create(user);
     return this.userRepository.save(newUser);
   }
