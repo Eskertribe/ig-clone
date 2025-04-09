@@ -38,7 +38,7 @@ export class AuthController {
       }),
     }),
   )
-  @ApiResponse('token', { token: String })
+  @ApiResponse('token')
   async signup(
     @UploadedFile() profilePicture: Express.Multer.File,
     @Body() createUserDto: CreateUserDto,
@@ -50,7 +50,7 @@ export class AuthController {
     const user = await this.authService.signUp(createUserDto, profilePicture);
     const { token } = await this.authService.generateJwtToken(user);
 
-    return { token };
+    return token;
   }
 
   @Post('login')

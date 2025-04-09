@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
+import { AuthContext } from "../AuthContext/AuthContext";
 
 interface SignUpResponse {
-  message: string;
-  username: string;
-  email: string;
+  token: string;
 }
 
 export interface SignUpParams {
@@ -16,31 +15,32 @@ export interface SignUpParams {
 
 const useSignUp = () => {
   const [loading, setLoading] = useState(false);
+  const { setToken } = useContext(AuthContext);
 
   const signUp = async ({
     email,
     username,
     password,
     profilePicture,
-  }: SignUpParams): Promise<SignUpResponse | null> => {
+  }: SignUpParams): Promise<void> => {
     setLoading(true);
 
     if (!email) {
       toast.error("Please provide a valid email.");
       setLoading(false);
-      return null;
+      return;
     }
 
     if (!username) {
       toast.error("Please provide a username.");
       setLoading(false);
-      return null;
+      return;
     }
 
     if (!profilePicture) {
       toast.error("Please provide a profile picture.");
       setLoading(false);
-      return null;
+      return;
     }
 
     const formData = new FormData();
@@ -60,15 +60,15 @@ const useSignUp = () => {
         toast.error("Sign up failed");
       }
 
-      const data: SignUpResponse = await response.json();
+      const { token }: SignUpResponse = await response.json();
       setLoading(false);
 
-      return data;
+      setToken(token);
     } catch (err) {
       setLoading(false);
       toast.error("Sign up failed. Please try again.");
 
-      return null;
+      return;
     }
   };
 
