@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSubmitFile } from '../hooks/useSubmitFile';
+import { useCreatePost } from '../hooks/useCreatePost';
 import { SingleFileUploader } from './FileUploader';
 
 interface AddContentProps {
@@ -13,7 +13,7 @@ const AddContent: React.FC<AddContentProps> = ({ isOpen, toggleModal }) => {
   const [disableLikes, setDisableLikes] = useState<boolean>(false);
   const [description, setDescription] = useState<string | undefined>();
 
-  const { uploadFile, loading } = useSubmitFile();
+  const { createPost, loading } = useCreatePost();
 
   const handleChange = (file: File) => {
     setFile(file);
@@ -21,7 +21,7 @@ const AddContent: React.FC<AddContentProps> = ({ isOpen, toggleModal }) => {
 
   const submitFile = async () => {
     if (file && !loading) {
-      const res = await uploadFile({ file, disableComments, disableLikes, description: description ?? '' });
+      const res = await createPost({ file, disableComments, disableLikes, description: description ?? '' });
 
       if (res) {
         handleToggleModal();
