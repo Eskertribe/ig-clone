@@ -27,7 +27,7 @@ export class AuthService {
 
   async verifyGoogleToken(token: string) {
     if (!token) {
-      throw new ForbiddenException('Token is required');
+      throw new ForbiddenException({ message: 'Token is required' });
     }
 
     const ticket = await this.client.verifyIdToken({
@@ -38,7 +38,7 @@ export class AuthService {
     const payload = ticket.getPayload();
 
     if (!payload) {
-      throw new ForbiddenException('Invalid token payload');
+      throw new ForbiddenException({ message: 'Invalid token payload' });
     }
 
     const { email, name } = payload;
@@ -83,13 +83,13 @@ export class AuthService {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new BadRequestException({ message: 'Invalid credentials' });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password ?? '');
 
     if (!isPasswordValid) {
-      throw new BadRequestException('Invalid credentials');
+      throw new BadRequestException({ message: 'Invalid credentials' });
     }
 
     return user;
@@ -104,7 +104,7 @@ export class AuthService {
 
   async validateUser(userId: UUID): Promise<User | null> {
     if (!userId) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException({ message: 'Invalid token' });
     }
 
     return this.userRepository.findOne({ where: { id: userId } });

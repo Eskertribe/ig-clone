@@ -34,7 +34,8 @@ const useLogin = () => {
       });
 
       if (!response.ok) {
-        toast.error("Login failed");
+        const { message } = await response.json();
+        toast.error(message);
         setLoading(false);
 
         return;

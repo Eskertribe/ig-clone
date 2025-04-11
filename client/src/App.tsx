@@ -13,10 +13,10 @@ function App() {
 
   return (
     <div className="flex h-screen w-screen">
+      <ToastContainer />
       <Router>
         <AuthRouter>
           <>
-            <ToastContainer />
             {showAddContent && <AddContent isOpen={showAddContent} toggleModal={() => toggleShowAddContent(!showAddContent)} />}
             <SideNav toggleShowAddContent={() => toggleShowAddContent(!showAddContent)} />
             <div className="w-4/6">

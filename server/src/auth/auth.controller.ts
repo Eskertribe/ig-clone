@@ -43,7 +43,7 @@ export class AuthController {
     @Body() createUserDto: CreateUserDto,
   ) {
     if (!profilePicture) {
-      throw new BadRequestException('Profile picture is required');
+      throw new BadRequestException({ message: 'Profile picture is required' });
     }
 
     const user = await this.authService.signUp(createUserDto, profilePicture);
@@ -56,6 +56,11 @@ export class AuthController {
   // @ApiResponse('token', { token: String })
   async login(@Body() loginUserDto: LoginUserDto) {
     const user = await this.authService.login(loginUserDto);
+
+    if (!user) {
+      throw new BadRequestException({ message: 'Invalid credentials' });
+    }
+
     const { token } = await this.authService.generateJwtToken(user);
 
     return { user, token };
