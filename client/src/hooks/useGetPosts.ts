@@ -21,12 +21,14 @@ const useGetPosts = () => {
       if (!response.ok) {
         setLoading(false);
         toast.error("Error fetching posts");
+        return;
       }
 
       const { posts } = await response.json();
       setLoading(false);
       setPosts(posts);
     } catch (error) {
+      setLoading(false);
       toast.error("Error fetching posts");
     }
   };

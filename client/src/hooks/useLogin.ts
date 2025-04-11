@@ -1,53 +1,58 @@
-import { useState } from 'react';
+import { useContext, useState } from "react";
+import { AuthContext } from "../AuthContext/AuthContext";
+import { toast } from "react-toastify";
 
 interface LoginResponse {
-  message: string;
-  username: string;
+  token: string;
 }
 
 export interface LoginParams {
   email: string;
-  password: string
+  password: string;
 }
 
 const useLogin = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { setToken } = useContext(AuthContext);
 
-  const login = async ({ email, password }: LoginParams): Promise<LoginResponse | null> => {
+  const login = async ({
+    email,
+    password,
+  }: LoginParams): Promise<LoginResponse | undefined> => {
     setLoading(true);
-    setError(null);
 
     try {
-      const response = await fetch('http://localhost:3000/auth/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email, // TODO: Accept either email or username
           password,
         }),
-        credentials: 'include',
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        toast.error("Login failed");
+        setLoading(false);
+
+        return;
       }
 
       const data: LoginResponse = await response.json();
+      setToken(data.token);
+
       setLoading(false);
 
       return data;
     } catch (err) {
       setLoading(false);
-      setError('Login failed. Please try again.');
-
-      return null;
+      toast.error("Login failed. Please try again.");
     }
   };
 
-  return { login, loading, error };
+  return { login, loading };
 };
 
 export { useLogin };

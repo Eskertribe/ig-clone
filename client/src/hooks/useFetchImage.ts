@@ -21,6 +21,7 @@ const useFetchImage = () => {
       if (!response.ok) {
         setLoading(false);
         toast.error("Error fetching image");
+        return;
       }
 
       const blob = await response.blob();
@@ -29,6 +30,7 @@ const useFetchImage = () => {
       setLoading(false);
       setImage(url);
     } catch (error) {
+      setLoading(false);
       toast.error("Error fetching image");
     }
   };

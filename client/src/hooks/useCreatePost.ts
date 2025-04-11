@@ -23,25 +23,25 @@ const useCreatePost = () => {
     disableComments,
     disableLikes,
     description,
-  }: UploadParams): Promise<UploadResponse | null> => {
+  }: UploadParams): Promise<UploadResponse | undefined> => {
     setLoading(true);
 
     if (!token) {
       toast.error("You must be logged in to upload files.");
       setLoading(false);
-      return null;
+      return;
     }
 
     if (!file) {
       toast.error("Please select a file to upload.");
       setLoading(false);
-      return null;
+      return;
     }
 
     if (!description) {
       toast.error("Please add a description.");
       setLoading(false);
-      return null;
+      return;
     }
 
     const formData = new FormData();
@@ -62,6 +62,8 @@ const useCreatePost = () => {
 
       if (!response.ok) {
         toast.error("File upload failed");
+        setLoading(false);
+        return;
       }
 
       const data: UploadResponse = await response.json();
@@ -73,7 +75,7 @@ const useCreatePost = () => {
       setLoading(false);
       toast.error("File upload failed. Please try again.");
 
-      return null;
+      return;
     }
   };
 

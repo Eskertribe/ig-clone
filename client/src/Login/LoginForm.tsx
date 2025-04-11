@@ -1,9 +1,9 @@
 import React, { useContext } from "react"
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { AuthContext } from "../AuthContext/AuthContext";
+import { toast } from "react-toastify";
 
 interface LoginFormProps {
-  error: string | null;
   handleLogin: () => void;
   email: string;
   setEmail: (email: string) => void;
@@ -13,8 +13,8 @@ interface LoginFormProps {
   toggleSignUp: (toggle: boolean) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ error, handleLogin, email, setEmail, password, setPassword, loading, toggleSignUp }) => {
-  const { setToken, setUser } = useContext(AuthContext);
+const LoginForm: React.FC<LoginFormProps> = ({ handleLogin, email, setEmail, password, setPassword, loading, toggleSignUp }) => {
+  const { setToken } = useContext(AuthContext);
 
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
@@ -29,23 +29,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ error, handleLogin, email, setEma
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok'); // TODO: BETTER ERROR HANDLING
+        toast.error('Login failed');
+        return;
       }
 
-      const data = await response.json();
-
-      const { user, token } = data;
+      const { token } = await response.json();
 
       setToken(token);
-      setUser(user);
     } catch (error) {
-      console.error('--- Login failed --- :', error); // TODO: BETTER ERROR HANDLING
+      toast.error('Login failed');
     }
   };
 
-  // TODO: Implement error handling
   const handleError = () => {
-    console.log('Login Failed');
+    toast.error('Login failed');
   };
 
   return (
@@ -97,7 +94,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ error, handleLogin, email, setEma
             onError={handleError}
           />
         </div>
-        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </form>
     </>
   )

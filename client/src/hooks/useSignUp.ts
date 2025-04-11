@@ -58,6 +58,9 @@ const useSignUp = () => {
 
       if (!response.ok) {
         toast.error("Sign up failed");
+        setLoading(false);
+
+        return;
       }
 
       const { token }: SignUpResponse = await response.json();
@@ -67,8 +70,6 @@ const useSignUp = () => {
     } catch (err) {
       setLoading(false);
       toast.error("Sign up failed. Please try again.");
-
-      return;
     }
   };
 

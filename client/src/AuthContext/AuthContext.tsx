@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from "react";
+import { createContext, ReactNode, useState } from "react";
 
 export type User = {
   id: string;
@@ -31,35 +31,31 @@ export type Post = {
 
 type AuthContextType = {
   token: string | undefined;
-  user: User | undefined;
+  user?: string;
   setToken: (token: string) => void;
-  setUser: (user: User) => void;
   clearToken: () => void;
+  setUserState: (user: string) => void;
 };
 
-export const AuthContext = createContext<AuthContextType>({ token: undefined, setToken: () => { }, clearToken: () => { }, user: undefined, setUser: () => { } });
+export const AuthContext = createContext<AuthContextType>({ token: undefined, setToken: () => { }, clearToken: () => { }, user: undefined, setUserState: () => { } });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setTokenState] = useState<string | undefined>(localStorage.getItem('auth-token') ?? undefined);
-  const [user, setUserState] = useState<User | undefined>(JSON.parse(localStorage.getItem('user') ?? '{}') ?? undefined);
+  const [user, setUserState] = useState<string | undefined>();
 
   const setToken = (token: string) => {
     localStorage.setItem('auth-token', token);
     setTokenState(token);
   };
 
-  const setUser = (user: User) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    setUserState(user);
-  };
-
   const clearToken = () => {
     localStorage.removeItem('auth-token');
+    setUserState(undefined);
     setTokenState(undefined);
   };
 
   return (
-    <AuthContext.Provider value={{ token, setToken, clearToken, user, setUser }}>
+    <AuthContext.Provider value={{ token, setToken, clearToken, user, setUserState }}>
       {children}
     </AuthContext.Provider>
   );

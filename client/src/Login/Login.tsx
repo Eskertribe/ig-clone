@@ -11,18 +11,15 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [file, setFile] = useState<File | undefined>();
 
-  const { login, loading: loginLoading, error: loginError } = useLogin();
+  const { login, loading: loginLoading } = useLogin();
   const { signUp, loading: signUpLoading } = useSignUp();
 
   const handleLogin = async () => {
     await login({ email, password });
-
   };
 
   const handleSignUp = async ({ email, username, password, profilePicture }: SignUpParams) => {
-    const response = await signUp({ email, username, password, profilePicture });
-
-    // TODO: LOGIN USER AFTER SIGNUP
+    await signUp({ email, username, password, profilePicture });
   }
 
   return (
@@ -34,7 +31,6 @@ const Login: React.FC = () => {
             setEmail={setEmail}
             password={password}
             setPassword={setPassword}
-            error={loginError}
             handleLogin={handleLogin}
             loading={loginLoading}
             toggleSignUp={toggleSignUp}
@@ -48,7 +44,7 @@ const Login: React.FC = () => {
               setEmail={setEmail}
               password={password}
               setPassword={setPassword}
-              handleSignUp={() => handleSignUp({ email, username, password, profilePicture: file })}
+              handleSignUp={async () => handleSignUp({ email, username, password, profilePicture: file })}
               toggleSignUp={toggleSignUp}
               loading={signUpLoading}
               username={username}
