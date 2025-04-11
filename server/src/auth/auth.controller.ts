@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto, LoginUserDto } from '../user/dto/user.dto';
 import { AuthService } from './auth.service';
-import { ApiResponse } from 'src/middleware/ApiResponse';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -38,7 +37,7 @@ export class AuthController {
       }),
     }),
   )
-  @ApiResponse('token')
+  // @ApiResponse('token')
   async signup(
     @UploadedFile() profilePicture: Express.Multer.File,
     @Body() createUserDto: CreateUserDto,
@@ -50,11 +49,11 @@ export class AuthController {
     const user = await this.authService.signUp(createUserDto, profilePicture);
     const { token } = await this.authService.generateJwtToken(user);
 
-    return token;
+    return { token };
   }
 
   @Post('login')
-  @ApiResponse('token', { token: String })
+  // @ApiResponse('token', { token: String })
   async login(@Body() loginUserDto: LoginUserDto) {
     const user = await this.authService.login(loginUserDto);
     const { token } = await this.authService.generateJwtToken(user);

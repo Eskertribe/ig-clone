@@ -9,7 +9,7 @@ import { PostService } from './post.service';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'google' }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },

@@ -17,7 +17,6 @@ import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse } from '../middleware/ApiResponse';
-import { Post as PostEntity } from './entity/post.entity';
 
 const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4']; // TODO: No hardcoded values
 
@@ -56,7 +55,7 @@ export class PostController {
 
   @Get('getPosts')
   @UseGuards(AuthGuard('jwt'))
-  @ApiResponse('posts', PostEntity)
+  // @ApiResponse('posts')
   async getPosts(@Req() req) {
     const { user } = req;
 

@@ -75,13 +75,12 @@ export class User {
     return {
       id: this.id,
       email: this.email,
-      username: this.name,
+      username: this.username,
     };
   }
 
   toUserProfileDataDto(): UserProfileDataDto {
     return {
-      id: this.id,
       username: this.username,
       name: this.name,
       bio: this.bio,

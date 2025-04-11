@@ -1,5 +1,7 @@
 import { Post } from 'src/post/entity/post.entity';
 import { File } from 'src/file/entity/file.entity';
+import { Expose } from 'class-transformer';
+import { IsString } from 'class-validator';
 
 export class CreateUserDto {
   username: string;
@@ -15,20 +17,42 @@ export class LoginUserDto {
 }
 
 export class UserDto {
+  @Expose()
+  @IsString()
   id: string;
+
+  @Expose()
+  @IsString()
   username: string;
+
+  @Expose()
+  @IsString()
   email: string;
 }
 
 export class UserProfileDataDto {
-  id: string;
+  @Expose()
   username: string;
+
+  @Expose()
   name: string;
+
+  @Expose()
   bio?: string;
+
+  @Expose()
   email: string;
+
+  @Expose()
   profilePicture: File;
+
+  @Expose()
   posts: Post[];
+
+  @Expose()
   followers: UserFollowerDto[];
+
+  @Expose()
   following: UserFollowerDto[];
 }
 

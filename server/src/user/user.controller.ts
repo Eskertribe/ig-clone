@@ -1,9 +1,9 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UUID } from 'crypto';
-import { ApiResponse } from '../middleware/ApiResponse';
+import { Returns } from '../middleware/ApiResponse';
 import { UserService } from './user.service';
-import { UserDto } from './dto/user.dto';
+import { UserProfileDataDto } from './dto/user.dto';
 
 @Controller('users')
 export class UserController {
@@ -11,8 +11,9 @@ export class UserController {
 
   @Get('/profile/:userId')
   @UseGuards(AuthGuard('jwt'))
-  @ApiResponse('user', UserDto)
+  // @Returns(UserProfileDataDto)
   async getFile(@Param('userId') userId: UUID) {
-    return this.userService.getUserProfileDataById(userId);
+    const user = await this.userService.getUserProfileDataById(userId);
+    return { user };
   }
 }
