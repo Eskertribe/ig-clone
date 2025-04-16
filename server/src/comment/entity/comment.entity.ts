@@ -8,11 +8,14 @@ import {
 } from 'typeorm';
 import { User } from '../../user/entity/user.entity';
 import { Post } from '../../post/entity/post.entity';
+import { CommentDto } from '../dto/comment.dto';
+import { UUID } from 'crypto';
+import { UserCommentDto } from 'src/user/dto/user.dto';
 
 @Entity()
 export class Comment {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: UUID;
 
   @ManyToOne(() => User, (user) => user.comments)
   user: User;
@@ -28,4 +31,13 @@ export class Comment {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  toDto(user: UserCommentDto): CommentDto {
+    return {
+      id: this.id,
+      text: this.text,
+      user,
+      createdAt: this.createdAt,
+    };
+  }
 }

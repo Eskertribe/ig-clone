@@ -13,13 +13,15 @@ import {
 import { Comment } from 'src/comment/entity/comment.entity';
 import { Like } from 'src/like/entity/like.entity';
 import { Post } from 'src/post/entity/post.entity';
-import { UserDto, UserProfileDataDto } from '../dto/user.dto';
+import { UserCommentDto, UserDto, UserProfileDataDto } from '../dto/user.dto';
 import { File } from 'src/file/entity/file.entity';
+import { UUID } from 'crypto';
+import { PostDto } from 'src/post/dto/post.dto';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: UUID;
 
   @Column({ unique: true })
   email: string;
@@ -79,16 +81,24 @@ export class User {
     };
   }
 
-  toUserProfileDataDto(): UserProfileDataDto {
+  toUserProfileDataDto(posts: PostDto[]): UserProfileDataDto {
     return {
       username: this.username,
       name: this.name,
       bio: this.bio,
       email: this.email,
-      profilePicture: this.profilePicture,
-      posts: this.posts,
+      profilePicture: { id: this.profilePicture.id },
+      posts,
       following: this.following,
       followers: this.followers,
+    };
+  }
+
+  toCommentDto(profilePicture: { id: string; image: string }): UserCommentDto {
+    return {
+      id: this.id,
+      username: this.username,
+      profilePicture,
     };
   }
 }

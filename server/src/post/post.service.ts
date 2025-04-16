@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Post } from './entity/post.entity';
 import { CreatePostRequest } from './post.types';
 
@@ -20,13 +20,6 @@ export class PostService {
       disableComments,
       disableLikes,
       file: { name: file.filename, mimeType: file.mimetype },
-    });
-  }
-
-  async getPosts(userId: string): Promise<Post[]> {
-    return this.postRepository.find({
-      where: { user: { id: userId }, deletedAt: IsNull() },
-      relations: ['file'],
     });
   }
 }

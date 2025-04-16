@@ -52,13 +52,4 @@ export class PostController {
 
     return this.postService.createPost({ file, post, user: req.user });
   }
-
-  @Get('getPosts')
-  @UseGuards(AuthGuard('jwt'))
-  // @ApiResponse('posts')
-  async getPosts(@Req() req) {
-    const { user } = req;
-
-    return this.postService.getPosts(user.id);
-  }
 }

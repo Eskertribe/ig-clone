@@ -1,7 +1,8 @@
-import { Post } from 'src/post/entity/post.entity';
-import { File } from 'src/file/entity/file.entity';
 import { Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator';
+import { UUID } from 'crypto';
+import { File } from 'src/file/entity/file.entity';
+import { PostDto } from 'src/post/dto/post.dto';
 
 export class CreateUserDto {
   username: string;
@@ -18,8 +19,8 @@ export class LoginUserDto {
 
 export class UserDto {
   @Expose()
-  @IsString()
-  id: string;
+  @IsUUID()
+  id: UUID;
 
   @Expose()
   @IsString()
@@ -44,10 +45,10 @@ export class UserProfileDataDto {
   email: string;
 
   @Expose()
-  profilePicture: File;
+  profilePicture: { id: UUID; image?: string };
 
   @Expose()
-  posts: Post[];
+  posts: PostDto[];
 
   @Expose()
   followers: UserFollowerDto[];
@@ -60,4 +61,13 @@ export class UserFollowerDto {
   username: string;
   name: string;
   profilePicture: File;
+}
+
+export class UserCommentDto {
+  id: UUID;
+  username: string;
+  profilePicture: {
+    id: string;
+    image: string;
+  };
 }
