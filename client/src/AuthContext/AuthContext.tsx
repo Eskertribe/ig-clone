@@ -1,34 +1,5 @@
 import { createContext, ReactNode, useState } from "react";
 
-export type User = {
-  id: string;
-  username: string;
-  name: string;
-  bio?: string;
-  email: string;
-  posts: Post[];
-  profilePicture: {
-    name: string;
-  }
-  following: User[];
-  followers: User[];
-};
-
-export type Post = {
-  id: string;
-  description: string;
-  file: {
-    name: string;
-    mimeType: string;
-  };
-  user: User;
-  disableComments: boolean;
-  disableLikes: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
-
 type AuthContextType = {
   token: string | undefined;
   user?: string;

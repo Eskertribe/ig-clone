@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { AuthContext, User } from "../AuthContext/AuthContext";
+import { AuthContext } from "../AuthContext/AuthContext";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
@@ -36,6 +36,7 @@ const useGetUserProfile = () => {
       }
 
       const { user: userData } = await response.json();
+
       setLoading(false);
       setUserData(userData);
 
