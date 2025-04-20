@@ -3,7 +3,7 @@ import { calculateTimeSince } from "../utils/timeDifference"
 
 export const Comment: FC<{ user: PostUser | CommentUser; text: string; timeStamp: string | Date }> = ({ user, text, timeStamp }) => {
   return (
-    <div>
+    <div className="my-2">
       <div className="flex items-center space-x-4">
         <img
           src={user.profilePicture.image}

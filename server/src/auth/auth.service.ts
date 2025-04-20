@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
 import { Repository } from 'typeorm';
-import { CreateUserDto, LoginUserDto, UserDto } from '../user/dto/user.dto';
+import { CreateUserDto, LoginUserDto, UserAuthDTO, UserDto } from '../user/dto/user.dto';
 import { User } from '../user/entity/user.entity';
 import { UUID } from 'crypto';
 
@@ -102,12 +102,15 @@ export class AuthService {
     return { token };
   }
 
-  async validateUser(userId: UUID): Promise<User | null> {
+  async validateUser(userId: UUID): Promise<UserAuthDTO | null> {
     if (!userId) {
       throw new UnauthorizedException({ message: 'Invalid token' });
     }
 
-    return this.userRepository.findOne({ where: { id: userId } });
+    return this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'email', 'username'],
+    });
   }
 
   async createUser(user: CreateUserDto): Promise<UserDto> {

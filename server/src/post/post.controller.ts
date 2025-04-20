@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
   BadRequestException,
+  Param,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/post.dto';
@@ -16,6 +17,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthGuard } from '@nestjs/passport';
+import { UUID } from 'crypto';
 // import { ApiResponse } from '../middleware/ApiResponse';
 
 const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4']; // TODO: No hardcoded values
@@ -51,5 +53,26 @@ export class PostController {
     }
 
     return this.postService.createPost({ file, post, user: req.user });
+  }
+
+  @Get('getPosts/:userId')
+  @UseGuards(AuthGuard('jwt'))
+  async getPosts(@Param('userId') userId: UUID) {
+    if (!userId) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    return this.postService.getPosts(userId);
+  }
+
+  @Post('comment')
+  @UseGuards(AuthGuard('jwt'))
+  async addComment(@Body() body: { postId: UUID; comment: string }, @Req() req) {
+    const { postId, comment } = body;
+    if (!postId || !comment) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    return this.postService.addComment(postId, comment, req.user);
   }
 }

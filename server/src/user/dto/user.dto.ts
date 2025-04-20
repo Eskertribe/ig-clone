@@ -48,9 +48,6 @@ export class UserProfileDataDto {
   profilePicture: { id: UUID; image?: string };
 
   @Expose()
-  posts: PostDto[];
-
-  @Expose()
   followers: UserFollowerDto[];
 
   @Expose()
@@ -70,4 +67,18 @@ export class UserCommentDto {
     id: string;
     image: string;
   };
+}
+
+export class UserAuthDTO {
+  @Expose()
+  @IsUUID()
+  id: UUID;
+
+  @Expose()
+  @IsString()
+  username: string;
+
+  @Expose()
+  @IsString()
+  email: string;
 }

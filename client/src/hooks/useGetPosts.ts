@@ -3,33 +3,34 @@ import { AuthContext } from "../AuthContext/AuthContext";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
-const useGetUserProfile = () => {
+const useGetPosts = () => {
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef(false);
   const { token } = useContext(AuthContext);
-  const [userData, setUserData] = useState<User | undefined>();
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const setLoadingState = (loading: boolean) => {
     loadingRef.current = loading;
     setLoading(loading);
   };
 
-  const fetchUserProfileData = async () => {
+  const fetchPosts = async () => {
     if (!token) {
       toast.error("You must be logged in");
       return;
     }
 
-    const { userId } = (await jwtDecode(token)) as { userId: string };
-
     try {
+      const { userId } = jwtDecode(token) as { userId: string };
+
       if (loadingRef.current) {
         return;
       }
 
       setLoadingState(true);
+
       const response = await fetch(
-        `http://localhost:3000/users/profile/${userId}`,
+        `http://localhost:3000/post/getPosts/${userId}`,
         {
           method: "GET",
           credentials: "include",
@@ -41,25 +42,21 @@ const useGetUserProfile = () => {
 
       if (!response.ok) {
         setLoadingState(false);
-        toast.error("Error fetching user profile");
+        toast.error("Error fetching posts");
         return;
       }
 
-      const { user: userData } = await response.json();
+      const data = await response.json();
 
       setLoadingState(false);
-      setUserData(userData);
-
-      if (!userData) {
-        toast.error("Error fetching user profile");
-      }
+      setPosts(data);
     } catch (error) {
-      toast.error("Error fetching user profile");
       setLoadingState(false);
+      toast.error("Error fetching posts");
     }
   };
 
-  return { fetchUserProfileData, userData, loading };
+  return { fetchPosts, posts, loading };
 };
 
-export { useGetUserProfile };
+export { useGetPosts };

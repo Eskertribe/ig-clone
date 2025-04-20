@@ -6,6 +6,7 @@ import { User } from '../user/entity/user.entity';
 import { Post } from './entity/post.entity';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
+import { Comment } from '../comment/entity/comment.entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { PostService } from './post.service';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },
     }),
-    TypeOrmModule.forFeature([User, Post]),
+    TypeOrmModule.forFeature([User, Post, Comment]),
   ],
   providers: [PostService],
   controllers: [PostController],

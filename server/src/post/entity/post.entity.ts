@@ -1,5 +1,5 @@
 import { UUID } from 'crypto';
-import { UserCommentDto } from 'src/user/dto/user.dto';
+import { imageToStringBuffer } from 'src/utils/imageToBuffer';
 import {
   Column,
   CreateDateColumn,
@@ -13,11 +13,11 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Comment } from '../../comment/entity/comment.entity';
-import { File } from '../../file/entity/file.entity';
-import { Hashtag } from '../../hashtag/entity/hashtag.entity';
-import { Like } from '../../like/entity/like.entity';
-import { User } from '../../user/entity/user.entity';
+import { Comment } from 'src/comment/entity/comment.entity';
+import { File } from 'src/file/entity/file.entity';
+import { Hashtag } from 'src/hashtag/entity/hashtag.entity';
+import { Like } from 'src/like/entity/like.entity';
+import { User } from 'src/user/entity/user.entity';
 import { PostDto } from '../dto/post.dto';
 
 @Entity()
@@ -56,22 +56,25 @@ export class Post {
   @OneToMany(() => Like, (like) => like.post)
   likes: Like[];
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.post, { cascade: true, eager: true })
   comments: Comment[];
 
   @ManyToMany(() => Hashtag, (hashtag) => hashtag.posts)
   @JoinTable()
   hashtags: Hashtag[];
 
-  toDto(file: { id: UUID; image: string }, user: UserCommentDto): PostDto {
+  async toDto(): Promise<PostDto> {
     return {
       id: this.id,
       description: this.description,
       disableComments: this.disableComments,
       disableLikes: this.disableLikes,
-      file,
-      user,
-      comments: this.comments,
+      file: {
+        id: this.file.id,
+        image: await imageToStringBuffer(this.file.name, this.file.mimeType),
+      },
+      user: await this.user.toCommentDto(),
+      comments: await Promise.all(this.comments.map((comment) => comment.toDto())),
       createdAt: this.createdAt,
     };
   }

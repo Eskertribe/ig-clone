@@ -3,13 +3,16 @@ import Post from '../Post/Post';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { useGetUserProfile } from '../hooks/useGetUserProfile';
 import { PostModal } from './PostModal';
+import { useGetPosts } from '../hooks/useGetPosts';
 
 const UserPage: React.FC = () => {
   const { userData, loading, fetchUserProfileData } = useGetUserProfile()
+  const { posts, loading: postsLoading, fetchPosts } = useGetPosts()
   const { setModalOpen, isOpen } = useContext(PostModalContext);
 
   useEffect(() => {
     fetchUserProfileData();
+    fetchPosts();
   }, []);
 
   if (loading) {
@@ -39,7 +42,7 @@ const UserPage: React.FC = () => {
             <div>
               <h2 className="text-xl font-bold">@{userData.username}</h2>
               <div className="flex flex-row space-x-4">
-                <p className="text-gray-500">{userData?.posts?.length ?? 0} posts</p>
+                <p className="text-gray-500">{posts?.length ?? 0} posts</p>
                 <p className="text-gray-500">{userData.followers?.length ?? 0} followers</p>
                 <p className="text-gray-500">{userData.following?.length ?? 0} following</p>
               </div>
@@ -50,11 +53,12 @@ const UserPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="h-[80vh] grid grid-rows-3 grid-cols-3 gap-1 p-2">
-          {userData.posts?.map((post) => (
-            <Post key={post.id} post={post} toggleModal={() => setModalOpen(post)} />
-          ))}
-        </div>
+        {!postsLoading &&
+          <div className="h-[80vh] grid grid-rows-3 grid-cols-3 gap-1 p-2">
+            {posts?.map((post) => (
+              <Post key={post.id} post={post} toggleModal={() => setModalOpen(post)} />
+            ))}
+          </div>}
       </div >
       {isOpen && <PostModal />}
     </>

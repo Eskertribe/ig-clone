@@ -1,23 +1,22 @@
+import { UUID } from 'crypto';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   CreateDateColumn,
   DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../../user/entity/user.entity';
-import { Post } from '../../post/entity/post.entity';
+import { Post } from 'src/post/entity/post.entity';
+import { User } from 'src/user/entity/user.entity';
 import { CommentDto } from '../dto/comment.dto';
-import { UUID } from 'crypto';
-import { UserCommentDto } from 'src/user/dto/user.dto';
 
 @Entity()
 export class Comment {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: UUID;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments, { eager: true })
   user: User;
 
   @Column('text')
@@ -32,11 +31,11 @@ export class Comment {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  toDto(user: UserCommentDto): CommentDto {
+  async toDto(): Promise<CommentDto> {
     return {
       id: this.id,
       text: this.text,
-      user,
+      user: await this.user.toCommentDto(),
       createdAt: this.createdAt,
     };
   }
