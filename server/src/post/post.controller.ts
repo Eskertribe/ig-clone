@@ -9,6 +9,7 @@ import {
   UseGuards,
   BadRequestException,
   Param,
+  Patch,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/post.dto';
@@ -65,10 +66,11 @@ export class PostController {
     return this.postService.getPosts(userId);
   }
 
-  @Post('comment')
+  @Patch('comment')
   @UseGuards(AuthGuard('jwt'))
   async addComment(@Body() body: { postId: UUID; comment: string }, @Req() req) {
     const { postId, comment } = body;
+
     if (!postId || !comment) {
       throw new BadRequestException('Invalid request');
     }

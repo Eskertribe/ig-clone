@@ -1,23 +1,21 @@
-import { FC, useContext, useState } from 'react';
+import { FC, useContext, useRef } from 'react';
+import { useAddComment } from '../hooks/useAddComment';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { Comment } from './Comment';
-import { useAddComment } from '../hooks/useAddComment';
 
 export const PostModal: FC = () => {
   const { isOpen, post, setModalOpen } = useContext(PostModalContext);
-  const [comment, setComment] = useState<string>('');
   const { addComment, loading } = useAddComment();
+  const commentRef = useRef<HTMLInputElement>(null);
 
   const handleSuccess = (newComment: any) => { // TODO: Define a proper type for newComment
-    setComment('');
+    commentRef.current!.value = '';
     post?.comments.push(newComment);
   };
 
   if (!isOpen || !post) {
     return null
   };
-
-  console.log(post);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
@@ -43,7 +41,11 @@ export const PostModal: FC = () => {
             </div>
             <div className="border-t border-gray-600 my-4" />
             <div className="scroll-y h-[60vh] overflow-y-auto">
-              <Comment user={post.user} text={post.description} timeStamp={post.createdAt} />
+              <Comment
+                user={post.user}
+                text={post.description}
+                timeStamp={post.createdAt}
+              />
               <div>
                 {post.comments.map((comment) => (
                   <Comment
@@ -58,12 +60,25 @@ export const PostModal: FC = () => {
           </div>
           <div className="flex items-center space-x-2">
             <input
+              ref={commentRef}
               placeholder="Add a comment..."
               className="bg-transparent border-b border-gray-600 text-gray-300 placeholder-gray-300 focus:outline-none flex-1"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
             />
-            <button disabled={loading} className="text-blue-500" onClick={() => addComment(post.id, comment, handleSuccess)}>Send</button>
+            <button
+              disabled={loading}
+              className="text-blue-500"
+              onClick={
+                () => {
+                  if (!commentRef.current?.value) {
+                    return
+                  };
+
+                  addComment(post.id, commentRef.current.value, handleSuccess)
+                }
+              }
+            >
+              Send
+            </button>
           </div>
         </div>
       </div>

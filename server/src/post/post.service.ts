@@ -39,6 +39,10 @@ export class PostService {
       throw new BadRequestException('Post not found');
     }
 
+    if (post.disableComments) {
+      throw new BadRequestException('Comments are disabled for this post');
+    }
+
     const { identifiers } = await this.commentRepository.insert({
       text: comment,
       user: { id: user.id },
