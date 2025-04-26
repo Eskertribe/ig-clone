@@ -11,32 +11,32 @@ export function calculateTimeSince(timeStamp: string | Date) {
   let interval = Math.floor(seconds / SECONDS_IN_A_YEAR);
 
   if (interval > 1) {
-    return interval + " years ago";
+    return interval + "y";
   }
 
   interval = Math.floor(seconds / SECONDS_IN_A_MONTH);
 
   if (interval > 1) {
-    return interval + " months ago";
+    return interval + "m";
   }
 
   interval = Math.floor(seconds / SECONDS_IN_A_DAY);
 
   if (interval > 1) {
-    return interval + " days ago";
+    return interval + "d";
   }
 
   interval = Math.floor(seconds / SECONDS_IN_AN_HOUR);
 
   if (interval > 1) {
-    return interval + " hours ago";
+    return interval + "h";
   }
 
   interval = Math.floor(seconds / SECONDS_IN_A_MINUTE);
 
   if (interval > 1) {
-    return interval + " minutes ago";
+    return interval + "min";
   }
 
-  return seconds + " seconds ago";
+  return seconds + "s";
 }

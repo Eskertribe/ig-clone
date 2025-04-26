@@ -1,6 +1,6 @@
-import { useContext, useRef, useState } from "react";
-import { AuthContext } from "../AuthContext/AuthContext";
-import { toast } from "react-toastify";
+import { useContext, useRef, useState } from 'react';
+import { AuthContext } from '../AuthContext/AuthContext';
+import { toast } from 'react-toastify';
 
 const useAddComment = () => {
   const [loading, setLoading] = useState(false);
@@ -15,6 +15,7 @@ const useAddComment = () => {
   const addComment = async (
     postId: string,
     comment: string,
+    replytoId?: string,
     callBack?: (newComment: any) => void // TODO: Define a proper type for newComment
   ) => {
     try {
@@ -23,19 +24,19 @@ const useAddComment = () => {
       }
 
       setLoadingState(true);
-      const response = await fetch(`http://localhost:3000/post/comment`, {
-        method: "PATCH",
-        credentials: "include",
-        body: JSON.stringify({ postId, comment }),
+      const response = await fetch('http://localhost:3000/post/comment', {
+        method: 'PATCH',
+        credentials: 'include',
+        body: JSON.stringify({ postId, comment, replytoId }),
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
         setLoadingState(false);
-        toast.error("Error adding comment");
+        toast.error('Error adding comment');
         return;
       }
 
@@ -47,7 +48,7 @@ const useAddComment = () => {
       setLoadingState(false);
     } catch (error) {
       setLoadingState(false);
-      toast.error("Error adding comment");
+      toast.error('Error adding comment');
     }
   };
 
