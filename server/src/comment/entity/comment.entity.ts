@@ -50,6 +50,7 @@ export class Comment {
       text: this.text,
       user: await this.user.toCommentDto(),
       createdAt: this.createdAt,
+      replies: this.replies ? await Promise.all(this.replies.map((reply) => reply.toDto())) : [],
     };
   }
 }

@@ -2,23 +2,13 @@ import { FC } from 'react';
 import { calculateTimeSince } from '../utils/timeDifference';
 
 type CommentProps = {
-  user: PostUser | CommentUser;
-  text: string;
-  timeStamp: string | Date;
-  replyEnabled?: boolean;
   reply: (commentId?: string) => void;
-  comment?: string;
+  comment: PostComment;
 };
 
-export const Comment: FC<CommentProps> = ({
-  user,
-  text,
-  timeStamp,
-  replyEnabled = false,
-  reply,
-  comment,
-}) => {
-  const replies = [];
+export const Comment: FC<CommentProps> = ({ comment, reply }) => {
+  const { id, user, text, createdAt: timeStamp, replies } = comment;
+
   return (
     <div className="my-2">
       <div className="flex items-center space-x-4">
@@ -34,14 +24,14 @@ export const Comment: FC<CommentProps> = ({
             <p className="text-xs text-white">
               {calculateTimeSince(timeStamp)}
             </p>
-            {replyEnabled && (
+            {
               <button
-                onClick={() => reply(comment)}
+                onClick={() => reply(id)}
                 className="text-white-500 text-xs"
               >
                 Reply
               </button>
-            )}
+            }
             {replies.length > 0 && (
               <button className="text-white-500 text-xs">Show replies</button>
             )}

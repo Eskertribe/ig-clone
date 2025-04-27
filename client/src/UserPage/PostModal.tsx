@@ -2,6 +2,7 @@ import { FC, useContext, useRef } from 'react';
 import { useAddComment } from '../hooks/useAddComment';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { Comment } from './Comment';
+import { calculateTimeSince } from '../utils/timeDifference';
 
 export const PostModal: FC = () => {
   const { isOpen, post, setModalOpen } = useContext(PostModalContext);
@@ -45,12 +46,24 @@ export const PostModal: FC = () => {
             </div>
             <div className="border-t border-gray-600 my-4" />
             <div className="scroll-y h-[60vh] overflow-y-auto">
-              <Comment
-                reply={() => {}}
-                user={post.user}
-                text={post.description}
-                timeStamp={post.createdAt}
-              />
+              <div className="my-2">
+                <div className="flex items-center space-x-4">
+                  <img
+                    src={post.user.profilePicture.image}
+                    className="object-cover rounded-full w-[4em] h-[4em]"
+                  />
+                  <div className="flex flex-col">
+                    <p className="text-white">
+                      <b>{post.user.username}</b> {post.description}
+                    </p>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-xs text-white">
+                        {calculateTimeSince(post.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div>
                 {post.comments.map((comment) => (
                   <Comment
@@ -60,12 +73,8 @@ export const PostModal: FC = () => {
                       commentRef.current!.value =
                         '@' + comment.user.username + ' ';
                     }}
-                    replyEnabled
                     key={comment.id}
-                    comment={comment.id}
-                    user={comment.user}
-                    text={comment.text}
-                    timeStamp={comment.createdAt}
+                    comment={comment}
                   />
                 ))}
               </div>

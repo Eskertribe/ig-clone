@@ -16,6 +16,9 @@ type PostComment = {
   user: CommentUser;
   text: string;
   createdAt: string;
+  replies: PostComment[];
+  repliesCount: number;
+  likesCount: number;
 };
 
 type Post = {
