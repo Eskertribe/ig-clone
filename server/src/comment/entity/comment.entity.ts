@@ -17,7 +17,7 @@ export class Comment {
   @PrimaryGeneratedColumn('uuid')
   id: UUID;
 
-  @ManyToOne(() => User, (user) => user.comments, { eager: true })
+  @ManyToOne(() => User, (user) => user.comments)
   user: User;
 
   @Column('text')
@@ -31,6 +31,12 @@ export class Comment {
 
   @OneToMany(() => Comment, (comment) => comment.parentComment, { cascade: true })
   replies: Comment[];
+
+  @Column({ default: 0 })
+  repliesCount: number;
+
+  @Column({ default: 0 })
+  likesCount: number;
 
   @CreateDateColumn()
   createdAt: Date;
