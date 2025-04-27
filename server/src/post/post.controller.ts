@@ -68,13 +68,13 @@ export class PostController {
 
   @Patch('comment')
   @UseGuards(AuthGuard('jwt'))
-  async addComment(@Body() body: { postId: UUID; comment: string }, @Req() req) {
-    const { postId, comment } = body;
+  async addComment(@Body() body: { postId: UUID; comment: string; replytoId?: UUID }, @Req() req) {
+    const { postId, comment, replytoId } = body;
 
     if (!postId || !comment) {
       throw new BadRequestException('Invalid request');
     }
 
-    return this.postService.addComment(postId, comment, req.user);
+    return this.postService.addComment(postId, comment, req.user, replytoId);
   }
 }

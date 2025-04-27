@@ -56,7 +56,7 @@ export class Post {
   @OneToMany(() => Like, (like) => like.post)
   likes: Like[];
 
-  @OneToMany(() => Comment, (comment) => comment.post, { cascade: true, eager: true })
+  @OneToMany(() => Comment, (comment) => comment.post, { cascade: true })
   comments: Comment[];
 
   @ManyToMany(() => Hashtag, (hashtag) => hashtag.posts)

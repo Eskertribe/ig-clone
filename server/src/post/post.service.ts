@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UUID } from 'crypto';
+import { CommentDto } from 'src/comment/dto/comment.dto';
+import { Comment } from 'src/comment/entity/comment.entity';
+import { UserAuthDTO } from 'src/user/dto/user.dto';
 import { Repository } from 'typeorm';
+import { PostDto } from './dto/post.dto';
 import { Post } from './entity/post.entity';
 import { CreatePostRequest } from './post.types';
-import { UUID } from 'crypto';
-import { UserAuthDTO } from 'src/user/dto/user.dto';
-import { Comment } from 'src/comment/entity/comment.entity';
-import { CommentDto } from 'src/comment/dto/comment.dto';
-import { PostDto } from './dto/post.dto';
 
 @Injectable()
 export class PostService {
@@ -30,7 +30,12 @@ export class PostService {
     });
   }
 
-  async addComment(postId: UUID, comment: string, user: UserAuthDTO): Promise<CommentDto> {
+  async addComment(
+    postId: UUID,
+    comment: string,
+    user: UserAuthDTO,
+    replytoId?: UUID,
+  ): Promise<CommentDto> {
     const post = await this.postRepository.findOne({
       where: { id: postId },
     });
@@ -41,6 +46,47 @@ export class PostService {
 
     if (post.disableComments) {
       throw new BadRequestException('Comments are disabled for this post');
+    }
+
+    if (replytoId) {
+      const parentComment = await this.commentRepository.findOne({
+        where: { id: replytoId },
+        relations: ['post', 'replies'],
+      });
+
+      if (!parentComment || parentComment.parentComment) {
+        throw new BadRequestException('Cannot reply to this comment');
+      }
+
+      if (parentComment.post.id !== postId) {
+        throw new BadRequestException('Invalid post');
+      }
+
+      const saved = await this.commentRepository.save({
+        ...parentComment,
+        replies: [
+          ...parentComment.replies,
+          { text: comment, user: { id: user.id }, post: { id: parentComment.post.id } },
+        ],
+      });
+
+      const newComment = await this.commentRepository.findOne({
+        where: { id: saved.id as UUID },
+        relations: ['user'],
+        select: {
+          user: {
+            id: true,
+            username: true,
+            profilePicture: true,
+          },
+        },
+      });
+
+      if (!newComment) {
+        throw new InternalServerErrorException();
+      }
+
+      return newComment.toDto();
     }
 
     const { identifiers } = await this.commentRepository.insert({
@@ -62,10 +108,45 @@ export class PostService {
   }
 
   async getPosts(userId: UUID): Promise<PostDto[]> {
-    const posts = await this.postRepository.find({
-      where: { user: { id: userId } },
-      relations: ['user', 'user.profilePicture'],
-    });
+    const userFields = {
+      id: true,
+      username: true,
+      profilePicture: true,
+    };
+    const posts = await this.postRepository
+      .createQueryBuilder('post')
+      .select([
+        'post',
+        'comment',
+        'commentUser.id',
+        'commentUser.username',
+        'commentUserProfilePicture',
+        'reply',
+        'replyUser.id',
+        'replyUser.username',
+        'replyUserProfilePicture',
+        'user.id',
+        'user.username',
+        'userProfilePicture',
+        'file',
+      ])
+      .leftJoin('post.comments', 'comment', 'comment.parentComment IS NULL')
+      .leftJoin('post.user', 'user')
+      .leftJoin('user.profilePicture', 'userProfilePicture')
+      .leftJoin('comment.user', 'commentUser')
+      .leftJoin('commentUser.profilePicture', 'commentUserProfilePicture')
+      .leftJoin('comment.replies', 'reply')
+      .leftJoin('reply.user', 'replyUser')
+      .leftJoin('replyUser.profilePicture', 'replyUserProfilePicture')
+      .leftJoin('post.file', 'file')
+      .where('post.user.id = :userId', { userId })
+      .andWhere('comment.deletedAt IS NULL')
+      .andWhere('reply.deletedAt IS NULL')
+      .andWhere('post.deletedAt IS NULL')
+      .orderBy('post.createdAt', 'DESC')
+      .addOrderBy('comment.createdAt', 'ASC')
+      .addOrderBy('reply.createdAt', 'ASC')
+      .getMany();
 
     if (!posts) {
       throw new BadRequestException('No posts found');
