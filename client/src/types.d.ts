@@ -19,6 +19,7 @@ type PostComment = {
   replies: PostComment[];
   repliesCount: number;
   likesCount: number;
+  parentComment?: PostComment;
 };
 
 type Post = {

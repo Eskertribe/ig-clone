@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { calculateTimeSince } from '../utils/timeDifference';
 
 type CommentProps = {
-  reply: (commentId?: string) => void;
+  reply: () => void;
   comment: PostComment;
   isReply?: boolean;
 };
@@ -23,7 +23,7 @@ export const Comment: FC<CommentProps> = ({
       <div className="flex items-center space-x-2">
         <p className="text-xs text-white">{calculateTimeSince(timeStamp)}</p>
         {
-          <button onClick={() => reply(id)} className="text-white-500 text-xs">
+          <button onClick={() => reply()} className="text-white-500 text-xs">
             Reply
           </button>
         }
@@ -47,7 +47,7 @@ export const Comment: FC<CommentProps> = ({
       <div className="flex items-center space-x-2">
         <p className="text-xs text-white">{calculateTimeSince(timeStamp)}</p>
         {
-          <button onClick={() => reply(id)} className="text-white-500 text-xs">
+          <button onClick={() => reply()} className="text-white-500 text-xs">
             Reply
           </button>
         }
@@ -88,7 +88,7 @@ export const Comment: FC<CommentProps> = ({
                   isReply
                   key={replyComment.id}
                   comment={replyComment}
-                  reply={() => reply(replyComment.id)}
+                  reply={() => reply()}
                 />
               ))}
             </div>

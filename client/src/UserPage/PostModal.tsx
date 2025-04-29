@@ -68,7 +68,9 @@ export const PostModal: FC = () => {
                 {post.comments.map((comment) => (
                   <Comment
                     reply={() => {
-                      replyRef.current = comment.id;
+                      replyRef.current = comment?.parentComment
+                        ? comment.parentComment.id
+                        : comment.id;
                       commentRef.current?.focus();
                       commentRef.current!.value =
                         '@' + comment.user.username + ' ';
