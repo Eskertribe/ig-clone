@@ -11,7 +11,7 @@ import { Post } from '../../post/entity/post.entity';
 
 @Entity()
 export class Like {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @ManyToOne(() => User, (user) => user.likes)
@@ -25,4 +25,10 @@ export class Like {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  toDto() {
+    return {
+      userId: this.user.id,
+    };
+  }
 }

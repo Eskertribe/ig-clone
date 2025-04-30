@@ -66,6 +66,16 @@ export class PostController {
     return this.postService.getPosts(userId);
   }
 
+  @Get('getLikes/:postId')
+  @UseGuards(AuthGuard('jwt'))
+  async getLikes(@Param('postId') postId: UUID) {
+    if (!postId) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    return this.postService.getLikes(postId);
+  }
+
   @Patch('comment')
   @UseGuards(AuthGuard('jwt'))
   async addComment(@Body() body: { postId: UUID; comment: string; replytoId?: UUID }, @Req() req) {
@@ -76,5 +86,17 @@ export class PostController {
     }
 
     return this.postService.addComment(postId, comment, req.user, replytoId);
+  }
+
+  @Patch('like')
+  @UseGuards(AuthGuard('jwt'))
+  async addLike(@Body() body: { postId: UUID }, @Req() req) {
+    const { postId } = body;
+
+    if (!postId) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    return this.postService.addLike(postId, req.user);
   }
 }

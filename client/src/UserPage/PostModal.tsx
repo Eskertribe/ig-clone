@@ -1,17 +1,21 @@
-import { FC, useContext, useRef } from 'react';
+import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
+import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FC, useContext, useMemo, useRef } from 'react';
 import { useAddComment } from '../hooks/useAddComment';
+import { useAddLike } from '../hooks/useAddLike';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
-import { Comment } from './Comment';
 import { calculateTimeSince } from '../utils/timeDifference';
+import { Comment } from './Comment';
 
 export const PostModal: FC = () => {
-  const { isOpen, post, setModalOpen } = useContext(PostModalContext);
+  const { isOpen, post, likes, setModalOpen } = useContext(PostModalContext);
   const { addComment, loading } = useAddComment();
+  const { addLike } = useAddLike();
   const commentRef = useRef<HTMLInputElement>(null);
   const replyRef = useRef<string>(undefined);
 
-  const handleSuccess = (newComment: any) => {
-    // TODO: Define a proper type for newComment
+  const handleSuccess = (newComment: PostComment) => {
     commentRef.current!.value = '';
     post?.comments.push(newComment);
   };
@@ -19,6 +23,10 @@ export const PostModal: FC = () => {
   if (!isOpen || !post) {
     return null;
   }
+
+  const isLiked = useMemo(() => {
+    return likes.some((like) => like.userId === post.user.id);
+  }, [likes, post]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
@@ -81,6 +89,24 @@ export const PostModal: FC = () => {
                 ))}
               </div>
             </div>
+          </div>
+          <div className="flex items-center space-x-8">
+            <FontAwesomeIcon
+              icon={faHeart}
+              className={`text-${isLiked ? 'red' : 'gray'}-500 h-[1.5em] cursor-pointer hover:text-red-500`}
+              onClick={() => {
+                addLike(post.id, () => {
+                  // TODO: Handle success
+                });
+              }}
+            />
+            <FontAwesomeIcon
+              icon={faComment}
+              className="text-gray-500 h-[1.5em] cursor-pointer hover:text-gray-300"
+              onClick={() => {
+                commentRef.current?.focus();
+              }}
+            />
           </div>
           <div className="flex items-center space-x-2">
             <input

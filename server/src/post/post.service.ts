@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UUID } from 'crypto';
 import { CommentDto } from 'src/comment/dto/comment.dto';
 import { Comment } from 'src/comment/entity/comment.entity';
+import { Like } from 'src/like/entity/like.entity';
+import { LikeDto } from 'src/like/like.dto';
 import { UserAuthDTO } from 'src/user/dto/user.dto';
 import { Repository } from 'typeorm';
 import { PostDto } from './dto/post.dto';
@@ -16,6 +18,8 @@ export class PostService {
     private readonly postRepository: Repository<Post>,
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(Like)
+    private readonly likeRepository: Repository<Like>,
   ) {}
 
   async createPost({ file, post, user }: CreatePostRequest): Promise<Post> {
@@ -108,11 +112,6 @@ export class PostService {
   }
 
   async getPosts(userId: UUID): Promise<PostDto[]> {
-    const userFields = {
-      id: true,
-      username: true,
-      profilePicture: true,
-    };
     const posts = await this.postRepository
       .createQueryBuilder('post')
       .select([
@@ -155,5 +154,45 @@ export class PostService {
     const postDtos = await Promise.all(posts.map((post) => post.toDto()));
 
     return postDtos;
+  }
+
+  async getLikes(postId: UUID): Promise<LikeDto[]> {
+    const likes = await this.likeRepository.find({
+      where: { post: { id: postId } },
+      relations: ['user'],
+      select: {
+        user: {
+          id: true,
+        },
+      },
+    });
+
+    if (!likes) {
+      throw new BadRequestException('Post not found');
+    }
+
+    console.log(likes);
+
+    return likes.map((like) => like.toDto());
+  }
+
+  async addLike(postId: UUID, user: UserAuthDTO): Promise<void> {
+    const post = await this.postRepository.findOne({
+      where: { id: postId },
+      relations: ['user', 'file'],
+    });
+
+    if (!post) {
+      throw new BadRequestException('Post not found');
+    }
+
+    if (post.disableLikes) {
+      throw new BadRequestException('Likes are disabled for this post');
+    }
+
+    await this.likeRepository.insert({
+      post: { id: post.id },
+      user: { id: user.id },
+    });
   }
 }

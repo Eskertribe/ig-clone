@@ -53,7 +53,8 @@ export class Post {
   @JoinColumn()
   user: User;
 
-  @OneToMany(() => Like, (like) => like.post)
+  @OneToMany(() => Like, (like) => like.post, { cascade: true, eager: true })
+  // @JoinColumn()
   likes: Like[];
 
   @OneToMany(() => Comment, (comment) => comment.post, { cascade: true })
@@ -76,6 +77,7 @@ export class Post {
       user: await this.user.toCommentDto(),
       comments: await Promise.all(this.comments.map((comment) => comment.toDto())),
       createdAt: this.createdAt,
+      likes: this.likes?.map((like) => ({ userId: like.user.id })) ?? [],
     };
   }
 }

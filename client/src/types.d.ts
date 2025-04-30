@@ -17,6 +17,7 @@ type PostComment = {
   text: string;
   createdAt: string;
   replies: PostComment[];
+  likes: string[];
   repliesCount: number;
   likesCount: number;
   parentComment?: PostComment;
@@ -29,6 +30,7 @@ type Post = {
     id: string;
     image: string;
   };
+  likes: { user: { id: string } }[];
   text: string;
   user: PostUser;
   comments: PostComment[];

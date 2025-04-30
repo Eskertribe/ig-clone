@@ -12,7 +12,7 @@ export const Comment: FC<CommentProps> = ({
   reply,
   isReply = false,
 }) => {
-  const { id, user, text, createdAt: timeStamp, replies } = comment;
+  const { user, text, createdAt: timeStamp, replies } = comment;
   const [showReplies, setShowReplies] = useState(false);
 
   const parentComment = (

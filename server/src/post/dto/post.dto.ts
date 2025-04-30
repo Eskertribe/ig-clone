@@ -24,4 +24,5 @@ export class PostDto {
   readonly file: { id: UUID; image: string };
   readonly createdAt: Date;
   readonly comments: CommentDto[];
+  readonly likes: { userId: UUID }[];
 }
