@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useState } from 'react';
 import { useGetLikes } from '../hooks/useGetLikes';
+import { useGetPost } from '../hooks/useGetPost';
 
 type PostModalContextType = {
   post?: Post;
@@ -8,6 +9,8 @@ type PostModalContextType = {
   }[];
   isOpen: boolean;
   setModalOpen: (post?: Post) => void;
+  fetchPost: (postId: string) => void;
+  fetchLikes: (postId: string) => void;
 };
 
 export const PostModalContext = createContext<PostModalContextType>({
@@ -15,11 +18,13 @@ export const PostModalContext = createContext<PostModalContextType>({
   isOpen: false,
   likes: [],
   setModalOpen: () => {},
+  fetchPost: () => {},
+  fetchLikes: () => {},
 });
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const { likes, fetchLikes } = useGetLikes();
-  const [post, setPost] = useState<Post | undefined>(undefined);
+  const { post, fetchPost } = useGetPost();
   const [isOpen, toggleOpen] = useState(false);
 
   const setModalOpen = (post?: Post) => {
@@ -30,7 +35,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 
     fetchLikes(post.id);
     toggleOpen(!isOpen);
-    setPost(post);
+    fetchPost(post.id);
   };
 
   return (
@@ -40,6 +45,8 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
         isOpen,
         likes,
         setModalOpen,
+        fetchPost,
+        fetchLikes,
       }}
     >
       {children}

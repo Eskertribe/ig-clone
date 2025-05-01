@@ -45,6 +45,7 @@ const useAddComment = () => {
       if (callBack) {
         callBack(data);
       }
+
       setLoadingState(false);
     } catch (error) {
       setLoadingState(false);

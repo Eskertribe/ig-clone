@@ -9,7 +9,8 @@ import { calculateTimeSince } from '../utils/timeDifference';
 import { Comment } from './Comment';
 
 export const PostModal: FC = () => {
-  const { isOpen, post, likes, setModalOpen } = useContext(PostModalContext);
+  const { isOpen, post, likes, setModalOpen, fetchPost, fetchLikes } =
+    useContext(PostModalContext);
   const { addComment, loading } = useAddComment();
   const { addLike } = useAddLike();
   const commentRef = useRef<HTMLInputElement>(null);
@@ -20,13 +21,17 @@ export const PostModal: FC = () => {
     post?.comments.push(newComment);
   };
 
+  const isLiked = useMemo(() => {
+    if (!post) {
+      return false;
+    }
+
+    return likes.some((like) => like.userId === post.user.id);
+  }, [likes, post]);
+
   if (!isOpen || !post) {
     return null;
   }
-
-  const isLiked = useMemo(() => {
-    return likes.some((like) => like.userId === post.user.id);
-  }, [likes, post]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
@@ -96,7 +101,7 @@ export const PostModal: FC = () => {
               className={`text-${isLiked ? 'red' : 'gray'}-500 h-[1.5em] cursor-pointer hover:text-red-500`}
               onClick={() => {
                 addLike(post.id, () => {
-                  // TODO: Handle success
+                  fetchLikes(post.id);
                 });
               }}
             />
