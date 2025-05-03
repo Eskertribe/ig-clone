@@ -184,8 +184,6 @@ export class PostService {
       throw new BadRequestException('Post not found');
     }
 
-    console.log(likes);
-
     return likes.map((like) => like.toDto());
   }
 
@@ -207,5 +205,17 @@ export class PostService {
       post: { id: post.id },
       user: { id: user.id },
     });
+  }
+
+  async removeLike(postId: UUID, user: UserAuthDTO): Promise<void> {
+    const like = await this.likeRepository.findOne({
+      where: { post: { id: postId }, user: { id: user.id } },
+    });
+
+    if (!like) {
+      throw new BadRequestException('Like not found');
+    }
+
+    this.likeRepository.delete({ id: like.id });
   }
 }

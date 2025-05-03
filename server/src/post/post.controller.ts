@@ -10,6 +10,7 @@ import {
   BadRequestException,
   Param,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/post.dto';
@@ -66,6 +67,16 @@ export class PostController {
     return this.postService.getPosts(userId);
   }
 
+  @Get('getPost/:postId')
+  @UseGuards(AuthGuard('jwt'))
+  async getPost(@Param('postId') postId: UUID) {
+    if (!postId) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    return this.postService.getPost(postId);
+  }
+
   @Get('getLikes/:postId')
   @UseGuards(AuthGuard('jwt'))
   async getLikes(@Param('postId') postId: UUID) {
@@ -98,5 +109,17 @@ export class PostController {
     }
 
     return this.postService.addLike(postId, req.user);
+  }
+
+  @Delete('like')
+  @UseGuards(AuthGuard('jwt'))
+  async removeLike(@Body() body: { postId: UUID }, @Req() req) {
+    const { postId } = body;
+
+    if (!postId) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    return this.postService.removeLike(postId, req.user);
   }
 }
