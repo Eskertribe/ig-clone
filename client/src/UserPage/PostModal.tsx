@@ -3,16 +3,16 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC, useContext, useMemo, useRef } from 'react';
 import { useAddComment } from '../hooks/useAddComment';
-import { useAddLike } from '../hooks/useAddLike';
+import { useLike } from '../hooks/useLike';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { calculateTimeSince } from '../utils/timeDifference';
 import { Comment } from './Comment';
 
 export const PostModal: FC = () => {
-  const { isOpen, post, likes, setModalOpen, fetchPost, fetchLikes } =
+  const { isOpen, post, likes, setModalOpen, fetchLikes } =
     useContext(PostModalContext);
   const { addComment, loading } = useAddComment();
-  const { addLike } = useAddLike();
+  const { addLike, removeLike, loading: likeActionLoading } = useLike();
   const commentRef = useRef<HTMLInputElement>(null);
   const replyRef = useRef<string>(undefined);
 
@@ -100,9 +100,17 @@ export const PostModal: FC = () => {
               icon={faHeart}
               className={`text-${isLiked ? 'red' : 'gray'}-500 h-[1.5em] cursor-pointer hover:text-red-500`}
               onClick={() => {
-                addLike(post.id, () => {
-                  fetchLikes(post.id);
-                });
+                if (likeActionLoading) {
+                  return;
+                }
+
+                isLiked
+                  ? removeLike(post.id, () => {
+                      fetchLikes(post.id);
+                    })
+                  : addLike(post.id, () => {
+                      fetchLikes(post.id);
+                    });
               }}
             />
             <FontAwesomeIcon
