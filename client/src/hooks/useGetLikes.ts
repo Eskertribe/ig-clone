@@ -35,6 +35,9 @@ const useGetLikes = () => {
           credentials: 'include',
           headers: {
             Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+            Expires: '0',
           },
         }
       );
