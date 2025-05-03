@@ -111,8 +111,8 @@ export class PostService {
     return newComment.toDto();
   }
 
-  async getPosts(userId: UUID): Promise<PostDto[]> {
-    const posts = await this.postRepository
+  async getPost(postId: UUID): Promise<PostDto> {
+    const post = await this.postRepository
       .createQueryBuilder('post')
       .select([
         'post',
@@ -138,14 +138,27 @@ export class PostService {
       .leftJoin('reply.user', 'replyUser')
       .leftJoin('replyUser.profilePicture', 'replyUserProfilePicture')
       .leftJoin('post.file', 'file')
-      .where('post.user.id = :userId', { userId })
+      .where('post.id = :postId', { postId })
       .andWhere('comment.deletedAt IS NULL')
       .andWhere('reply.deletedAt IS NULL')
       .andWhere('post.deletedAt IS NULL')
       .orderBy('post.createdAt', 'DESC')
       .addOrderBy('comment.createdAt', 'ASC')
       .addOrderBy('reply.createdAt', 'ASC')
-      .getMany();
+      .getOne();
+
+    if (!post) {
+      throw new BadRequestException('Post not found');
+    }
+
+    return post.toDto();
+  }
+
+  async getPosts(userId: UUID): Promise<PostDto[]> {
+    const posts = await this.postRepository.find({
+      where: { user: { id: userId } },
+      relations: ['file'],
+    });
 
     if (!posts) {
       throw new BadRequestException('No posts found');
