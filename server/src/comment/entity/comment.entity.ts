@@ -1,4 +1,7 @@
 import { UUID } from 'crypto';
+import { Like } from 'src/like/entity/like.entity';
+import { Post } from 'src/post/entity/post.entity';
+import { User } from 'src/user/entity/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,8 +11,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Post } from 'src/post/entity/post.entity';
-import { User } from 'src/user/entity/user.entity';
 import { CommentDto } from '../dto/comment.dto';
 
 @Entity()
@@ -26,17 +27,17 @@ export class Comment {
   @ManyToOne(() => Post, (post) => post.comments)
   post: Post;
 
-  @ManyToOne(() => Comment, (comment) => comment.replies, { nullable: true })
+  @Column({ default: false })
+  isParent: boolean;
+
+  @ManyToOne(() => Comment, (comment) => comment.replies, { nullable: true, onDelete: 'CASCADE' })
   parentComment: Comment;
 
   @OneToMany(() => Comment, (comment) => comment.parentComment, { cascade: true })
   replies: Comment[];
 
-  @Column({ default: 0 })
-  repliesCount: number;
-
-  @Column({ default: 0 })
-  likesCount: number;
+  @OneToMany(() => Like, (like) => like.comment, { cascade: true })
+  likes: Like[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -50,7 +51,11 @@ export class Comment {
       text: this.text,
       user: await this.user.toCommentDto(),
       createdAt: this.createdAt,
-      replies: this.replies ? await Promise.all(this.replies.map((reply) => reply.toDto())) : [],
+      replies:
+        this.replies && this.isParent
+          ? await Promise.all(this.replies.map((reply) => reply.toDto()))
+          : undefined,
+      likes: this.likes ? await Promise.all(this.likes.map((like) => like.toDto(this.id))) : [],
     };
   }
 }

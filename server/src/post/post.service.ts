@@ -120,6 +120,8 @@ export class PostService {
         'commentUser.id',
         'commentUser.username',
         'commentUserProfilePicture',
+        'commentLikes',
+        'commentLikesUser',
         'reply',
         'replyUser.id',
         'replyUser.username',
@@ -129,17 +131,20 @@ export class PostService {
         'userProfilePicture',
         'file',
       ])
-      .leftJoin('post.comments', 'comment', 'comment.parentComment IS NULL')
+      .leftJoin('post.comments', 'comment')
       .leftJoin('post.user', 'user')
       .leftJoin('user.profilePicture', 'userProfilePicture')
       .leftJoin('comment.user', 'commentUser')
       .leftJoin('commentUser.profilePicture', 'commentUserProfilePicture')
       .leftJoin('comment.replies', 'reply')
+      .leftJoin('comment.likes', 'commentLikes')
+      .leftJoin('commentLikes.user', 'commentLikesUser')
       .leftJoin('reply.user', 'replyUser')
       .leftJoin('replyUser.profilePicture', 'replyUserProfilePicture')
       .leftJoin('post.file', 'file')
       .where('post.id = :postId', { postId })
       .andWhere('comment.deletedAt IS NULL')
+      .andWhere('comment.isParent = true')
       .andWhere('reply.deletedAt IS NULL')
       .andWhere('post.deletedAt IS NULL')
       .orderBy('post.createdAt', 'DESC')

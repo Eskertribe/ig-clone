@@ -6,5 +6,6 @@ export class CommentDto {
   text: string;
   user: UserCommentDto;
   createdAt: Date;
-  replies: CommentDto[];
+  replies?: CommentDto[];
+  likes: { userId: UUID }[];
 }
