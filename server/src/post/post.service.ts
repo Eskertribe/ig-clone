@@ -6,7 +6,7 @@ import { Comment } from 'src/comment/entity/comment.entity';
 import { Like } from 'src/like/entity/like.entity';
 import { LikeDto } from 'src/like/like.dto';
 import { UserAuthDTO } from 'src/user/dto/user.dto';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { PostDto } from './dto/post.dto';
 import { Post } from './entity/post.entity';
 import { CreatePostRequest } from './post.types';
@@ -36,7 +36,7 @@ export class PostService {
 
   async addComment(
     postId: UUID,
-    comment: string,
+    text: string,
     user: UserAuthDTO,
     replytoId?: UUID,
   ): Promise<CommentDto> {
@@ -53,25 +53,21 @@ export class PostService {
     }
 
     if (replytoId) {
-      const parentComment = await this.commentRepository.findOne({
-        where: { id: replytoId },
-        relations: ['post', 'replies'],
+      const comment = await this.commentRepository.findOne({
+        where: { id: replytoId, post: { id: postId }, deletedAt: IsNull() },
+        relations: ['parentComment'],
       });
 
-      if (!parentComment || parentComment.parentComment) {
-        throw new BadRequestException('Cannot reply to this comment');
+      if (!comment) {
+        throw new BadRequestException('Comment not found');
       }
 
-      if (parentComment.post.id !== postId) {
-        throw new BadRequestException('Invalid post');
-      }
-
+      const replyTo = !comment.isParent ? comment.parentComment.id : undefined;
       const saved = await this.commentRepository.save({
-        ...parentComment,
-        replies: [
-          ...parentComment.replies,
-          { text: comment, user: { id: user.id }, post: { id: parentComment.post.id } },
-        ],
+        text,
+        user: { id: user.id },
+        post: { id: post.id },
+        parentComment: replyTo ? { id: replyTo } : undefined,
       });
 
       const newComment = await this.commentRepository.findOne({
@@ -94,9 +90,10 @@ export class PostService {
     }
 
     const { identifiers } = await this.commentRepository.insert({
-      text: comment,
+      text: text,
       user: { id: user.id },
       post: { id: post.id },
+      isParent: true,
     });
 
     const newComment = await this.commentRepository.findOne({
