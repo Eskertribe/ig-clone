@@ -6,8 +6,9 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { User } from '../../user/entity/user.entity';
-import { Post } from '../../post/entity/post.entity';
+import { User } from 'src/user/entity/user.entity';
+import { Post } from 'src/post/entity/post.entity';
+import { Comment } from 'src/comment/entity/comment.entity';
 
 @Entity()
 export class Like {
@@ -18,7 +19,10 @@ export class Like {
   user: User;
 
   @ManyToOne(() => Post, (post) => post.likes)
-  post: Post;
+  post?: Post;
+
+  @ManyToOne(() => Comment, (comment) => comment.likes)
+  comment?: Comment;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -26,9 +30,10 @@ export class Like {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  toDto() {
+  toDto(commentId?: string) {
     return {
       userId: this.user.id,
+      commentId: commentId,
     };
   }
 }

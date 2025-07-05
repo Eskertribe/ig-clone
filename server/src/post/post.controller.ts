@@ -111,6 +111,18 @@ export class PostController {
     return this.postService.addLike(postId, req.user);
   }
 
+  @Patch('likeComment')
+  @UseGuards(AuthGuard('jwt'))
+  async addLikeToComment(@Body() body: { postId: UUID; commentId: UUID }, @Req() req) {
+    const { postId, commentId } = body;
+
+    if (!postId || !commentId) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    return this.postService.addLikeToComment(postId, commentId, req.user);
+  }
+
   @Delete('like')
   @UseGuards(AuthGuard('jwt'))
   async removeLike(@Body() body: { postId: UUID }, @Req() req) {

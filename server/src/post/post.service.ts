@@ -126,6 +126,8 @@ export class PostService {
         'replyUser.id',
         'replyUser.username',
         'replyUserProfilePicture',
+        'replyLikes',
+        'replyLikesUser',
         'user.id',
         'user.username',
         'userProfilePicture',
@@ -141,6 +143,8 @@ export class PostService {
       .leftJoin('commentLikes.user', 'commentLikesUser')
       .leftJoin('reply.user', 'replyUser')
       .leftJoin('replyUser.profilePicture', 'replyUserProfilePicture')
+      .leftJoin('reply.likes', 'replyLikes')
+      .leftJoin('replyLikes.user', 'replyLikesUser')
       .leftJoin('post.file', 'file')
       .where('post.id = :postId', { postId })
       .andWhere('comment.deletedAt IS NULL')
@@ -195,7 +199,6 @@ export class PostService {
   async addLike(postId: UUID, user: UserAuthDTO): Promise<void> {
     const post = await this.postRepository.findOne({
       where: { id: postId },
-      relations: ['user', 'file'],
     });
 
     if (!post) {
@@ -208,6 +211,40 @@ export class PostService {
 
     await this.likeRepository.insert({
       post: { id: post.id },
+      user: { id: user.id },
+    });
+  }
+
+  async addLikeToComment(postId: UUID, commentId: UUID, user: UserAuthDTO) {
+    const post = await this.postRepository.findOne({
+      where: { id: postId },
+      relations: ['comments'],
+    });
+
+    if (!post) {
+      throw new BadRequestException('Post not found');
+    }
+
+    if (post.disableLikes) {
+      throw new BadRequestException('Likes are disabled for this post');
+    }
+
+    const comment = post.comments.find((c) => c.id === commentId);
+
+    if (!comment) {
+      throw new BadRequestException('Comment not found');
+    }
+
+    const existingLike = await this.likeRepository.findOne({
+      where: { comment: { id: comment.id }, user: { id: user.id } },
+    });
+
+    if (existingLike) {
+      throw new BadRequestException('Cannot like the same comment multiple times');
+    }
+
+    await this.likeRepository.insert({
+      comment: { id: comment.id },
       user: { id: user.id },
     });
   }

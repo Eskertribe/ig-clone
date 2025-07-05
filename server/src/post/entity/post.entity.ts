@@ -53,8 +53,7 @@ export class Post {
   @JoinColumn()
   user: User;
 
-  @OneToMany(() => Like, (like) => like.post, { cascade: true, eager: true })
-  // @JoinColumn()
+  @OneToMany(() => Like, (like) => like.post, { cascade: true })
   likes: Like[];
 
   @OneToMany(() => Comment, (comment) => comment.post, { cascade: true })
@@ -74,10 +73,12 @@ export class Post {
         id: this.file.id,
         image: await imageToStringBuffer(this.file.name, this.file.mimeType),
       },
-      user: await this.user.toCommentDto(),
-      comments: await Promise.all(this.comments.map((comment) => comment.toDto())),
+      user: this.user ? await this.user?.toCommentDto() : undefined,
+      comments: this.comments
+        ? await Promise.all(this.comments.map((comment) => comment.toDto()))
+        : [],
       createdAt: this.createdAt,
-      likes: this.likes?.map((like) => ({ userId: like.user.id })) ?? [],
+      likes: this.likes ? this.likes.map((like) => ({ userId: like.user.id })) : [],
     };
   }
 }

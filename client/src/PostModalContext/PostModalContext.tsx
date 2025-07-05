@@ -4,7 +4,7 @@ import { useGetPost } from '../hooks/useGetPost';
 
 type PostModalContextType = {
   post?: Post;
-  likes: {
+  postLikes: {
     userId: string;
   }[];
   isOpen: boolean;
@@ -16,14 +16,14 @@ type PostModalContextType = {
 export const PostModalContext = createContext<PostModalContextType>({
   post: undefined,
   isOpen: false,
-  likes: [],
+  postLikes: [],
   setModalOpen: () => {},
   fetchPost: () => {},
   fetchLikes: () => {},
 });
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
-  const { likes, fetchLikes } = useGetLikes();
+  const { postLikes, fetchLikes } = useGetLikes();
   const { post, fetchPost } = useGetPost();
   const [isOpen, toggleOpen] = useState(false);
 
@@ -43,7 +43,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
       value={{
         post,
         isOpen,
-        likes,
+        postLikes,
         setModalOpen,
         fetchPost,
         fetchLikes,

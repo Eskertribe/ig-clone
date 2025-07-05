@@ -6,7 +6,7 @@ const useGetLikes = () => {
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef(false);
   const { token } = useContext(AuthContext);
-  const [likes, setLikes] = useState<{ userId: string }[]>([]);
+  const [postLikes, setLikes] = useState<{ userId: string }[]>([]);
 
   const setLoadingState = (loading: boolean) => {
     loadingRef.current = loading;
@@ -52,13 +52,13 @@ const useGetLikes = () => {
 
       setLoadingState(false);
       setLikes(data);
-    } catch (error) {
+    } catch {
       setLoadingState(false);
       toast.error('Error fetching likes');
     }
   };
 
-  return { fetchLikes, likes, loading };
+  return { fetchLikes, postLikes, loading };
 };
 
 export { useGetLikes };

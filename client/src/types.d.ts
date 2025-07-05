@@ -17,7 +17,7 @@ type PostComment = {
   text: string;
   createdAt: string;
   replies: PostComment[];
-  likes: string[];
+  likes: { userId: string; commentId?: string }[];
   repliesCount: number;
   likesCount: number;
   parentComment?: PostComment;

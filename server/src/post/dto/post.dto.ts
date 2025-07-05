@@ -18,11 +18,11 @@ export class UpdatePostDto {
 export class PostDto {
   readonly id: string;
   readonly description: string;
-  readonly disableComments: boolean;
-  readonly disableLikes: boolean;
-  readonly user: UserCommentDto;
+  readonly disableComments?: boolean;
+  readonly disableLikes?: boolean;
+  readonly user?: UserCommentDto;
   readonly file: { id: UUID; image: string };
   readonly createdAt: Date;
   readonly comments: CommentDto[];
-  readonly likes: { userId: UUID }[];
+  readonly likes?: { userId: UUID }[];
 }

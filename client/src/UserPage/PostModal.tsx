@@ -9,7 +9,7 @@ import { calculateTimeSince } from '../utils/timeDifference';
 import { Comment } from './Comment';
 
 export const PostModal: FC = () => {
-  const { isOpen, post, likes, setModalOpen, fetchLikes } =
+  const { isOpen, post, postLikes, setModalOpen, fetchLikes } =
     useContext(PostModalContext);
   const { addComment, loading } = useAddComment();
   const { addLike, removeLike, loading: likeActionLoading } = useLike();
@@ -26,8 +26,8 @@ export const PostModal: FC = () => {
       return false;
     }
 
-    return likes.some((like) => like.userId === post.user.id);
-  }, [likes, post]);
+    return postLikes.some((like) => like.userId === post.user.id);
+  }, [postLikes, post]);
 
   if (!isOpen || !post) {
     return null;
@@ -90,6 +90,7 @@ export const PostModal: FC = () => {
                     }}
                     key={comment.id}
                     comment={comment}
+                    postId={post.id}
                   />
                 ))}
               </div>
@@ -104,13 +105,15 @@ export const PostModal: FC = () => {
                   return;
                 }
 
-                isLiked
-                  ? removeLike(post.id, () => {
-                      fetchLikes(post.id);
-                    })
-                  : addLike(post.id, () => {
-                      fetchLikes(post.id);
-                    });
+                if (isLiked) {
+                  removeLike(post.id, () => {
+                    fetchLikes(post.id);
+                  });
+                } else {
+                  addLike(post.id, undefined, () => {
+                    fetchLikes(post.id);
+                  });
+                }
               }}
             />
             <FontAwesomeIcon
