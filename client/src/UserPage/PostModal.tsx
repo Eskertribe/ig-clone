@@ -2,6 +2,7 @@ import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC, useContext, useMemo, useRef } from 'react';
+import { toast } from 'react-toastify';
 import { useAddComment } from '../hooks/useAddComment';
 import { useLike } from '../hooks/useLike';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
@@ -17,21 +18,28 @@ export const PostModal: FC = () => {
   const replyRef = useRef<string>(undefined);
 
   const handleAddCommentSuccess = (newComment: PostComment) => {
-    if (replyRef.current) {
-      const parentComment = post?.comments.find(
-        (comment) =>
-          comment.id === replyRef.current || comment.id === newComment?.parentId
+    if (!post) return;
+
+    if (!newComment?.parentId) {
+      post.comments = [...post.comments, newComment];
+    } else {
+      const parentComment = post.comments.find(
+        (comment) => comment.id === newComment.parentId
       );
 
-      if (parentComment) {
-        parentComment.replies.push(newComment);
+      if (!parentComment) {
+        toast.error('Unkown comment');
+        return;
       }
-    } else {
-      post?.comments.push(newComment);
+
+      parentComment.replies = [...(parentComment.replies || []), newComment];
     }
 
     replyRef.current = undefined;
-    commentRef.current!.value = '';
+
+    if (commentRef.current) {
+      commentRef.current.value = '';
+    }
   };
 
   const isLiked = useMemo(() => {
