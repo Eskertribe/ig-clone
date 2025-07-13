@@ -55,7 +55,7 @@ export class PostService {
     if (replytoId) {
       const comment = await this.commentRepository.findOne({
         where: { id: replytoId, post: { id: postId }, deletedAt: IsNull() },
-        relations: ['parentComment'],
+        relations: { parentComment: true },
       });
 
       if (!comment) {
@@ -72,7 +72,7 @@ export class PostService {
 
       const newComment = await this.commentRepository.findOne({
         where: { id: saved.id as UUID },
-        relations: ['user'],
+        relations: { user: true, parentComment: true },
         select: {
           user: {
             id: true,

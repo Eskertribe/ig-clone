@@ -8,4 +8,5 @@ export class CommentDto {
   createdAt: Date;
   replies?: CommentDto[];
   likes: { userId: UUID }[];
+  parentId?: UUID;
 }

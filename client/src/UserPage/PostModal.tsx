@@ -18,11 +18,13 @@ export const PostModal: FC = () => {
 
   const handleAddCommentSuccess = (newComment: PostComment) => {
     if (replyRef.current) {
-      const postComment = post?.comments.find(
-        (comment) => comment.id === replyRef.current
+      const parentComment = post?.comments.find(
+        (comment) =>
+          comment.id === replyRef.current || comment.id === newComment?.parentId
       );
-      if (postComment) {
-        postComment.replies.push(newComment);
+
+      if (parentComment) {
+        parentComment.replies.push(newComment);
       }
     } else {
       post?.comments.push(newComment);

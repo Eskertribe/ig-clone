@@ -12,15 +12,12 @@ type User = {
 
 type PostComment = {
   id: string;
-  description: string;
-  user: CommentUser;
   text: string;
+  user: CommentUser;
   createdAt: string;
   replies: PostComment[];
   likes: { userId: string; commentId?: string }[];
-  repliesCount: number;
-  likesCount: number;
-  parentComment?: PostComment;
+  parentId: string;
 };
 
 type Post = {
