@@ -247,9 +247,17 @@ export class PostService {
     });
   }
 
-  async removeLike(postId: UUID, user: UserAuthDTO): Promise<void> {
+  async removeLike({
+    postId,
+    commentId,
+    user,
+  }: {
+    postId: UUID;
+    commentId?: UUID;
+    user: UserAuthDTO;
+  }): Promise<void> {
     const like = await this.likeRepository.findOne({
-      where: { post: { id: postId }, user: { id: user.id } },
+      where: { post: { id: postId }, comment: { id: commentId }, user: { id: user.id } },
     });
 
     if (!like) {

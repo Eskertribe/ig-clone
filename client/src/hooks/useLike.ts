@@ -14,7 +14,7 @@ const useLike = () => {
 
   const sendLike = async (postId: string, commentId?: string) => {
     const url = commentId
-      ? 'http://localhost:3000/post/likeComment'
+      ? 'http://localhost:3000/post/likeComment' //TODO: url from .env
       : 'http://localhost:3000/post/like';
 
     return fetch(url, {
@@ -28,10 +28,22 @@ const useLike = () => {
     });
   };
 
+  const sendLikeRemove = async (postId: string, commentId?: string) => {
+    return fetch('http://localhost:3000/post/like', {
+      method: 'DELETE',
+      credentials: 'include',
+      body: JSON.stringify({ postId, commentId }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+
   const addLike = async (
     postId: string,
     commentId?: string,
-    callBack?: () => void // TODO: Define a proper type for newComment
+    callBack?: () => void
   ) => {
     try {
       if (loadingRef.current) {
@@ -61,7 +73,8 @@ const useLike = () => {
 
   const removeLike = async (
     postId: string,
-    callBack?: () => void // TODO: Define a proper type for newComment
+    commentId?: string,
+    callBack?: () => void
   ) => {
     try {
       if (loadingRef.current) {
@@ -70,15 +83,7 @@ const useLike = () => {
 
       setLoadingState(true);
 
-      const response = await fetch('http://localhost:3000/post/like', {
-        method: 'DELETE',
-        credentials: 'include',
-        body: JSON.stringify({ postId }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await sendLikeRemove(postId, commentId);
 
       if (!response.ok) {
         setLoadingState(false);

@@ -132,6 +132,6 @@ export class PostController {
       throw new BadRequestException('Invalid request');
     }
 
-    return this.postService.removeLike(postId, req.user);
+    return this.postService.removeLike({ postId, user: req.user });
   }
 }

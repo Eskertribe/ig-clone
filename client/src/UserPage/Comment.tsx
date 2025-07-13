@@ -15,8 +15,8 @@ type CommentProps = {
 
 export const Comment: FC<CommentProps> = ({ postId, comment, reply }) => {
   const { user, text, createdAt: timeStamp, replies, likes } = comment;
-  const [showReplies, setShowReplies] = useState(replies.length === 1);
-  const { addLike, loading: likeActionLoading } = useLike();
+  const [showReplies, setShowReplies] = useState(replies?.length === 1);
+  const { addLike, loading: likeActionLoading, removeLike } = useLike();
   const { fetchLikes } = useGetLikes();
 
   const isLiked = useMemo(() => {
@@ -46,17 +46,15 @@ export const Comment: FC<CommentProps> = ({ postId, comment, reply }) => {
                     return;
                   }
 
-                  addLike(postId, comment.id, () => {
-                    fetchLikes(postId);
-                  });
-
-                  // isLiked
-                  //   ? removeLike(post.id, () => {
-                  //       fetchLikes(post.id);
-                  //     })
-                  //   : addLike(post.id, () => {
-                  //       fetchLikes(post.id);
-                  //     });
+                  if (isLiked) {
+                    removeLike(postId, comment.id, () => {
+                      fetchLikes(postId);
+                    });
+                  } else {
+                    addLike(postId, comment.id, () => {
+                      fetchLikes(postId);
+                    });
+                  }
                 }}
               />
             </p>
