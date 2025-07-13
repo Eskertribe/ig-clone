@@ -62,7 +62,7 @@ export class PostService {
         throw new BadRequestException('Comment not found');
       }
 
-      const replyTo = !comment.isParent ? comment.parentComment.id : undefined;
+      const replyTo = !comment.isParent ? comment.parentComment.id : comment.id;
       const saved = await this.commentRepository.save({
         text,
         user: { id: user.id },

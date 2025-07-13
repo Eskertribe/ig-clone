@@ -54,7 +54,7 @@ export class Comment {
       replies:
         this.replies && this.isParent
           ? await Promise.all(this.replies.map((reply) => reply.toDto()))
-          : undefined,
+          : [],
       likes: this.likes ? await Promise.all(this.likes.map((like) => like.toDto(this.id))) : [],
     };
   }
