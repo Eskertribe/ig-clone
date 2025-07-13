@@ -7,7 +7,7 @@ import { calculateTimeSince } from '../utils/timeDifference';
 import { Reply } from './Reply';
 
 type CommentProps = {
-  reply: () => void;
+  reply: (id: string) => void;
   comment: PostComment;
   isReply?: boolean;
   postId: string;
@@ -67,17 +67,16 @@ export const Comment: FC<CommentProps> = ({ postId, comment, reply }) => {
             </p>
             {
               <button
-                onClick={() => reply()}
+                onClick={() => reply(comment.id)}
                 className="text-white-500 text-xs"
               >
                 Reply
               </button>
             }
-            {replies.length > 0 && (
+            {replies?.length > 0 && (
               <button
                 className="text-white-500 text-xs"
                 onClick={() => {
-                  console.log(replies.length === 1);
                   setShowReplies(replies.length === 1 ? true : !showReplies);
                 }}
               >
@@ -87,7 +86,7 @@ export const Comment: FC<CommentProps> = ({ postId, comment, reply }) => {
           </div>
         </div>
       </div>
-      {replies.length > 0 && (
+      {replies?.length > 0 && (
         <div className="ml-8">
           {showReplies && (
             <div>
@@ -95,7 +94,7 @@ export const Comment: FC<CommentProps> = ({ postId, comment, reply }) => {
                 <Reply
                   key={replyComment.id}
                   comment={replyComment}
-                  reply={() => reply()}
+                  reply={() => reply(replyComment.id)}
                   likeActionLoading={likeActionLoading}
                   addLike={() =>
                     addLike(postId, replyComment.id, () => {

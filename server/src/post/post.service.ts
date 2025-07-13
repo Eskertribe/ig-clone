@@ -113,6 +113,10 @@ export class PostService {
       .createQueryBuilder('post')
       .select([
         'post',
+        'user.id',
+        'user.username',
+        'userProfilePicture',
+        'file',
         'comment',
         'commentUser.id',
         'commentUser.username',
@@ -125,28 +129,25 @@ export class PostService {
         'replyUserProfilePicture',
         'replyLikes',
         'replyLikesUser',
-        'user.id',
-        'user.username',
-        'userProfilePicture',
-        'file',
       ])
-      .leftJoin('post.comments', 'comment')
       .leftJoin('post.user', 'user')
       .leftJoin('user.profilePicture', 'userProfilePicture')
+      .leftJoin('post.file', 'file')
+      .leftJoinAndSelect(
+        'post.comments',
+        'comment',
+        'comment.deletedAt IS NULL AND comment.isParent = true',
+      )
       .leftJoin('comment.user', 'commentUser')
       .leftJoin('commentUser.profilePicture', 'commentUserProfilePicture')
-      .leftJoin('comment.replies', 'reply')
       .leftJoin('comment.likes', 'commentLikes')
       .leftJoin('commentLikes.user', 'commentLikesUser')
+      .leftJoinAndSelect('comment.replies', 'reply', 'reply.deletedAt IS NULL')
       .leftJoin('reply.user', 'replyUser')
       .leftJoin('replyUser.profilePicture', 'replyUserProfilePicture')
       .leftJoin('reply.likes', 'replyLikes')
       .leftJoin('replyLikes.user', 'replyLikesUser')
-      .leftJoin('post.file', 'file')
       .where('post.id = :postId', { postId })
-      .andWhere('comment.deletedAt IS NULL')
-      .andWhere('comment.isParent = true')
-      .andWhere('reply.deletedAt IS NULL')
       .andWhere('post.deletedAt IS NULL')
       .orderBy('post.createdAt', 'DESC')
       .addOrderBy('comment.createdAt', 'ASC')

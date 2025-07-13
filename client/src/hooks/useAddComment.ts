@@ -16,7 +16,7 @@ const useAddComment = () => {
     postId: string,
     comment: string,
     replytoId?: string,
-    callBack?: (newComment: any) => void // TODO: Define a proper type for newComment
+    callBack?: (newComment: PostComment) => void
   ) => {
     try {
       if (loadingRef.current) {
@@ -47,7 +47,7 @@ const useAddComment = () => {
       }
 
       setLoadingState(false);
-    } catch (error) {
+    } catch {
       setLoadingState(false);
       toast.error('Error adding comment');
     }

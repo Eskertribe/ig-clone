@@ -17,8 +17,19 @@ export const PostModal: FC = () => {
   const replyRef = useRef<string>(undefined);
 
   const handleSuccess = (newComment: PostComment) => {
+    if (replyRef.current) {
+      const postComment = post?.comments.find(
+        (comment) => comment.id === replyRef.current
+      );
+      if (postComment) {
+        postComment.replies.push(newComment);
+      }
+    } else {
+      post?.comments.push(newComment);
+    }
+
+    replyRef.current = undefined;
     commentRef.current!.value = '';
-    post?.comments.push(newComment);
   };
 
   const isLiked = useMemo(() => {
@@ -80,10 +91,8 @@ export const PostModal: FC = () => {
               <div>
                 {post.comments.map((comment) => (
                   <Comment
-                    reply={() => {
-                      replyRef.current = comment?.parentComment
-                        ? comment.parentComment.id
-                        : comment.id;
+                    reply={(id) => {
+                      replyRef.current = id;
                       commentRef.current?.focus();
                       commentRef.current!.value =
                         '@' + comment.user.username + ' ';
