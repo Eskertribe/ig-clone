@@ -9,6 +9,7 @@ import { PostModule } from './post/post.module';
 import { PostService } from './post/post.service';
 import { UserModule } from './user/user.module';
 import { loadEntities } from './utils/loadEntities';
+import { FollowModule } from './follow/follow.module';
 
 const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entities
 // TODO: dynamically load all controllers and services
@@ -34,6 +35,7 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
     PostModule,
     FileModule,
     UserModule,
+    FollowModule,
   ],
   controllers: [],
   providers: [PostService],
