@@ -16,7 +16,7 @@ export const PostModal: FC = () => {
   const commentRef = useRef<HTMLInputElement>(null);
   const replyRef = useRef<string>(undefined);
 
-  const handleSuccess = (newComment: PostComment) => {
+  const handleAddCommentSuccess = (newComment: PostComment) => {
     if (replyRef.current) {
       const postComment = post?.comments.find(
         (comment) => comment.id === replyRef.current
@@ -115,7 +115,7 @@ export const PostModal: FC = () => {
                 }
 
                 if (isLiked) {
-                  removeLike(post.id, () => {
+                  removeLike(post.id, undefined, () => {
                     fetchLikes(post.id);
                   });
                 } else {
@@ -151,7 +151,7 @@ export const PostModal: FC = () => {
                   post.id,
                   commentRef.current.value,
                   replyRef.current,
-                  handleSuccess
+                  handleAddCommentSuccess
                 );
               }}
             >
