@@ -7,11 +7,11 @@ interface SideNavProps {
 }
 
 const SideNav: React.FC<SideNavProps> = ({ toggleShowAddContent }) => {
-  const { clearToken } = useContext(AuthContext);
+  const { user, clearToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const navigateToUser = () => {
-    navigate('/user');
+    navigate(`/user/${user}`);
   };
 
   const navigateToHome = () => {
@@ -20,7 +20,7 @@ const SideNav: React.FC<SideNavProps> = ({ toggleShowAddContent }) => {
 
   const logout = () => {
     clearToken();
-  }
+  };
 
   return (
     <div className="w-1/6 border-r border-gray-300 flex flex-col items-start space-y-2 p-2">
