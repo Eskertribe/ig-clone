@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import Post from '../Post/Post';
-import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { useGetUserProfile } from '../hooks/useGetUserProfile';
 import { PostModal } from './PostModal';
 import { useGetPosts } from '../hooks/useGetPosts';
+import { PostModalContext } from '../PostModalContext/PostModalContext';
 
 const UserPage: React.FC = () => {
   const { userData, loading, fetchUserProfileData } = useGetUserProfile();

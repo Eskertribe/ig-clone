@@ -7,7 +7,7 @@ import { SideNav } from './SideNav/SideNav';
 import { AddContent } from './AddContent/AddContent';
 import { AuthRouter } from './AuthRouter/AuthRouter';
 import { ToastContainer } from 'react-toastify';
-import { PostModalProvider } from './PostModalContext/PostModalContext';
+import { PostModalProvider } from './PostModalContext/PostModalContextProvider';
 
 function App() {
   const [showAddContent, toggleShowAddContent] = useState(false);
