@@ -11,7 +11,7 @@ const AuthRouter: FC<{ children: ReactElement }> = ({ children }) => {
       const decoded: { exp: number } = jwtDecode(token);
       const currentTime = Math.floor(Date.now() / 1000);
       return decoded.exp < currentTime;
-    } catch (error) {
+    } catch {
       return true;
     }
   };
