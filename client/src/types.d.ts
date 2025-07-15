@@ -6,8 +6,8 @@ type User = {
   email: string;
   posts: Post[];
   profilePicture: UserProfilePicture;
-  following: User[];
-  followers: User[];
+  following: number;
+  followers: number;
 };
 
 type PostComment = {

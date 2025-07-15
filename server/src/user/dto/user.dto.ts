@@ -1,8 +1,6 @@
 import { Expose } from 'class-transformer';
 import { IsString, IsUUID } from 'class-validator';
 import { UUID } from 'crypto';
-import { File } from 'src/file/entity/file.entity';
-import { PostDto } from 'src/post/dto/post.dto';
 
 export class CreateUserDto {
   username: string;
@@ -48,16 +46,17 @@ export class UserProfileDataDto {
   profilePicture: { id: UUID; image?: string };
 
   @Expose()
-  followers: UserFollowerDto[];
+  followers: number;
 
   @Expose()
-  following: UserFollowerDto[];
+  following: number;
 }
 
 export class UserFollowerDto {
+  id: string;
   username: string;
   name: string;
-  profilePicture: File;
+  profilePicture: { id: UUID; image?: string };
 }
 
 export class UserCommentDto {

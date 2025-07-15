@@ -15,6 +15,7 @@ export class UserService {
   async getUserProfileDataById(userId: UUID): Promise<UserProfileDataDto> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
+      relations: { followers: true, following: true },
     });
 
     if (!user) {

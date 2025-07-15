@@ -1,7 +1,6 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UUID } from 'crypto';
-import { Returns } from '../middleware/ApiResponse';
 import { UserService } from './user.service';
 import { UserProfileDataDto } from './dto/user.dto';
 

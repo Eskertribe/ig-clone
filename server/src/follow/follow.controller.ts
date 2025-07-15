@@ -1,10 +1,25 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { FollowService } from './follow.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UUID } from 'crypto';
-import { Returns } from '../middleware/ApiResponse';
-import { FollowService } from './follow.service';
 
 @Controller('followers')
 export class FollowController {
-  constructor(private readonly followservice: FollowService) {}
+  constructor(private readonly followService: FollowService) {}
+
+  @Get('/followers/:userId')
+  @UseGuards(AuthGuard('jwt'))
+  async getFollowers(@Param('userId') userId: UUID, @Req() req) {
+    const user = userId || req.user.id;
+
+    return this.followService.getFollowers(user);
+  }
+
+  @Get('/following/:userId')
+  @UseGuards(AuthGuard('jwt'))
+  async getFollowing(@Param('userId') userId: UUID, @Req() req) {
+    const user = userId || req.user.id;
+
+    return this.followService.getFollowing(user);
+  }
 }

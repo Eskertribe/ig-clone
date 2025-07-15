@@ -16,7 +16,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserCommentDto, UserDto, UserProfileDataDto } from '../dto/user.dto';
+import { UserCommentDto, UserDto, UserFollowerDto, UserProfileDataDto } from '../dto/user.dto';
 
 @Entity()
 export class User {
@@ -91,14 +91,26 @@ export class User {
         id: this.profilePicture.id,
         image: await imageToStringBuffer(this.profilePicture.name, this.profilePicture.mimeType),
       },
-      following: this.following,
-      followers: this.followers,
+      following: this.following?.length ?? 0,
+      followers: this.followers?.length ?? 0,
     };
   }
 
   async toCommentDto(): Promise<UserCommentDto> {
     return {
       id: this.id,
+      username: this.username,
+      profilePicture: {
+        id: this.profilePicture.id,
+        image: await imageToStringBuffer(this.profilePicture.name, this.profilePicture.mimeType),
+      },
+    };
+  }
+
+  async toFollowerDto(): Promise<UserFollowerDto> {
+    return {
+      id: this.id,
+      name: this.name,
       username: this.username,
       profilePicture: {
         id: this.profilePicture.id,

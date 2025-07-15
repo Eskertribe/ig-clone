@@ -1,7 +1,7 @@
-import { useContext, useRef, useState } from "react";
-import { AuthContext } from "../AuthContext/AuthContext";
-import { toast } from "react-toastify";
-import { jwtDecode } from "jwt-decode";
+import { useContext, useRef, useState } from 'react';
+import { AuthContext } from '../AuthContext/AuthContext';
+import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 
 const useGetUserProfile = () => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ const useGetUserProfile = () => {
 
   const fetchUserProfileData = async () => {
     if (!token) {
-      toast.error("You must be logged in");
+      toast.error('You must be logged in');
       return;
     }
 
@@ -31,8 +31,8 @@ const useGetUserProfile = () => {
       const response = await fetch(
         `http://localhost:3000/users/profile/${userId}`,
         {
-          method: "GET",
-          credentials: "include",
+          method: 'GET',
+          credentials: 'include',
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -41,7 +41,7 @@ const useGetUserProfile = () => {
 
       if (!response.ok) {
         setLoadingState(false);
-        toast.error("Error fetching user profile");
+        toast.error('Error fetching user profile');
         return;
       }
 
@@ -51,10 +51,10 @@ const useGetUserProfile = () => {
       setUserData(userData);
 
       if (!userData) {
-        toast.error("Error fetching user profile");
+        toast.error('Error fetching user profile');
       }
-    } catch (error) {
-      toast.error("Error fetching user profile");
+    } catch {
+      toast.error('Error fetching user profile');
       setLoadingState(false);
     }
   };
