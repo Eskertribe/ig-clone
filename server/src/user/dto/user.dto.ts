@@ -31,6 +31,9 @@ export class UserDto {
 
 export class UserProfileDataDto {
   @Expose()
+  id: UUID;
+
+  @Expose()
   username: string;
 
   @Expose()

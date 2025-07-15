@@ -1,11 +1,13 @@
-import React, { useContext, useEffect } from 'react';
-import Post from '../Post/Post';
-import { useGetUserProfile } from '../hooks/useGetUserProfile';
-import { PostModal } from './PostModal';
+import React, { useContext, useEffect, useState } from 'react';
 import { useGetPosts } from '../hooks/useGetPosts';
+import { useGetUserProfile } from '../hooks/useGetUserProfile';
+import Post from '../Post/Post';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
+import { FollowerModal } from './FollowerModal';
+import { PostModal } from './PostModal';
 
 const UserPage: React.FC = () => {
+  const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const { userData, loading, fetchUserProfileData } = useGetUserProfile();
   const { posts, loading: postsLoading, fetchPosts } = useGetPosts();
   const { setModalOpen, isOpen } = useContext(PostModalContext);
@@ -50,9 +52,20 @@ const UserPage: React.FC = () => {
             <div>
               <h2 className="text-xl font-bold">@{userData.username}</h2>
               <div className="flex flex-row space-x-4">
-                <p className="text-gray-500">{posts?.length ?? 0} posts</p>
-                <p className="text-gray-500">{userData.followers} followers</p>
-                <p className="text-gray-500">{userData.following} following</p>
+                <p className="text-gray-500">
+                  <b>{posts?.length ?? 0}</b> posts
+                </p>
+                <p className="text-gray-500">
+                  <a
+                    onClick={() => setIsFollowingModalOpen(true)}
+                    className="cursor-pointer"
+                  >
+                    <b>{userData.followers}</b> followers
+                  </a>
+                </p>
+                <p className="text-gray-500">
+                  <b>{userData.following}</b> following
+                </p>
               </div>
               <div className="flex flex-col space-y-2 mt-4">
                 <p className="text-gray-700">{userData?.name}</p>
@@ -74,6 +87,12 @@ const UserPage: React.FC = () => {
         )}
       </div>
       {isOpen && <PostModal />}
+      {isFollowingModalOpen && (
+        <FollowerModal
+          userId={userData.id}
+          closeModal={() => setIsFollowingModalOpen(false)}
+        />
+      )}
     </>
   );
 };

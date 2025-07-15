@@ -10,6 +10,13 @@ type User = {
   followers: number;
 };
 
+type Following = {
+  id: string;
+  username: string;
+  name: string;
+  profilePicture: UserProfilePicture;
+};
+
 type PostComment = {
   id: string;
   text: string;

@@ -83,6 +83,7 @@ export class User {
 
   async toUserProfileDataDto(): Promise<UserProfileDataDto> {
     return {
+      id: this.id,
       username: this.username,
       name: this.name,
       bio: this.bio,
