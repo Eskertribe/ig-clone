@@ -31,7 +31,7 @@ function App() {
               <PostModalProvider>
                 <Routes>
                   <Route path="/" element={<FrontPage />} />
-                  <Route path="/user" element={<UserPage />} />
+                  <Route path="/user/:username" element={<UserPage />} />
                 </Routes>
               </PostModalProvider>
             </div>

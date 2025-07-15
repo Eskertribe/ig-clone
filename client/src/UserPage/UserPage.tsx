@@ -5,16 +5,20 @@ import Post from '../Post/Post';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { FollowerModal } from './FollowerModal';
 import { PostModal } from './PostModal';
+import { useParams } from 'react-router-dom';
 
 const UserPage: React.FC = () => {
+  const { username } = useParams<{ username: string }>();
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const { userData, loading, fetchUserProfileData } = useGetUserProfile();
   const { posts, loading: postsLoading, fetchPosts } = useGetPosts();
   const { setModalOpen, isOpen } = useContext(PostModalContext);
 
   useEffect(() => {
-    fetchUserProfileData();
-    fetchPosts();
+    if (username) {
+      fetchUserProfileData(username);
+      fetchPosts(username);
+    }
   }, []);
 
   if (loading) {

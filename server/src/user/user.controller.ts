@@ -11,8 +11,8 @@ export class UserController {
   @Get('/profile/:userId')
   @UseGuards(AuthGuard('jwt'))
   // @Returns(UserProfileDataDto)
-  async getFile(@Param('userId') userId: UUID) {
-    const user = await this.userService.getUserProfileDataById(userId);
+  async getFile(@Param('userId') username: string) {
+    const user = await this.userService.getUserProfileDataByUsername(username);
     return { user };
   }
 }

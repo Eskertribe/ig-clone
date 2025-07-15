@@ -12,9 +12,9 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async getUserProfileDataById(userId: UUID): Promise<UserProfileDataDto> {
+  async getUserProfileDataByUsername(username: string): Promise<UserProfileDataDto> {
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: { username },
       relations: { followers: true, following: true },
     });
 

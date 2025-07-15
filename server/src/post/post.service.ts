@@ -161,9 +161,9 @@ export class PostService {
     return post.toDto();
   }
 
-  async getPosts(userId: UUID): Promise<PostDto[]> {
+  async getPosts(username: string): Promise<PostDto[]> {
     const posts = await this.postRepository.find({
-      where: { user: { id: userId } },
+      where: { user: { username } },
       relations: ['file'],
     });
 

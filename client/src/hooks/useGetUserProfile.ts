@@ -1,7 +1,6 @@
 import { useContext, useRef, useState } from 'react';
-import { AuthContext } from '../AuthContext/AuthContext';
 import { toast } from 'react-toastify';
-import { jwtDecode } from 'jwt-decode';
+import { AuthContext } from '../AuthContext/AuthContext';
 
 const useGetUserProfile = () => {
   const [loading, setLoading] = useState(false);
@@ -14,13 +13,11 @@ const useGetUserProfile = () => {
     setLoading(loading);
   };
 
-  const fetchUserProfileData = async () => {
+  const fetchUserProfileData = async (username: string) => {
     if (!token) {
       toast.error('You must be logged in');
       return;
     }
-
-    const { userId } = (await jwtDecode(token)) as { userId: string };
 
     try {
       if (loadingRef.current) {
@@ -29,7 +26,7 @@ const useGetUserProfile = () => {
 
       setLoadingState(true);
       const response = await fetch(
-        `http://localhost:3000/users/profile/${userId}`,
+        `http://localhost:3000/users/profile/${username}`,
         {
           method: 'GET',
           credentials: 'include',

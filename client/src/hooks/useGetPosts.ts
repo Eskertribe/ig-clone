@@ -1,7 +1,6 @@
-import { useContext, useRef, useState } from "react";
-import { AuthContext } from "../AuthContext/AuthContext";
-import { toast } from "react-toastify";
-import { jwtDecode } from "jwt-decode";
+import { useContext, useRef, useState } from 'react';
+import { AuthContext } from '../AuthContext/AuthContext';
+import { toast } from 'react-toastify';
 
 const useGetPosts = () => {
   const [loading, setLoading] = useState(false);
@@ -14,15 +13,13 @@ const useGetPosts = () => {
     setLoading(loading);
   };
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (username: string) => {
     if (!token) {
-      toast.error("You must be logged in");
+      toast.error('You must be logged in');
       return;
     }
 
     try {
-      const { userId } = jwtDecode(token) as { userId: string };
-
       if (loadingRef.current) {
         return;
       }
@@ -30,10 +27,10 @@ const useGetPosts = () => {
       setLoadingState(true);
 
       const response = await fetch(
-        `http://localhost:3000/post/getPosts/${userId}`,
+        `http://localhost:3000/post/getPosts/${username}`,
         {
-          method: "GET",
-          credentials: "include",
+          method: 'GET',
+          credentials: 'include',
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -42,7 +39,7 @@ const useGetPosts = () => {
 
       if (!response.ok) {
         setLoadingState(false);
-        toast.error("Error fetching posts");
+        toast.error('Error fetching posts');
         return;
       }
 
@@ -50,9 +47,9 @@ const useGetPosts = () => {
 
       setLoadingState(false);
       setPosts(data);
-    } catch (error) {
+    } catch {
       setLoadingState(false);
-      toast.error("Error fetching posts");
+      toast.error('Error fetching posts');
     }
   };
 

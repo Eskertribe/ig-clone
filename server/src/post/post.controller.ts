@@ -57,14 +57,14 @@ export class PostController {
     return this.postService.createPost({ file, post, user: req.user });
   }
 
-  @Get('getPosts/:userId')
+  @Get('getPosts/:username')
   @UseGuards(AuthGuard('jwt'))
-  async getPosts(@Param('userId') userId: UUID) {
-    if (!userId) {
+  async getPosts(@Param('username') username: UUID) {
+    if (!username) {
       throw new BadRequestException('Invalid request');
     }
 
-    return this.postService.getPosts(userId);
+    return this.postService.getPosts(username);
   }
 
   @Get('getPost/:postId')
