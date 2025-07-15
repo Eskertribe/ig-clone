@@ -22,7 +22,7 @@ export const PostModalContext = createContext<PostModalContextType>({
   fetchLikes: () => {},
 });
 
-export const ModalProvider = ({ children }: { children: ReactNode }) => {
+export const PostModalProvider = ({ children }: { children: ReactNode }) => {
   const { postLikes, fetchLikes } = useGetLikes();
   const { post, fetchPost } = useGetPost();
   const [isOpen, toggleOpen] = useState(false);

@@ -7,7 +7,7 @@ import { SideNav } from './SideNav/SideNav';
 import { AddContent } from './AddContent/AddContent';
 import { AuthRouter } from './AuthRouter/AuthRouter';
 import { ToastContainer } from 'react-toastify';
-import { ModalProvider } from './PostModalContext/PostModalContext';
+import { PostModalProvider } from './PostModalContext/PostModalContext';
 
 function App() {
   const [showAddContent, toggleShowAddContent] = useState(false);
@@ -18,15 +18,22 @@ function App() {
       <Router>
         <AuthRouter>
           <>
-            {showAddContent && <AddContent isOpen={showAddContent} toggleModal={() => toggleShowAddContent(!showAddContent)} />}
-            <SideNav toggleShowAddContent={() => toggleShowAddContent(!showAddContent)} />
+            {showAddContent && (
+              <AddContent
+                isOpen={showAddContent}
+                toggleModal={() => toggleShowAddContent(!showAddContent)}
+              />
+            )}
+            <SideNav
+              toggleShowAddContent={() => toggleShowAddContent(!showAddContent)}
+            />
             <div className="w-4/6">
-              <ModalProvider>
+              <PostModalProvider>
                 <Routes>
                   <Route path="/" element={<FrontPage />} />
                   <Route path="/user" element={<UserPage />} />
                 </Routes>
-              </ModalProvider>
+              </PostModalProvider>
             </div>
             <div className="w-1/6 space-y-2 p-2"></div>
           </>
