@@ -8,10 +8,10 @@ import { UserProfileDataDto } from './dto/user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('/profile/:userId')
+  @Get('/profile/:username')
   @UseGuards(AuthGuard('jwt'))
   // @Returns(UserProfileDataDto)
-  async getFile(@Param('userId') username: string) {
+  async getFile(@Param('username') username: string) {
     const user = await this.userService.getUserProfileDataByUsername(username);
     return { user };
   }
