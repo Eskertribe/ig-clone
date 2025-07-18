@@ -1,5 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useGetFollowing } from '../hooks/useGetFollowing';
+import { useNavigate } from 'react-router-dom';
+import { User } from '../UserListComponent/User';
 
 export const FollowerModal: FC<{
   dataType: 'following' | 'followers';
@@ -8,6 +10,7 @@ export const FollowerModal: FC<{
 }> = ({ dataType, userId, closeModal }) => {
   const { followers, fetchFollowers, following, fetchFollowing } =
     useGetFollowing();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (dataType === 'following') {
@@ -34,40 +37,26 @@ export const FollowerModal: FC<{
           {followers.length > 0 &&
             dataType === 'followers' &&
             followers.map((follower) => (
-              <div
+              <User
                 key={follower.id}
-                className="flex items-center space-x-4 mb-2"
-              >
-                <img
-                  src={follower.profilePicture.image}
-                  className="object-cover rounded-full w-[3em] h-[3em]"
-                />
-                <div>
-                  <p className="text-white break-all font-bold">
-                    {follower.username}
-                  </p>
-                  <p className="text-gray-400 break-all">{follower.name}</p>
-                </div>
-              </div>
+                user={follower}
+                onClick={() => {
+                  close();
+                  navigate(`/user/${follower.username}`);
+                }}
+              />
             ))}
           {following.length > 0 &&
             dataType === 'following' &&
             following.map((following) => (
-              <div
+              <User
                 key={following.id}
-                className="flex items-center space-x-4 mb-2"
-              >
-                <img
-                  src={following.profilePicture.image}
-                  className="object-cover rounded-full w-[3em] h-[3em]"
-                />
-                <div>
-                  <p className="text-white break-all font-bold">
-                    {following.username}
-                  </p>
-                  <p className="text-gray-400 break-all">{following.name}</p>
-                </div>
-              </div>
+                user={following}
+                onClick={() => {
+                  close();
+                  navigate(`/user/${following.username}`);
+                }}
+              />
             ))}
         </div>
       </div>

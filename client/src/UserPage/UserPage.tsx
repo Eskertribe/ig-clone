@@ -88,7 +88,9 @@ const UserPage: React.FC = () => {
                 </p>
                 <p className="text-gray-500">
                   <a
-                    onClick={() => setIsFollowerModalOpen(true)}
+                    onClick={() =>
+                      userData.followers && setIsFollowerModalOpen(true)
+                    }
                     className="cursor-pointer"
                   >
                     <b>{userData.followers}</b> followers
@@ -96,7 +98,9 @@ const UserPage: React.FC = () => {
                 </p>
                 <p className="text-gray-500">
                   <a
-                    onClick={() => setIsFollowingModalOpen(true)}
+                    onClick={() =>
+                      userData.following && setIsFollowingModalOpen(true)
+                    }
                     className="cursor-pointer"
                   >
                     <b>{userData.following}</b> following
