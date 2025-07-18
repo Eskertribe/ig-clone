@@ -54,6 +54,25 @@ export const PostModal: FC = () => {
     return null;
   }
 
+  const parseText = (text: string) => {
+    const parts = text.split(/(#\w+)/g);
+
+    return parts.map((part, i) => {
+      if (/^#\w+$/.test(part)) {
+        return (
+          <a
+            key={i}
+            href={`/hashtag/${part.substring(1)}`}
+            className="text-blue-500 cursor-pointer"
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div className="bg-[rgb(59,57,57)] p-4 w-[75%] rounded-lg h-[90vh] flex flex-row">
@@ -88,7 +107,7 @@ export const PostModal: FC = () => {
                   />
                   <div className="flex flex-col">
                     <p className="text-white">
-                      <b>{post.user.username}</b> {post.description}
+                      <b>{post.user.username}</b> {parseText(post.description)}
                     </p>
                     <div className="flex items-center space-x-2">
                       <p className="text-xs text-white">
@@ -101,15 +120,17 @@ export const PostModal: FC = () => {
               <div>
                 {post.comments.map((comment) => (
                   <Comment
+                    key={comment.id}
+                    isOwnComment={post.user.id === comment.user.id}
+                    parseText={parseText}
                     reply={(id) => {
                       replyRef.current = id;
                       commentRef.current?.focus();
                       commentRef.current!.value =
                         '@' + comment.user.username + ' ';
                     }}
-                    key={comment.id}
                     comment={comment}
-                    postId={post.id}
+                    post={post}
                   />
                 ))}
               </div>

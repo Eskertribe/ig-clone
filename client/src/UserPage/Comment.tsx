@@ -10,10 +10,18 @@ type CommentProps = {
   reply: (id: string) => void;
   comment: PostComment;
   isReply?: boolean;
-  postId: string;
+  post: Post;
+  parseText: (text: string) => JSX.Element[];
+  isOwnComment: boolean;
 };
 
-export const Comment: FC<CommentProps> = ({ postId, comment, reply }) => {
+export const Comment: FC<CommentProps> = ({
+  post,
+  comment,
+  reply,
+  parseText,
+  isOwnComment,
+}) => {
   const { user, text, createdAt: timeStamp, replies, likes } = comment;
   const [showReplies, setShowReplies] = useState(replies?.length === 1);
   const { addLike, loading: likeActionLoading, removeLike } = useLike();
@@ -35,7 +43,7 @@ export const Comment: FC<CommentProps> = ({ postId, comment, reply }) => {
         <div className="flex flex-col w-full">
           <div className="flex items-center space-x-2 w-full">
             <p className="text-white w-5/6 break-all">
-              <b>{user.username}</b> {text}
+              <b>{user.username}</b> {isOwnComment ? parseText(text) : text}
             </p>
             <p className="w-1/6 text-center">
               <FontAwesomeIcon
@@ -47,12 +55,12 @@ export const Comment: FC<CommentProps> = ({ postId, comment, reply }) => {
                   }
 
                   if (isLiked) {
-                    removeLike(postId, comment.id, () => {
-                      fetchLikes(postId);
+                    removeLike(post.id, comment.id, () => {
+                      fetchLikes(post.id);
                     });
                   } else {
-                    addLike(postId, comment.id, () => {
-                      fetchLikes(postId);
+                    addLike(post.id, comment.id, () => {
+                      fetchLikes(post.id);
                     });
                   }
                 }}
@@ -95,8 +103,8 @@ export const Comment: FC<CommentProps> = ({ postId, comment, reply }) => {
                   reply={() => reply(replyComment.id)}
                   likeActionLoading={likeActionLoading}
                   addLike={() =>
-                    addLike(postId, replyComment.id, () => {
-                      fetchLikes(postId);
+                    addLike(post.id, replyComment.id, () => {
+                      fetchLikes(post.id);
                     })
                   }
                 />
