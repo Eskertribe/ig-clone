@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UUID } from 'crypto';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { UserProfileDataDto } from './dto/user.dto';
 import { User } from './entity/user.entity';
 
@@ -23,5 +22,13 @@ export class UserService {
     }
 
     return user.toUserProfileDataDto();
+  }
+
+  async findUserByQuery(query: string): Promise<UserProfileDataDto[]> {
+    const users = await this.userRepository.find({
+      where: [{ username: ILike(`%${query}%`) }, { name: ILike(`%${query}%`) }],
+    });
+
+    return Promise.all(users.map((user) => user.toUserProfileDataDto()));
   }
 }

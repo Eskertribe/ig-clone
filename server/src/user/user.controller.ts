@@ -15,4 +15,12 @@ export class UserController {
     const user = await this.userService.getUserProfileDataByUsername(username);
     return { user };
   }
+
+  @Get('/find/:query')
+  @UseGuards(AuthGuard('jwt'))
+  async findUserByQuery(@Param('query') query: string) {
+    const queryResult = await this.userService.findUserByQuery(query);
+
+    return queryResult;
+  }
 }

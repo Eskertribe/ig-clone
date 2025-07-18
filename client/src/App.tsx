@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import { FrontPage } from './FrontPage/FrontPage';
-import { UserPage } from './UserPage/UserPage';
-import { SideNav } from './SideNav/SideNav';
+import { ToastContainer } from 'react-toastify';
 import { AddContent } from './AddContent/AddContent';
 import { AuthRouter } from './AuthRouter/AuthRouter';
-import { ToastContainer } from 'react-toastify';
+import { FrontPage } from './FrontPage/FrontPage';
 import { PostModalProvider } from './PostModalContext/PostModalContextProvider';
+import { SideNav } from './SideNav/SideNav';
+import { UserPage } from './UserPage/UserPage';
 
 function App() {
   const [showAddContent, toggleShowAddContent] = useState(false);
