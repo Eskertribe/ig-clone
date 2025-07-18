@@ -20,8 +20,6 @@ export class UserService {
       relations: { followers: true, following: true },
     });
 
-    console.log(user);
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
