@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UUID } from 'crypto';
 import { UserService } from './user.service';
@@ -11,8 +11,10 @@ export class UserController {
   @Get('/profile/:username')
   @UseGuards(AuthGuard('jwt'))
   // @Returns(UserProfileDataDto)
-  async getFile(@Param('username') username: string) {
-    const user = await this.userService.getUserProfileDataByUsername(username);
+  async getProfile(@Param('username') username: string, @Req() req) {
+    const observerId = req.user.id;
+
+    const user = await this.userService.getUserProfileDataByUsername(username, observerId);
     return { user };
   }
 

@@ -8,6 +8,7 @@ type User = {
   profilePicture: UserProfilePicture;
   following: number;
   followers: number;
+  isFollowed?: boolean;
 };
 
 type Following = {

@@ -17,6 +17,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserCommentDto, UserDto, UserFollowerDto, UserProfileDataDto } from '../dto/user.dto';
+import { UserFollower } from 'src/follow/entity/userfollower.entity';
 
 @Entity()
 export class User {
@@ -56,16 +57,11 @@ export class User {
   @JoinColumn()
   profilePicture: File;
 
-  @ManyToMany(() => User, (user) => user.following)
-  @JoinTable({
-    name: 'user_followers',
-    joinColumn: { name: 'userId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'followerId', referencedColumnName: 'id' },
-  })
-  followers: User[];
+  @OneToMany(() => UserFollower, (follower) => follower.user)
+  followers: UserFollower[];
 
-  @ManyToMany(() => User, (user) => user.followers)
-  following: User[];
+  @OneToMany(() => UserFollower, (follower) => follower.follower)
+  following: UserFollower[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -81,7 +77,7 @@ export class User {
     };
   }
 
-  async toUserProfileDataDto(): Promise<UserProfileDataDto> {
+  async toUserProfileDataDto(isFollowed?: boolean): Promise<UserProfileDataDto> {
     return {
       id: this.id,
       username: this.username,
@@ -94,6 +90,7 @@ export class User {
       },
       following: this.following?.length ?? 0,
       followers: this.followers?.length ?? 0,
+      isFollowed: isFollowed ?? false,
     };
   }
 

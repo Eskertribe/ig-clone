@@ -53,6 +53,9 @@ export class UserProfileDataDto {
 
   @Expose()
   following: number;
+
+  @Expose()
+  isFollowed: boolean;
 }
 
 export class UserFollowerDto {

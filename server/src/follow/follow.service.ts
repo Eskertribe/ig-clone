@@ -4,41 +4,89 @@ import { UUID } from 'crypto';
 import { Repository } from 'typeorm';
 import { User } from '../user/entity/user.entity';
 import { UserFollowerDto } from 'src/user/dto/user.dto';
+import { UserFollower } from './entity/userfollower.entity';
 
 @Injectable()
 export class FollowService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserFollower)
+    private readonly userFollowerRepository: Repository<UserFollower>,
   ) {}
 
   async getFollowers(userId: UUID): Promise<UserFollowerDto[]> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: { followers: true },
+    const result = await this.userFollowerRepository.find({
+      where: { userId },
+      relations: { follower: true },
     });
 
-    if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+    if (!result.length) {
+      return [];
     }
 
-    const followers = await Promise.all(user.followers.map((follower) => follower.toFollowerDto()));
-
-    return followers;
+    return Promise.all(result.map(({ follower }) => follower.toFollowerDto()));
   }
 
   async getFollowing(userId: UUID): Promise<UserFollowerDto[]> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: { following: true },
+    const result = await this.userFollowerRepository.find({
+      where: { followerId: userId },
+      relations: { user: true },
     });
+
+    if (!result.length) {
+      return [];
+    }
+
+    return await Promise.all(result.map(({ user }) => user.toFollowerDto()));
+  }
+
+  async followUser(userId: UUID, username: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
 
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
 
-    const following = await Promise.all(user.followers.map((follower) => follower.toFollowerDto()));
+    const targetUser = await this.userRepository.findOne({ where: { username } });
 
-    return following;
+    if (!targetUser) {
+      throw new NotFoundException(`User with username ${username} not found`);
+    }
+
+    // Check if already following
+    const existingFollow = await this.userFollowerRepository.findOne({
+      where: { userId, followerId: targetUser.id },
+    });
+
+    if (existingFollow) {
+      return;
+    }
+
+    this.userFollowerRepository.insert({
+      userId,
+      followerId: targetUser.id,
+      user: targetUser,
+      follower: user,
+    });
+  }
+
+  async unfollowUser(observer: UUID, username: string): Promise<void> {
+    const targetUser = await this.userRepository.findOne({ where: { username } });
+
+    if (!targetUser) {
+      throw new NotFoundException(`User with username ${username} not found`);
+    }
+
+    // Check if following
+    const existingFollow = await this.userFollowerRepository.findOne({
+      where: { userId: targetUser.id, followerId: observer },
+    });
+
+    if (!existingFollow) {
+      return;
+    }
+
+    this.userFollowerRepository.delete(existingFollow);
   }
 }

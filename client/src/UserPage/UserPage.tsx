@@ -6,6 +6,7 @@ import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { FollowerModal } from './FollowerModal';
 import { PostModal } from './PostModal';
 import { useParams } from 'react-router-dom';
+import { useFollow } from '../hooks/useFollow';
 
 const UserPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
@@ -13,6 +14,7 @@ const UserPage: React.FC = () => {
   const { userData, loading, fetchUserProfileData } = useGetUserProfile();
   const { posts, loading: postsLoading, fetchPosts } = useGetPosts();
   const { setModalOpen, isOpen } = useContext(PostModalContext);
+  const { addFollow, removeFollow } = useFollow();
 
   useEffect(() => {
     if (username) {
@@ -20,6 +22,8 @@ const UserPage: React.FC = () => {
       fetchPosts(username);
     }
   }, [username]);
+
+  console.log(userData);
 
   if (loading) {
     return (
@@ -29,7 +33,7 @@ const UserPage: React.FC = () => {
     );
   }
 
-  if (!userData) {
+  if (!userData || !username) {
     return (
       <div className="bg-gray-200 h-screen flex justify-center items-center">
         <h1>User not found</h1>
@@ -54,7 +58,23 @@ const UserPage: React.FC = () => {
               )}
             </div>
             <div>
-              <h2 className="text-xl font-bold">@{userData.username}</h2>
+              <div className="flex flex-row items-center space-x-2">
+                <h2 className="text-xl font-bold">@{userData.username}</h2>
+                <button
+                  className="bg-blue-500 text-white px-4 py-1 rounded"
+                  onClick={() => {
+                    if (!userData.isFollowed) {
+                      addFollow(username, () => fetchUserProfileData(username));
+                    } else {
+                      removeFollow(username, () =>
+                        fetchUserProfileData(username)
+                      );
+                    }
+                  }}
+                >
+                  {!userData?.isFollowed ? 'Follow' : 'Unfollow'}
+                </button>
+              </div>
               <div className="flex flex-row space-x-4">
                 <p className="text-gray-500">
                   <b>{posts?.length ?? 0}</b> posts
