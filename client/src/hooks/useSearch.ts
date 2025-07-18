@@ -17,7 +17,7 @@ const useSearchUsers = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/users/find/${query}`,
+        `${import.meta.env.VITE_API_URL}/users/find/${query}`,
         {
           method: 'GET',
           headers: {

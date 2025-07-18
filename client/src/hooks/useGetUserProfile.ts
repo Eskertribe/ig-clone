@@ -26,7 +26,7 @@ const useGetUserProfile = () => {
 
       setLoadingState(true);
       const response = await fetch(
-        `http://localhost:3000/users/profile/${username}`,
+        `${import.meta.env.VITE_API_URL}/users/profile/${username}`,
         {
           method: 'GET',
           credentials: 'include',

@@ -29,7 +29,7 @@ const useGetLikes = () => {
       setLoadingState(true);
 
       const response = await fetch(
-        `http://localhost:3000/post/getLikes/${postId}`,
+        `${import.meta.env.VITE_API_URL}/post/getLikes/${postId}`,
         {
           method: 'GET',
           credentials: 'include',

@@ -4,7 +4,7 @@ import { UUID } from 'crypto';
 import { UserService } from './user.service';
 import { UserProfileDataDto } from './dto/user.dto';
 
-@Controller('users')
+@Controller('v1/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

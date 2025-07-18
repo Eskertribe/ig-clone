@@ -24,15 +24,18 @@ const useAddComment = () => {
       }
 
       setLoadingState(true);
-      const response = await fetch('http://localhost:3000/post/comment', {
-        method: 'PATCH',
-        credentials: 'include',
-        body: JSON.stringify({ postId, comment, replytoId }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/post/comment`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+          body: JSON.stringify({ postId, comment, replytoId }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         setLoadingState(false);

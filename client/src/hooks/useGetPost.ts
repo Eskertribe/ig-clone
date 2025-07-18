@@ -27,7 +27,7 @@ const useGetPost = () => {
       setLoadingState(true);
 
       const response = await fetch(
-        `http://localhost:3000/post/getPost/${postId}`,
+        `${import.meta.env.VITE_API_URL}/post/getPost/${postId}`,
         {
           method: 'GET',
           credentials: 'include',
@@ -47,7 +47,7 @@ const useGetPost = () => {
 
       setLoadingState(false);
       setPost(data);
-    } catch (error) {
+    } catch {
       setLoadingState(false);
       toast.error('Error fetching post');
     }

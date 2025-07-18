@@ -3,7 +3,7 @@ import { FollowService } from './follow.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UUID } from 'crypto';
 
-@Controller('followers')
+@Controller('v1/followers')
 export class FollowController {
   constructor(private readonly followService: FollowService) {}
 

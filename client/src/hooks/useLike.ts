@@ -14,8 +14,8 @@ const useLike = () => {
 
   const sendLike = async (postId: string, commentId?: string) => {
     const url = commentId
-      ? 'http://localhost:3000/post/likeComment' //TODO: url from .env
-      : 'http://localhost:3000/post/like';
+      ? `${import.meta.env.VITE_API_URL}/post/likeComment`
+      : `${import.meta.env.VITE_API_URL}/post/like`;
 
     return fetch(url, {
       method: 'PATCH',
@@ -29,7 +29,7 @@ const useLike = () => {
   };
 
   const sendLikeRemove = async (postId: string, commentId?: string) => {
-    return fetch('http://localhost:3000/post/like', {
+    return fetch(`${import.meta.env.VITE_API_URL}/post/like`, {
       method: 'DELETE',
       credentials: 'include',
       body: JSON.stringify({ postId, commentId }),

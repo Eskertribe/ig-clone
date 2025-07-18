@@ -14,7 +14,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-@Controller('auth')
+@Controller('v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -49,7 +49,7 @@ export class AuthController {
     const user = await this.authService.signUp(createUserDto, profilePicture);
     const { token } = await this.authService.generateJwtToken(user);
 
-    return { token };
+    return { token, user };
   }
 
   @Post('login')

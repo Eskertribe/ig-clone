@@ -27,7 +27,7 @@ const useGetPosts = () => {
       setLoadingState(true);
 
       const response = await fetch(
-        `http://localhost:3000/post/getPosts/${username}`,
+        `${import.meta.env.VITE_API_URL}/post/getPosts/${username}`,
         {
           method: 'GET',
           credentials: 'include',

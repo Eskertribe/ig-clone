@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { join } from 'path';
 import { readFile } from 'fs/promises';
 
-@Controller('files')
+@Controller('v1/files')
 export class FileController {
   @Get(':filename')
   @UseGuards(AuthGuard('jwt'))

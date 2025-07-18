@@ -24,7 +24,7 @@ import { UUID } from 'crypto';
 
 const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4']; // TODO: No hardcoded values
 
-@Controller('post')
+@Controller('v1/post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 

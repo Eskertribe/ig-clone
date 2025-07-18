@@ -13,25 +13,31 @@ const useFollow = () => {
   };
 
   const sendFollow = async (username: string) => {
-    return fetch(`http://localhost:3000/followers/follow/${username}`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return fetch(
+      `${import.meta.env.VITE_API_URL}/followers/follow/${username}`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   };
 
   const sendFollowRemove = async (username: string) => {
-    return fetch(`http://localhost:3000/followers/unfollow/${username}`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return fetch(
+      `${import.meta.env.VITE_API_URL}/followers/unfollow/${username}`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   };
 
   const addFollow = async (username: string, callBack?: () => void) => {
