@@ -87,6 +87,16 @@ export class PostController {
     return this.postService.getLikes(postId);
   }
 
+  @Get('getPostsWithHashTag/:hashtag')
+  @UseGuards(AuthGuard('jwt'))
+  async getPostsWithHashTag(@Param('hashtag') hashtag: string) {
+    if (!hashtag) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    return this.postService.getPostsWithHashTag(hashtag);
+  }
+
   @Patch('comment')
   @UseGuards(AuthGuard('jwt'))
   async addComment(@Body() body: { postId: UUID; comment: string; replytoId?: UUID }, @Req() req) {

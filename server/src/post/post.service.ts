@@ -280,6 +280,25 @@ export class PostService {
     this.likeRepository.delete({ id: like.id });
   }
 
+  async getPostsWithHashTag(tagName: string) {
+    const hashtag = await this.hashtagRepository.findOne({
+      where: { name: tagName },
+      relations: ['postToHashtags', 'postToHashtags.post'],
+    });
+
+    if (!hashtag) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    const posts = hashtag.postToHashtags.map((postToHashtag) => postToHashtag.post);
+
+    if (!posts.length) {
+      return [];
+    }
+
+    return Promise.all(posts.map((post) => post.toDto()));
+  }
+
   private async handleHashTags(text: string, post: Post, user: UserAuthDTO) {
     if (user.id === post?.user.id) {
       const hashTags = Array.from(text.matchAll(/#([a-zA-Z]+)/g)).map((match) => match[1]);

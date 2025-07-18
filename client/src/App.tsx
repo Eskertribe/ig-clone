@@ -8,6 +8,7 @@ import { FrontPage } from './FrontPage/FrontPage';
 import { PostModalProvider } from './PostModalContext/PostModalContextProvider';
 import { SideNav } from './SideNav/SideNav';
 import { UserPage } from './UserPage/UserPage';
+import { PostsWithHashtag } from './PostList/PostsWithHashtag';
 
 function App() {
   const [showAddContent, toggleShowAddContent] = useState(false);
@@ -32,6 +33,10 @@ function App() {
                 <Routes>
                   <Route path="/" element={<FrontPage />} />
                   <Route path="/user/:username" element={<UserPage />} />
+                  <Route
+                    path="/hashtag/:hashtag"
+                    element={<PostsWithHashtag />}
+                  />
                 </Routes>
               </PostModalProvider>
             </div>
