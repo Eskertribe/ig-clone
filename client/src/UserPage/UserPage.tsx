@@ -10,6 +10,7 @@ import { useFollow } from '../hooks/useFollow';
 
 const UserPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
+  const [isFollowerModalOpen, setIsFollowerModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const { userData, loading, fetchUserProfileData } = useGetUserProfile();
   const { posts, loading: postsLoading, fetchPosts } = useGetPosts();
@@ -22,8 +23,6 @@ const UserPage: React.FC = () => {
       fetchPosts(username);
     }
   }, [username]);
-
-  console.log(userData);
 
   if (loading) {
     return (
@@ -81,14 +80,19 @@ const UserPage: React.FC = () => {
                 </p>
                 <p className="text-gray-500">
                   <a
-                    onClick={() => setIsFollowingModalOpen(true)}
+                    onClick={() => setIsFollowerModalOpen(true)}
                     className="cursor-pointer"
                   >
                     <b>{userData.followers}</b> followers
                   </a>
                 </p>
                 <p className="text-gray-500">
-                  <b>{userData.following}</b> following
+                  <a
+                    onClick={() => setIsFollowingModalOpen(true)}
+                    className="cursor-pointer"
+                  >
+                    <b>{userData.following}</b> following
+                  </a>
                 </p>
               </div>
               <div className="flex flex-col space-y-2 mt-4">
@@ -100,19 +104,32 @@ const UserPage: React.FC = () => {
         </div>
         {!postsLoading && (
           <div className="h-[80vh] grid grid-rows-3 grid-cols-3 gap-1 p-2">
-            {posts?.map((post) => (
-              <Post
-                key={post.id}
-                post={post}
-                toggleModal={() => setModalOpen(post)}
-              />
-            ))}
+            {posts.length > 0 ? (
+              posts?.map((post) => (
+                <Post
+                  key={post.id}
+                  post={post}
+                  toggleModal={() => setModalOpen(post)}
+                />
+              ))
+            ) : (
+              <p>No posts found</p>
+            )}
           </div>
         )}
       </div>
       {isOpen && <PostModal />}
+      {/* TODO: Refactor */}
+      {isFollowerModalOpen && (
+        <FollowerModal
+          dataType="followers"
+          userId={userData.id}
+          closeModal={() => setIsFollowerModalOpen(false)}
+        />
+      )}
       {isFollowingModalOpen && (
         <FollowerModal
+          dataType="following"
           userId={userData.id}
           closeModal={() => setIsFollowingModalOpen(false)}
         />
