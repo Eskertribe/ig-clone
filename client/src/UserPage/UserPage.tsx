@@ -7,8 +7,10 @@ import { FollowerModal } from './FollowerModal';
 import { PostModal } from './PostModal';
 import { useParams } from 'react-router-dom';
 import { useFollow } from '../hooks/useFollow';
+import { AuthContext } from '../AuthContext/AuthContext';
 
 const UserPage: React.FC = () => {
+  const { user } = useContext(AuthContext);
   const { username } = useParams<{ username: string }>();
   const [isFollowerModalOpen, setIsFollowerModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
@@ -40,6 +42,8 @@ const UserPage: React.FC = () => {
     );
   }
 
+  const isOwnPage = user === username;
+
   return (
     <>
       <div className="bg-gray-200 h-screen flex flex-col">
@@ -59,20 +63,24 @@ const UserPage: React.FC = () => {
             <div>
               <div className="flex flex-row items-center space-x-2">
                 <h2 className="text-xl font-bold">@{userData.username}</h2>
-                <button
-                  className="bg-blue-500 text-white px-4 py-1 rounded"
-                  onClick={() => {
-                    if (!userData.isFollowed) {
-                      addFollow(username, () => fetchUserProfileData(username));
-                    } else {
-                      removeFollow(username, () =>
-                        fetchUserProfileData(username)
-                      );
-                    }
-                  }}
-                >
-                  {!userData?.isFollowed ? 'Follow' : 'Unfollow'}
-                </button>
+                {!isOwnPage && (
+                  <button
+                    className="bg-blue-500 text-white px-4 py-1 rounded"
+                    onClick={() => {
+                      if (!userData.isFollowed) {
+                        addFollow(username, () =>
+                          fetchUserProfileData(username)
+                        );
+                      } else {
+                        removeFollow(username, () =>
+                          fetchUserProfileData(username)
+                        );
+                      }
+                    }}
+                  >
+                    {!userData?.isFollowed ? 'Follow' : 'Unfollow'}
+                  </button>
+                )}
               </div>
               <div className="flex flex-row space-x-4">
                 <p className="text-gray-500">

@@ -1,7 +1,7 @@
-import { Controller, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
-import { FollowService } from './follow.service';
+import { BadRequestException, Controller, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UUID } from 'crypto';
+import { FollowService } from './follow.service';
 
 @Controller('v1/followers')
 export class FollowController {
@@ -26,6 +26,9 @@ export class FollowController {
   @Patch('/follow/:username')
   @UseGuards(AuthGuard('jwt'))
   async followUser(@Param('username') username: string, @Req() req) {
+    if (username === req.user.username) {
+      throw new BadRequestException('You cannot follow yourself');
+    }
     const userId = req.user.id;
 
     return this.followService.followUser(userId, username);
@@ -34,6 +37,10 @@ export class FollowController {
   @Patch('/unfollow/:username')
   @UseGuards(AuthGuard('jwt'))
   async unfollowUser(@Param('username') username: string, @Req() req) {
+    if (username === req.user.username) {
+      throw new BadRequestException('You cannot unfollow yourself');
+    }
+
     const observer = req.user.id;
 
     return this.followService.unfollowUser(observer, username);
