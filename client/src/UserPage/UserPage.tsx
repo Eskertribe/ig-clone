@@ -19,7 +19,7 @@ const UserPage: React.FC = () => {
       fetchUserProfileData(username);
       fetchPosts(username);
     }
-  }, []);
+  }, [username]);
 
   if (loading) {
     return (
