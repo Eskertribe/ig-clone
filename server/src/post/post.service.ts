@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UUID } from 'crypto';
 import { CommentDto } from 'src/comment/dto/comment.dto';
 import { Comment } from 'src/comment/entity/comment.entity';
+import { Hashtag } from 'src/hashtag/entity/hashtag.entity';
 import { Like } from 'src/like/entity/like.entity';
 import { LikeDto } from 'src/like/like.dto';
 import { UserAuthDTO } from 'src/user/dto/user.dto';
 import { IsNull, Repository } from 'typeorm';
 import { PostDto } from './dto/post.dto';
 import { Post } from './entity/post.entity';
+import { PostToHashtag } from './entity/postToHashtag.entity';
 import { CreatePostRequest } from './post.types';
 
 @Injectable()
@@ -20,18 +22,26 @@ export class PostService {
     private readonly commentRepository: Repository<Comment>,
     @InjectRepository(Like)
     private readonly likeRepository: Repository<Like>,
+    @InjectRepository(Hashtag)
+    private readonly hashtagRepository: Repository<Hashtag>,
+    @InjectRepository(PostToHashtag)
+    private readonly postToHashTagRepository: Repository<PostToHashtag>,
   ) {}
 
   async createPost({ file, post, user }: CreatePostRequest): Promise<Post> {
     const { description, disableComments, disableLikes } = post;
 
-    return this.postRepository.save({
+    const newPost = await this.postRepository.save({
       description,
       user,
       disableComments,
       disableLikes,
       file: { name: file.filename, mimeType: file.mimetype },
     });
+
+    this.handleHashTags(description, newPost, user);
+
+    return newPost;
   }
 
   async addComment(
@@ -42,6 +52,7 @@ export class PostService {
   ): Promise<CommentDto> {
     const post = await this.postRepository.findOne({
       where: { id: postId },
+      relations: { user: true },
     });
 
     if (!post) {
@@ -51,6 +62,8 @@ export class PostService {
     if (post.disableComments) {
       throw new BadRequestException('Comments are disabled for this post');
     }
+
+    this.handleHashTags(text, post, user);
 
     if (replytoId) {
       const comment = await this.commentRepository.findOne({
@@ -265,5 +278,25 @@ export class PostService {
     }
 
     this.likeRepository.delete({ id: like.id });
+  }
+
+  private async handleHashTags(text: string, post: Post, user: UserAuthDTO) {
+    if (user.id === post?.user.id) {
+      const hashTags = Array.from(text.matchAll(/#([a-zA-Z]+)/g)).map((match) => match[1]);
+
+      hashTags.map(async (hashTag) => {
+        const existing = await this.hashtagRepository.findOne({ where: { name: hashTag } });
+        const fromDb = existing
+          ? existing
+          : await this.hashtagRepository.save({
+              name: hashTag,
+            });
+
+        return this.postToHashTagRepository.save({
+          post: { id: post.id },
+          hashtag: { id: fromDb.id },
+        });
+      });
+    }
   }
 }

@@ -1,4 +1,8 @@
 import { UUID } from 'crypto';
+import { Comment } from 'src/comment/entity/comment.entity';
+import { File } from 'src/file/entity/file.entity';
+import { Like } from 'src/like/entity/like.entity';
+import { User } from 'src/user/entity/user.entity';
 import { imageToStringBuffer } from 'src/utils/imageToBuffer';
 import {
   Column,
@@ -6,19 +10,13 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Comment } from 'src/comment/entity/comment.entity';
-import { File } from 'src/file/entity/file.entity';
-import { Hashtag } from 'src/hashtag/entity/hashtag.entity';
-import { Like } from 'src/like/entity/like.entity';
-import { User } from 'src/user/entity/user.entity';
 import { PostDto } from '../dto/post.dto';
+import { PostToHashtag } from './postToHashtag.entity';
 
 @Entity()
 export class Post {
@@ -59,9 +57,8 @@ export class Post {
   @OneToMany(() => Comment, (comment) => comment.post, { cascade: true })
   comments: Comment[];
 
-  @ManyToMany(() => Hashtag, (hashtag) => hashtag.posts)
-  @JoinTable()
-  hashtags: Hashtag[];
+  @OneToMany(() => PostToHashtag, (postToHashtag) => postToHashtag.post)
+  postToHashtags: PostToHashtag[];
 
   async toDto(): Promise<PostDto> {
     return {

@@ -1,17 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Hashtag } from './entity/hashtag.entity';
 
-@Injectable()
-export class HashtagService {
+@Controller('v1/hashtag')
+export class HashtagController {
   constructor(
     @InjectRepository(Hashtag)
     private readonly hashtagRepository: Repository<Hashtag>,
   ) {}
-
-  async createHashtag(name: string): Promise<Hashtag> {
-    const hashtag = this.hashtagRepository.create({ name });
-    return this.hashtagRepository.save(hashtag);
-  }
 }

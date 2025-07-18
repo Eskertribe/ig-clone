@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Post } from '../../post/entity/post.entity';
+import { PostToHashtag } from 'src/post/entity/postToHashtag.entity';
 
 @Entity()
 export class Hashtag {
@@ -9,7 +10,6 @@ export class Hashtag {
   @Column()
   name: string;
 
-  @ManyToMany(() => Post, (post) => post.hashtags)
-  @JoinTable()
-  posts: Post[];
+  @OneToMany(() => PostToHashtag, (postToHashtag) => postToHashtag.hashtag)
+  postToHashtags: PostToHashtag[];
 }
