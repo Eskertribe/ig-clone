@@ -98,12 +98,6 @@ export class PostController {
     return this.postService.getPostsWithHashTag(hashtag);
   }
 
-  @Get('userFeed')
-  @UseGuards(AuthGuard('jwt'))
-  async getUserFeed(@Req() req) {
-    return this.postService.getUserFeed(req.user);
-  }
-
   @Patch('comment')
   @UseGuards(AuthGuard('jwt'))
   async addComment(@Body() body: { postId: UUID; comment: string; replytoId?: UUID }, @Req() req) {
@@ -138,6 +132,12 @@ export class PostController {
     }
 
     return this.postService.addLikeToComment(postId, commentId, req.user);
+  }
+
+  @Post('userFeed')
+  @UseGuards(AuthGuard('jwt'))
+  async getUserFeed(@Body() { showSeen = false }: { showSeen: boolean }, @Req() req) {
+    return this.postService.getUserFeed(req.user, showSeen);
   }
 
   @Post('markSeen')

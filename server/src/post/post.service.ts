@@ -305,7 +305,7 @@ export class PostService {
     return Promise.all(posts.map((post) => post.toDto()));
   }
 
-  async getUserFeed(user: UserAuthDTO, withoutSeen: boolean = true): Promise<PostDto[]> {
+  async getUserFeed(user: UserAuthDTO, showSeen: boolean): Promise<PostDto[]> {
     const followedUsers = await this.userFollowerRepository.find({
       where: { followerId: user.id },
       relations: { user: true },
@@ -325,38 +325,35 @@ export class PostService {
       },
     };
 
-    if (withoutSeen) {
-      const seenPosts = await this.userSeenPostRepository
-        .createQueryBuilder('userSeenPost')
-        .where('userSeenPost.userId = :userId', { userId: user.id })
-        .leftJoinAndSelect('userSeenPost.post', 'post')
-        .select(['userSeenPost.id', 'post.id'])
-        .getMany();
+    const seenPosts = await this.userSeenPostRepository
+      .createQueryBuilder('userSeenPost')
+      .where('userSeenPost.userId = :userId', { userId: user.id })
+      .leftJoinAndSelect('userSeenPost.post', 'post')
+      .select(['userSeenPost.id', 'post.id'])
+      .getMany();
+    const seenPostIds = seenPosts.map((usp) => usp.post.id);
 
-      const seenPostIds = seenPosts.map((usp) => usp.post.id);
+    if (!showSeen && seenPostIds.length > 0) {
+      const unseenPostIds = await this.postRepository
+        .createQueryBuilder('post')
+        .select('post.id')
+        .where('post.userId IN (:...followedUserIds)', { followedUserIds })
+        .andWhere('post.id NOT IN (:...seenPostIds)', { seenPostIds })
+        .getRawMany()
+        .then((rows) => rows.map((row) => row.post_id as string));
 
-      if (seenPostIds.length > 0) {
-        const unseenPostIds = await this.postRepository
-          .createQueryBuilder('post')
-          .select('post.id')
-          .where('post.userId IN (:...followedUserIds)', { followedUserIds })
-          .andWhere('post.id NOT IN (:...seenPostIds)', { seenPostIds })
-          .getRawMany()
-          .then((rows) => rows.map((row) => row.post_id as string));
-
-        where.id = In(unseenPostIds);
-      }
+      where.id = In(unseenPostIds);
     }
 
     const posts = await this.postRepository.find({
-      where: where,
+      where,
       relations: { file: true, user: { profilePicture: true }, likes: { user: true } },
       order: {
         createdAt: 'DESC',
       },
     });
 
-    return Promise.all(posts.map((post) => post.toDto()));
+    return Promise.all(posts.map((post) => post.toDto(seenPostIds.includes(post.id))));
   }
 
   async markPostSeen(userId: UUID, postId: UUID) {

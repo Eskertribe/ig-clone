@@ -25,4 +25,5 @@ export class PostDto {
   readonly createdAt: Date;
   readonly comments: CommentDto[];
   readonly likes?: { userId: UUID }[];
+  readonly seen: boolean;
 }

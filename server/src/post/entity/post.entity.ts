@@ -60,7 +60,7 @@ export class Post {
   @OneToMany(() => PostToHashtag, (postToHashtag) => postToHashtag.post)
   postToHashtags: PostToHashtag[];
 
-  async toDto(): Promise<PostDto> {
+  async toDto(seen = false): Promise<PostDto> {
     return {
       id: this.id,
       description: this.description,
@@ -76,6 +76,7 @@ export class Post {
         : [],
       createdAt: this.createdAt,
       likes: this.likes ? this.likes.map((like) => ({ userId: like.user.id })) : [],
+      seen,
     };
   }
 }

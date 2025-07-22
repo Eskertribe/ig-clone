@@ -13,7 +13,7 @@ const useFetchUserFeed = () => {
     setLoading(loading);
   };
 
-  const getUserFeed = async (): Promise<void> => {
+  const getUserFeed = async (showSeen = false): Promise<void> => {
     if (!token) {
       toast.error('You must be logged in');
       return;
@@ -29,13 +29,12 @@ const useFetchUserFeed = () => {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/post/userFeed`,
         {
-          method: 'GET',
+          method: 'POST',
+          body: JSON.stringify({ showSeen }),
           credentials: 'include',
           headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
-            'Cache-Control': 'no-cache',
-            Pragma: 'no-cache',
-            Expires: '0',
           },
         }
       );
