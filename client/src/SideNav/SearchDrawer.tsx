@@ -1,11 +1,11 @@
 import { FC, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSearchUsers } from '../hooks/useSearch';
+import { useSearch } from '../hooks/useSearch';
 import { User } from '../UserListComponent/User';
 
 export const SearchDrawer: FC<{ close: () => void }> = ({ close }) => {
   const debounceTimeout = useRef<number | null>(null);
-  const { findUsers, loading, result } = useSearchUsers();
+  const { findUsers, loading, result } = useSearch();
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

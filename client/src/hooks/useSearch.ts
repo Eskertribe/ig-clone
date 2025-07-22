@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../AuthContext/AuthContext';
 
-const useSearchUsers = () => {
+const useSearch = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<User[]>([]);
   const { token } = useContext(AuthContext);
@@ -53,4 +53,4 @@ const useSearchUsers = () => {
   return { findUsers, loading, result };
 };
 
-export { useSearchUsers };
+export { useSearch };
