@@ -13,11 +13,18 @@ const useSearchUsers = () => {
       return;
     }
 
+    const searchQuery = query.trim();
+
+    if (searchQuery.length < 3) {
+      setResult([]);
+      return;
+    }
+
     setLoading(true);
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/users/find/${query}`,
+        `${import.meta.env.VITE_API_URL}/users/find/${searchQuery}`,
         {
           method: 'GET',
           headers: {

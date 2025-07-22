@@ -16,7 +16,7 @@ export const SearchDrawer: FC<{ close: () => void }> = ({ close }) => {
     }
 
     debounceTimeout.current = setTimeout(() => {
-      if (value.trim().length >= 3 && !loading) {
+      if (!loading) {
         findUsers(value);
       }
     }, 500);
