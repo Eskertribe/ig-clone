@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetPostsWithHashtag } from '../hooks/useGetPostsWithHashTag';
+import { useGetPostsWithHashtag } from '../hooks/useGetPostsWithHashtag';
 import Post from '../Post/Post';
 
 export const PostsWithHashtag = () => {
@@ -20,21 +20,17 @@ export const PostsWithHashtag = () => {
       {!loading && posts.length === 0 && (
         <p>No posts found with this hashtag.</p>
       )}
-      {!loading && (
+      {!loading && posts.length > 0 && (
         <div className="h-[80vh] grid grid-rows-3 grid-cols-3 gap-1 p-2">
-          {posts.length > 0 ? (
-            posts?.map((post) => (
-              <Post
-                key={post.id}
-                post={post}
-                toggleModal={() => {
-                  /* setModalOpen(post) */
-                }}
-              />
-            ))
-          ) : (
-            <p>No posts found</p>
-          )}
+          {posts?.map((post) => (
+            <Post
+              key={post.id}
+              post={post}
+              toggleModal={() => {
+                /* setModalOpen(post) */
+              }}
+            />
+          ))}
         </div>
       )}
     </div>

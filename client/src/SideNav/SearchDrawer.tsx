@@ -5,7 +5,7 @@ import { User } from '../UserListComponent/User';
 
 export const SearchDrawer: FC<{ close: () => void }> = ({ close }) => {
   const debounceTimeout = useRef<number | null>(null);
-  const { findUsers, loading, result } = useSearch();
+  const { search, loading, users, hashtags } = useSearch();
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,7 +17,7 @@ export const SearchDrawer: FC<{ close: () => void }> = ({ close }) => {
 
     debounceTimeout.current = setTimeout(() => {
       if (!loading) {
-        findUsers(value);
+        search(value);
       }
     }, 500);
   };
@@ -38,17 +38,17 @@ export const SearchDrawer: FC<{ close: () => void }> = ({ close }) => {
 
         <input
           type="text"
-          placeholder="Search..."
+          placeholder="Search user or #hashtag"
           className="w-full p-2 border border-gray-300 rounded-md mb-4"
           onChange={(e) => handleInputChange(e)}
         />
         <div className="space-y-2">
-          {!loading && result.length === 0 && (
+          {!loading && users.length === 0 && hashtags.length === 0 && (
             <p className="text-white">No results</p>
           )}
-          {result.length > 0 && (
+          {users.length > 0 && (
             <div className="overflow-y-auto overflow-x-hidden flex-1">
-              {result.map((user) => (
+              {users.map((user) => (
                 <User
                   key={user.id}
                   user={user}
@@ -58,6 +58,24 @@ export const SearchDrawer: FC<{ close: () => void }> = ({ close }) => {
                   }}
                 />
               ))}
+            </div>
+          )}
+          {hashtags.length > 0 && (
+            <div className="mt-4">
+              <ul className="list pl-5">
+                {hashtags.map((hashtag) => (
+                  <li
+                    key={hashtag.id}
+                    className="text-white cursor-pointer hover:underline"
+                    onClick={() => {
+                      close();
+                      navigate(`/hashtag/${hashtag.name}`);
+                    }}
+                  >
+                    #{hashtag.name}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
