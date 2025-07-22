@@ -1,11 +1,14 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetPostsWithHashtag } from '../hooks/useGetPostsWithHashtag';
 import Post from '../Post/Post';
+import { PostModalContext } from '../PostModalContext/PostModalContext';
+import { PostModal } from '../UserPage/PostModal';
 
 export const PostsWithHashtag = () => {
   const { hashtag } = useParams<{ hashtag: string }>();
   const { fetchPostsWithHashtag, posts, loading } = useGetPostsWithHashtag();
+  const { isOpen, setModalOpen } = useContext(PostModalContext);
 
   useEffect(() => {
     if (hashtag) {
@@ -26,11 +29,10 @@ export const PostsWithHashtag = () => {
             <Post
               key={post.id}
               post={post}
-              toggleModal={() => {
-                /* setModalOpen(post) */
-              }}
+              toggleModal={() => setModalOpen(post)}
             />
           ))}
+          {isOpen && <PostModal />}
         </div>
       )}
     </div>
