@@ -3,14 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UUID } from 'crypto';
 import { CommentDto } from 'src/comment/dto/comment.dto';
 import { Comment } from 'src/comment/entity/comment.entity';
+import { UserFollower } from 'src/follow/entity/userfollower.entity';
 import { Hashtag } from 'src/hashtag/entity/hashtag.entity';
 import { Like } from 'src/like/entity/like.entity';
 import { LikeDto } from 'src/like/like.dto';
 import { UserAuthDTO } from 'src/user/dto/user.dto';
-import { IsNull, Repository } from 'typeorm';
+import { In, IsNull, Repository } from 'typeorm';
 import { PostDto } from './dto/post.dto';
 import { Post } from './entity/post.entity';
 import { PostToHashtag } from './entity/postToHashtag.entity';
+import { UserSeenPost } from './entity/userSeenPost.entity';
 import { CreatePostRequest } from './post.types';
 
 @Injectable()
@@ -26,6 +28,10 @@ export class PostService {
     private readonly hashtagRepository: Repository<Hashtag>,
     @InjectRepository(PostToHashtag)
     private readonly postToHashTagRepository: Repository<PostToHashtag>,
+    @InjectRepository(UserSeenPost)
+    private readonly userSeenPostRepository: Repository<UserSeenPost>,
+    @InjectRepository(UserFollower)
+    private readonly userFollowerRepository: Repository<UserFollower>,
   ) {}
 
   async createPost({ file, post, user }: CreatePostRequest): Promise<Post> {
@@ -297,6 +303,70 @@ export class PostService {
     }
 
     return Promise.all(posts.map((post) => post.toDto()));
+  }
+
+  async getUserFeed(user: UserAuthDTO, withoutSeen: boolean = true): Promise<PostDto[]> {
+    const followedUsers = await this.userFollowerRepository.find({
+      where: { followerId: user.id },
+      relations: { user: true },
+    });
+
+    const followedUserIds = followedUsers.map((u) => u.userId);
+
+    if (!followedUserIds.length) {
+      return [];
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //@ts-ignore
+    let where: any = {
+      user: {
+        id: In(followedUserIds),
+      },
+    };
+
+    if (withoutSeen) {
+      const seenPosts = await this.userSeenPostRepository
+        .createQueryBuilder('userSeenPost')
+        .where('userSeenPost.userId = :userId', { userId: user.id })
+        .leftJoinAndSelect('userSeenPost.post', 'post')
+        .select(['userSeenPost.id', 'post.id'])
+        .getMany();
+
+      const seenPostIds = seenPosts.map((usp) => usp.post.id);
+
+      if (seenPostIds.length > 0) {
+        const unseenPostIds = await this.postRepository
+          .createQueryBuilder('post')
+          .select('post.id')
+          .where('post.userId IN (:...followedUserIds)', { followedUserIds })
+          .andWhere('post.id NOT IN (:...seenPostIds)', { seenPostIds })
+          .getRawMany()
+          .then((rows) => rows.map((row) => row.post_id as string));
+
+        where.id = In(unseenPostIds);
+      }
+    }
+
+    const posts = await this.postRepository.find({
+      where: where,
+      relations: { file: true, user: { profilePicture: true }, likes: { user: true } },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    return Promise.all(posts.map((post) => post.toDto()));
+  }
+
+  async markPostSeen(userId: UUID, postId: UUID) {
+    const existing = await this.userSeenPostRepository.findOne({
+      where: { user: { id: userId }, post: { id: postId } },
+    });
+
+    if (!existing) {
+      await this.userSeenPostRepository.save({ user: { id: userId }, post: { id: postId } });
+    }
   }
 
   private async handleHashTags(text: string, post: Post, user: UserAuthDTO) {

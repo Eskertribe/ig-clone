@@ -1,25 +1,26 @@
 import {
-  Controller,
-  Post,
-  Body,
-  UseInterceptors,
-  UploadedFile,
-  Get,
-  Req,
-  UseGuards,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
   Param,
   Patch,
-  Delete,
+  Post,
+  Req,
+  UnauthorizedException,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { PostService } from './post.service';
-import { CreatePostDto } from './dto/post.dto';
+import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UUID } from 'crypto';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { AuthGuard } from '@nestjs/passport';
-import { UUID } from 'crypto';
+import { CreatePostDto } from './dto/post.dto';
+import { PostService } from './post.service';
 // import { ApiResponse } from '../middleware/ApiResponse';
 
 const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4']; // TODO: No hardcoded values
@@ -97,6 +98,12 @@ export class PostController {
     return this.postService.getPostsWithHashTag(hashtag);
   }
 
+  @Get('userFeed')
+  @UseGuards(AuthGuard('jwt'))
+  async getUserFeed(@Req() req) {
+    return this.postService.getUserFeed(req.user);
+  }
+
   @Patch('comment')
   @UseGuards(AuthGuard('jwt'))
   async addComment(@Body() body: { postId: UUID; comment: string; replytoId?: UUID }, @Req() req) {
@@ -131,6 +138,14 @@ export class PostController {
     }
 
     return this.postService.addLikeToComment(postId, commentId, req.user);
+  }
+
+  @Post('markSeen')
+  @UseGuards(AuthGuard('jwt'))
+  async markPostSeen(@Body() { postId }: { postId: UUID }, @Req() req) {
+    const userId = req.user.id;
+
+    return this.postService.markPostSeen(userId, postId);
   }
 
   @Delete('like')

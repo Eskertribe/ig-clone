@@ -42,6 +42,7 @@ type Post = {
   disableComments: boolean;
   disableLikes: boolean;
   createdAt: string;
+  seen?: boolean;
 };
 
 type CommentUser = {
