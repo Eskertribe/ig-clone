@@ -41,7 +41,7 @@ export const FollowerModal: FC<{
                 key={follower.id}
                 user={follower}
                 onClick={() => {
-                  close();
+                  closeModal();
                   navigate(`/user/${follower.username}`);
                 }}
               />
@@ -53,7 +53,7 @@ export const FollowerModal: FC<{
                 key={following.id}
                 user={following}
                 onClick={() => {
-                  close();
+                  closeModal();
                   navigate(`/user/${following.username}`);
                 }}
               />
