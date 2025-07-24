@@ -14,7 +14,11 @@ const FrontPage: React.FC = () => {
   }, [showSeenPosts]);
 
   return (
-    <div className="bg-gray-200 h-screen flex flex-col  items-center overflow-y-scroll pt-4">
+    <div
+      className={`bg-gray-200 h-screen flex flex-col items-center pt-4 ${
+        userFeed.length > 0 ? 'overflow-y-scroll' : 'overflow-y-hidden'
+      }`}
+    >
       {userFeed.length > 0 ? (
         userFeed.map((post) => {
           return (
