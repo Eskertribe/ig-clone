@@ -19,4 +19,13 @@ export class Message {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  toDto() {
+    return {
+      id: this.id,
+      content: this.content,
+      createdAt: this.createdAt,
+      sender: this.sender.toUserDto(),
+    };
+  }
 }

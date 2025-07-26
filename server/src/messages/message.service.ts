@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Message } from './entity/message.entity';
 import { Conversation } from './entity/conversation.entity';
 import { UUID } from 'crypto';
+import { ConversationDto } from './entity/conversation.dto';
 
 @Injectable()
 export class MessageService {
@@ -21,7 +22,26 @@ export class MessageService {
       .leftJoinAndSelect('conversation.messages', 'message')
       .leftJoinAndSelect('conversation.participants', 'allParticipants')
       .where('participant.id = :userId', { userId })
+      .orderBy('message.createdAt', 'ASC')
       .getMany();
+  }
+
+  async getConversation(userId: UUID, conversationId: UUID): Promise<ConversationDto | null> {
+    const conversation = await this.conversationRepository
+      .createQueryBuilder('conversation')
+      .leftJoinAndSelect('conversation.participants', 'participant')
+      .leftJoinAndSelect('conversation.messages', 'message')
+      .leftJoinAndSelect('message.sender', 'messageSender')
+      .leftJoinAndSelect('conversation.participants', 'allParticipants')
+      .where('conversation.id = :conversationId', { conversationId })
+      .andWhere('participant.id = :userId', { userId })
+      .getOne();
+
+    if (!conversation) {
+      return null;
+    }
+
+    return conversation.toDto();
   }
 
   async createConversation(senderId: UUID, recipientIds: UUID[]): Promise<Conversation> {
@@ -44,12 +64,6 @@ export class MessageService {
       throw new Error('Sender is not a participant in the conversation');
     }
 
-    const newMessage = this.messageRepository.create({
-      content: message,
-      conversation,
-      sender: { id: sender },
-    });
-
-    return this.messageRepository.save(newMessage);
+    return this.messageRepository.save({ content: message, conversation, sender: { id: sender } });
   }
 }

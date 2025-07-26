@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { MessageService } from './message.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -14,6 +14,13 @@ export class MessageController {
     return this.messageService.getConversations(userId);
   }
 
+  @Get('/getConversation/:conversationId')
+  @UseGuards(AuthGuard('jwt'))
+  async getConversation(@Req() req, @Param('conversationId') conversationId: UUID) {
+    const userId = req.user.id;
+    return this.messageService.getConversation(userId, conversationId);
+  }
+
   @Post('/createConversation')
   @UseGuards(AuthGuard('jwt'))
   async createConversation(@Body() body: { participants: UUID[] }, @Req() req) {
@@ -24,10 +31,11 @@ export class MessageController {
     return { id };
   }
 
-  @Post('/sendToConversation')
+  @Post('/sendToConversation/:conversationId')
   @UseGuards(AuthGuard('jwt'))
   async sendToConversation(
-    @Body() { conversationId, message }: { conversationId: UUID; message: string },
+    @Param('conversationId') conversationId: UUID,
+    @Body() { message }: { message: string },
     @Req() req,
   ) {
     const sender = req.user.id;

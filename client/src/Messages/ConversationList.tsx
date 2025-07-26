@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useGetConversations } from '../hooks/useGetConversations';
 import { NewConversationFab } from './NewConversationFab';
+import { useNavigate } from 'react-router-dom';
 
 export const ConversationList = () => {
   const { fetchConversations, conversations, loading } = useGetConversations();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchConversations();
@@ -21,20 +23,18 @@ export const ConversationList = () => {
       {loading && <p>Loading conversations...</p>}
       <ul className="w-full max-w-md">
         {conversations.map((conversation: Conversation) => (
-          <li key={conversation.id} className="p-4 border-b border-gray-300">
-            <h3 className="font-bold">Conversation ID: {conversation.id}</h3>
-            <p>Participants:</p>
-            <ul>
-              {conversation.participants.map((participant: User) => (
-                <li key={participant.id}>{participant.username}</li>
-              ))}
-            </ul>
-            <p>Messages:</p>
-            <ul>
-              {conversation.messages.map((message: Message) => (
-                <li key={message.id}>{message.content}</li>
-              ))}
-            </ul>
+          <li
+            key={conversation.id}
+            className="p-4 border-b border-gray-300 cursor-pointer"
+            onClick={() => navigate('/conversation/' + conversation.id)}
+          >
+            <p className="truncate">
+              Participants:{' '}
+              {conversation.participants
+                .map((participant: User) => participant.username)
+                .join(', ')}
+            </p>
+            <p>Messages: {conversation.messages.length}</p>
           </li>
         ))}
       </ul>

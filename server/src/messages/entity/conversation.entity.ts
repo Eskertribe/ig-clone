@@ -31,4 +31,15 @@ export class Conversation {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  toDto() {
+    return {
+      id: this.id,
+      participants: this.participants.map((user) => user.toUserDto()),
+      messages: this.messages.map((message) => message.toDto()),
+      createdAt: this.createdAt,
+      // createdBy: this.createdBy.toDto(),
+      deletedAt: this.deletedAt,
+    };
+  }
 }

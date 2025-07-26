@@ -1,9 +1,9 @@
 import { UUID } from 'crypto';
-import { User } from 'src/user/entity/user.entity';
-import { Message } from './message.entity';
+import { UserDto } from 'src/user/dto/user.dto';
+import { MessageDto } from './message.dto';
 
 export class ConversationDto {
   id: UUID;
-  participants: User[];
-  messages: Message[];
+  participants: UserDto[];
+  messages: MessageDto[];
 }
