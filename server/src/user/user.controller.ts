@@ -20,8 +20,9 @@ export class UserController {
 
   @Get('/find/:query')
   @UseGuards(AuthGuard('jwt'))
-  async findUserByQuery(@Param('query') query: string) {
-    const queryResult = await this.userService.findUserByQuery(query);
+  async findUserByQuery(@Param('query') query: string, @Req() req) {
+    const observerUsername = req.user.username;
+    const queryResult = await this.userService.findUserByQuery(query, observerUsername);
 
     return queryResult;
   }

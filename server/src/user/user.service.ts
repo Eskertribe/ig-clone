@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserProfileDataDto } from './dto/user.dto';
 import { User } from './entity/user.entity';
 
@@ -30,10 +30,16 @@ export class UserService {
     return user.toUserProfileDataDto(isFollowing);
   }
 
-  async findUserByQuery(query: string): Promise<UserProfileDataDto[]> {
-    const users = await this.userRepository.find({
-      where: [{ username: ILike(`%${query}%`) }, { name: ILike(`%${query}%`) }],
-    });
+  async findUserByQuery(query: string, observerUserName: string): Promise<UserProfileDataDto[]> {
+    const users = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profilePicture', 'profilePicture')
+      .select(['user.id', 'user.username', 'user.name', 'profilePicture'])
+      .where('(user.username ILIKE :query OR user.name ILIKE :query)', { query: `%${query}%` })
+      .andWhere('user.username != :observerUserName AND user.name != :observerUserName', {
+        observerUserName,
+      })
+      .getMany();
 
     return Promise.all(users.map((user) => user.toUserProfileDataDto()));
   }
