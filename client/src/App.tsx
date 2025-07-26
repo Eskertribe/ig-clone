@@ -9,6 +9,8 @@ import { PostModalProvider } from './PostModalContext/PostModalContextProvider';
 import { SideNav } from './SideNav/SideNav';
 import { UserPage } from './UserPage/UserPage';
 import { PostsWithHashtag } from './PostList/PostsWithHashtag';
+import { ConversationList } from './Messages/ConversationList';
+import { Conversation } from './Messages/Conversation';
 
 function App() {
   const [showAddContent, toggleShowAddContent] = useState(false);
@@ -37,6 +39,8 @@ function App() {
                     path="/hashtag/:hashtag"
                     element={<PostsWithHashtag />}
                   />
+                  <Route path="/conversations" element={<ConversationList />} />
+                  <Route path="/conversation/:id" element={<Conversation />} />
                 </Routes>
               </PostModalProvider>
             </div>

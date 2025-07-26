@@ -63,3 +63,17 @@ type UserProfilePicture = {
   id: string;
   image?: string;
 };
+
+type Message = {
+  id: string;
+  content: string;
+  conversation: Conversation;
+  sender: User;
+  createdAt: Date;
+};
+
+type Conversation = {
+  id: string;
+  participants: User[];
+  messages: Message[];
+};

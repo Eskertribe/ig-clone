@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faDoorOpen,
   faHome,
+  faMessage,
   faPlus,
   faSearch,
   faUser,
@@ -36,17 +37,23 @@ const SideNav: React.FC<SideNavProps> = ({ toggleShowAddContent }) => {
     clearToken();
   };
 
+  const navigateToMessages = () => {
+    navigate('/conversations');
+  };
+
   const home = <FontAwesomeIcon size="xl" icon={faHome} />;
   const userIcon = <FontAwesomeIcon size="xl" icon={faUser} />;
   const addContentIcon = <FontAwesomeIcon size="xl" icon={faPlus} />;
   const searchIcon = <FontAwesomeIcon size="xl" icon={faSearch} />;
   const logOutIcon = <FontAwesomeIcon size="xl" icon={faDoorOpen} />;
+  const messageIcon = <FontAwesomeIcon size="xl" icon={faMessage} />;
 
   return (
     <>
       <div className="w-1/6 border-r border-gray-300 flex flex-col items-start space-y-5 p-5">
         <button onClick={navigateToHome}>{home} Home</button>
         <button onClick={navigateToUser}>{userIcon} Profile</button>
+        <button onClick={navigateToMessages}>{messageIcon} Messages</button>
         <button onClick={toggleShowAddContent}>
           {addContentIcon} Add Content
         </button>

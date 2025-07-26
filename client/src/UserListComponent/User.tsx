@@ -2,13 +2,13 @@ import { FC } from 'react';
 
 export const User: FC<{
   user: User | Following;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }> = ({ user, onClick }) => {
   return (
     <div
       key={user.id}
       className="flex items-center space-x-4 mb-2 cursor-pointer border-b border-gray-600 pb-2 margin-bottom-5"
-      onClick={() => onClick()}
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => onClick(e)}
     >
       <img
         src={user.profilePicture.image}

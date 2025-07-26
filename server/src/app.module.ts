@@ -5,12 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import typeorm from './config/typeorm.config';
 import { FileModule } from './file/file.module';
+import { FollowModule } from './follow/follow.module';
+import { HashtagModule } from './hashtag/hashtag.module';
+import { MessageModule } from './messages/message.module';
 import { PostModule } from './post/post.module';
 import { PostService } from './post/post.service';
 import { UserModule } from './user/user.module';
 import { loadEntities } from './utils/loadEntities';
-import { FollowModule } from './follow/follow.module';
-import { HashtagModule } from './hashtag/hashtag.module';
 
 const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entities
 // TODO: dynamically load all controllers and services
@@ -38,6 +39,7 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
     UserModule,
     FollowModule,
     HashtagModule,
+    MessageModule,
   ],
   controllers: [],
   providers: [PostService],

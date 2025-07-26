@@ -3,6 +3,7 @@ import { Comment } from 'src/comment/entity/comment.entity';
 import { File } from 'src/file/entity/file.entity';
 import { UserFollower } from 'src/follow/entity/userfollower.entity';
 import { Like } from 'src/like/entity/like.entity';
+import { Message } from 'src/messages/entity/message.entity';
 import { Post } from 'src/post/entity/post.entity';
 import { UserSeenPost } from 'src/post/entity/userSeenPost.entity';
 import { imageToStringBuffer } from 'src/utils/imageToBuffer';
@@ -64,6 +65,12 @@ export class User {
 
   @OneToMany(() => UserSeenPost, (seen) => seen.user)
   seenPosts: UserSeenPost[];
+
+  @OneToMany(() => Message, (message) => message.sender)
+  messages: Message[];
+
+  @OneToMany(() => Message, (message) => message.conversation)
+  conversations: Message[];
 
   @CreateDateColumn()
   createdAt: Date;
