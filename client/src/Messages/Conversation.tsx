@@ -1,11 +1,14 @@
 import { useParams } from 'react-router-dom';
 import { useGetConversation } from '../hooks/useGetConversation';
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { useSendMessage } from '../hooks/useSendMessage';
+import { Message } from './Message';
+import { AuthContext } from '../AuthContext/AuthContext';
 
 export const Conversation = () => {
+  const { userId } = useContext(AuthContext);
   const { conversation, loading, fetchConversation } = useGetConversation();
   const { sendMessage } = useSendMessage();
   const { id } = useParams();
@@ -35,14 +38,7 @@ export const Conversation = () => {
       >
         {conversation.messages.length > 0
           ? conversation.messages.map((message: Message) => (
-              <div key={message.id} className="flex flex-col">
-                <span className="font-semibold mb-1">
-                  {message.sender.username}:
-                </span>
-                <div className="bg-white rounded-lg p-2 shadow text-gray-800">
-                  <p>{message.content}</p>
-                </div>
-              </div>
+              <Message key={message.id} message={message} observer={userId} />
             ))
           : 'No messages... Yet!'}
       </div>

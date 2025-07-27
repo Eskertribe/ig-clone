@@ -70,7 +70,7 @@ const useSignUp = () => {
       const { token, user }: SignUpResponse = await response.json();
       setLoading(false);
 
-      setAuthState(token, user.username);
+      setAuthState(token, user.username, user.id);
     } catch {
       setLoading(false);
       toast.error('Sign up failed. Please try again.');

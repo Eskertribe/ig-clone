@@ -3,9 +3,9 @@ import { createContext } from 'react';
 type AuthContextType = {
   token: string | undefined;
   user?: string;
-  setAuthState: (token: string, username: string) => void;
+  userId?: string;
+  setAuthState: (token: string, username: string, userId: string) => void;
   clearToken: () => void;
-  setUserState: (user: string) => void;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -13,5 +13,5 @@ export const AuthContext = createContext<AuthContextType>({
   setAuthState: () => {},
   clearToken: () => {},
   user: undefined,
-  setUserState: () => {},
+  userId: undefined,
 });

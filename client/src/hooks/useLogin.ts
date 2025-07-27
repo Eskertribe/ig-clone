@@ -46,7 +46,7 @@ const useLogin = () => {
       }
 
       const data: LoginResponse = await response.json();
-      setAuthState(data.token, data.user.username);
+      setAuthState(data.token, data.user.username, data.user.id);
 
       setLoading(false);
 
