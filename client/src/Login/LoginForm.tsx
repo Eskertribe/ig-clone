@@ -1,7 +1,7 @@
-import React, { useContext } from "react"
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { AuthContext } from "../AuthContext/AuthContext";
-import { toast } from "react-toastify";
+import React, { useContext } from 'react';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { AuthContext } from '../AuthContext/AuthContext';
+import { toast } from 'react-toastify';
 
 interface LoginFormProps {
   handleLogin: () => void;
@@ -13,8 +13,16 @@ interface LoginFormProps {
   toggleSignUp: (toggle: boolean) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ handleLogin, email, setEmail, password, setPassword, loading, toggleSignUp }) => {
-  const { setToken } = useContext(AuthContext);
+const LoginForm: React.FC<LoginFormProps> = ({
+  handleLogin,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  loading,
+  toggleSignUp,
+}) => {
+  const { setAuthState } = useContext(AuthContext);
 
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
@@ -33,10 +41,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin, email, setEmail, pas
         return;
       }
 
-      const { token } = await response.json();
+      const { token, username, userId } = await response.json();
 
-      setToken(token);
-    } catch (error) {
+      setAuthState(token, username, userId);
+    } catch {
       toast.error('Login failed');
     }
   };
@@ -50,7 +58,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin, email, setEmail, pas
       <h2 className="text-2xl mb-4 text-gray-800">Login</h2>
       <form className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Email:
+          </label>
           <input
             type="email"
             id="email"
@@ -60,7 +73,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin, email, setEmail, pas
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password:</label>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Password:
+          </label>
           <input
             type="password"
             id="password"
@@ -90,13 +108,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin, email, setEmail, pas
         <div className="flex justify-center mt-4">Or sign in with Google</div>
         <div className="flex justify-center mt-4">
           <GoogleLogin
-            onSuccess={credentialResponse => handleSuccess(credentialResponse)}
+            onSuccess={(credentialResponse) =>
+              handleSuccess(credentialResponse)
+            }
             onError={handleError}
           />
         </div>
       </form>
     </>
-  )
-}
+  );
+};
 
-export { LoginForm }
+export { LoginForm };

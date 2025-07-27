@@ -22,7 +22,9 @@ export class AuthController {
   async googleAuth(@Req() req) {
     const { token } = req.body;
 
-    return await this.authService.verifyGoogleToken(token);
+    const { user, token: jwtToken } = await this.authService.verifyGoogleToken(token);
+
+    return { user: user.toUserDto(), token: jwtToken };
   }
 
   @Post('signUp')
