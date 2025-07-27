@@ -15,15 +15,23 @@ export class MessageService {
     private readonly conversationRepository: Repository<Conversation>,
   ) {}
 
-  async getConversations(userId: UUID): Promise<Conversation[]> {
-    return this.conversationRepository
+  async getConversations(userId: UUID): Promise<ConversationDto[]> {
+    const conversations = await this.conversationRepository
       .createQueryBuilder('conversation')
       .leftJoinAndSelect('conversation.participants', 'participant')
       .leftJoinAndSelect('conversation.messages', 'message')
       .leftJoinAndSelect('conversation.participants', 'allParticipants')
+      .leftJoinAndSelect('conversation.createdBy', 'createdBy')
+      .leftJoinAndSelect('message.sender', 'messageSender')
       .where('participant.id = :userId', { userId })
       .orderBy('message.createdAt', 'ASC')
       .getMany();
+
+    if (!conversations) {
+      return [];
+    }
+
+    return Promise.all(conversations.map((conversation) => conversation.toDto()));
   }
 
   async getConversation(userId: UUID, conversationId: UUID): Promise<ConversationDto | null> {
@@ -33,6 +41,7 @@ export class MessageService {
       .leftJoinAndSelect('conversation.messages', 'message')
       .leftJoinAndSelect('message.sender', 'messageSender')
       .leftJoinAndSelect('conversation.participants', 'allParticipants')
+      .leftJoinAndSelect('conversation.createdBy', 'createdBy')
       .where('conversation.id = :conversationId', { conversationId })
       .andWhere('participant.id = :userId', { userId })
       .getOne();
@@ -65,5 +74,35 @@ export class MessageService {
     }
 
     return this.messageRepository.save({ content: message, conversation, sender: { id: sender } });
+  }
+
+  async deleteMessage(userId: UUID, messageId: UUID): Promise<void> {
+    const message = await this.messageRepository.findOne({
+      where: { id: messageId },
+      relations: { sender: true },
+    });
+
+    if (!message || message.sender.id !== userId) {
+      throw new Error('Message not found or user is not the sender');
+    }
+
+    await this.messageRepository.softDelete(messageId);
+  }
+
+  async deleteConversation(userId: UUID, conversationId: UUID): Promise<void> {
+    const conversation = await this.conversationRepository.findOne({
+      where: { id: conversationId },
+      relations: { createdBy: true },
+    });
+
+    if (!conversation) {
+      throw new Error('Conversation not found');
+    }
+
+    if (conversation.createdBy.id !== userId) {
+      throw new Error('Conversation not created by user');
+    }
+
+    await this.conversationRepository.softDelete(conversationId);
   }
 }

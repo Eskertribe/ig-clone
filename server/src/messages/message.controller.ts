@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { MessageService } from './message.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -41,5 +41,19 @@ export class MessageController {
     const sender = req.user.id;
 
     return this.messageService.sendToConversation(conversationId, message, sender);
+  }
+
+  @Delete('/deleteMessage/:messageId')
+  @UseGuards(AuthGuard('jwt'))
+  async deleteMessage(@Param('messageId') messageId: UUID, @Req() req) {
+    const userId = req.user.id;
+    return this.messageService.deleteMessage(userId, messageId);
+  }
+
+  @Delete('/deleteConversation/:conversationId')
+  @UseGuards(AuthGuard('jwt'))
+  async deleteConversation(@Param('conversationId') conversationId: UUID, @Req() req) {
+    const userId = req.user.id;
+    return this.messageService.deleteConversation(userId, conversationId);
   }
 }

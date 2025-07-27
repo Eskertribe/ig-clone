@@ -10,6 +10,7 @@ import { User } from '../../user/entity/user.entity';
 import { Message } from './message.entity';
 import { UUID } from 'crypto';
 import { CreateDateColumn, DeleteDateColumn } from 'typeorm';
+import { ConversationDto } from './conversation.dto';
 
 @Entity()
 export class Conversation {
@@ -23,23 +24,23 @@ export class Conversation {
   @OneToMany(() => Message, (message) => message.conversation)
   messages: Message[];
 
+  @ManyToOne(() => User)
+  @JoinTable()
+  createdBy: User;
+
   @CreateDateColumn()
   createdAt: Date;
-
-  @ManyToOne(() => User)
-  createdBy: User;
 
   @DeleteDateColumn()
   deletedAt?: Date;
 
-  toDto() {
+  toDto(): ConversationDto {
     return {
       id: this.id,
       participants: this.participants.map((user) => user.toUserDto()),
       messages: this.messages.map((message) => message.toDto()),
       createdAt: this.createdAt,
-      // createdBy: this.createdBy.toDto(),
-      deletedAt: this.deletedAt,
+      createdBy: this.createdBy.id,
     };
   }
 }

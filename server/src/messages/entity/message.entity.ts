@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { User } from '../../user/entity/user.entity';
 import { Conversation } from './conversation.entity';
 import { UUID } from 'crypto';
@@ -19,6 +26,9 @@ export class Message {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   toDto() {
     return {

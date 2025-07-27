@@ -6,4 +6,6 @@ export class ConversationDto {
   id: UUID;
   participants: UserDto[];
   messages: MessageDto[];
+  createdAt: Date;
+  createdBy: UUID;
 }
