@@ -21,7 +21,7 @@ export const ConversationList = () => {
       <h2>Conversations</h2>
       {!loading && conversations.length === 0 && <p>No conversations found.</p>}
       {loading && <p>Loading conversations...</p>}
-      <ul className="w-full max-w-md">
+      <ul className="w-full max-w-md bg-white rounded-lg shadow-md mt-4">
         {conversations.map((conversation: Conversation) => (
           <li
             key={conversation.id}
@@ -35,6 +35,10 @@ export const ConversationList = () => {
                 .join(', ')}
             </p>
             <p>Messages: {conversation.messages.length}</p>
+            <p className="truncate">
+              Last message:{' '}
+              {conversation.messages[conversation.messages.length - 1]?.content}
+            </p>
           </li>
         ))}
       </ul>
