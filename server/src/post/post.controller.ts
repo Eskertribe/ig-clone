@@ -175,4 +175,10 @@ export class PostController {
 
     return this.postService.removeLike({ postId, user: req.user });
   }
+
+  @Delete('/comment/remove/:commentId')
+  @UseGuards(AuthGuard('jwt'))
+  async removeComment(@Param('commentId') commentId: UUID, @Req() req) {
+    return this.postService.removeComment(commentId, req.user.id);
+  }
 }

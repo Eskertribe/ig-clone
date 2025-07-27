@@ -155,6 +155,18 @@ export class PostService {
     return fromDb!.toDto();
   }
 
+  async removeComment(commentId: UUID, userId: UUID) {
+    const existing = await this.commentRepository.findOne({
+      where: { id: commentId, user: { id: userId } },
+    });
+
+    if (!existing) {
+      throw new BadRequestException('Could not find comment');
+    }
+
+    this.commentRepository.softDelete(commentId);
+  }
+
   async getPost(postId: UUID): Promise<PostDto> {
     const post = await this.postRepository
       .createQueryBuilder('post')

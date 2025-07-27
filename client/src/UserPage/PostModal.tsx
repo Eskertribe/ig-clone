@@ -3,6 +3,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC, useContext, useMemo, useRef, useState } from 'react';
 import { useAddComment } from '../hooks/useAddComment';
+import { useDeleteComment } from '../hooks/useDeleteComment';
 import { useLike } from '../hooks/useLike';
 import { useUpdateComment } from '../hooks/useUpdateComment';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
@@ -16,6 +17,7 @@ export const PostModal: FC = () => {
   const { addComment, loading } = useAddComment();
   const { addLike, removeLike, loading: likeActionLoading } = useLike();
   const { updateComment } = useUpdateComment();
+  const { deleteComment } = useDeleteComment();
 
   const commentRef = useRef<HTMLInputElement>(null);
   const replyRef = useRef<string>(undefined);
@@ -141,6 +143,7 @@ export const PostModal: FC = () => {
                       commentRef.current.value = comment.text;
                       commentRef.current?.focus();
                     }}
+                    deleteComment={(id) => deleteComment(id)}
                   />
                 ))}
               </div>

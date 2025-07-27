@@ -15,6 +15,7 @@ type CommentProps = {
   parseText: (text: string) => JSX.Element[];
   isOwnComment: boolean;
   editing?: string;
+  deleteComment: (id: string) => void;
 };
 
 export const Comment: FC<CommentProps> = ({
@@ -25,9 +26,10 @@ export const Comment: FC<CommentProps> = ({
   parseText,
   isOwnComment,
   editing,
+  deleteComment,
 }) => {
   const { user, text, createdAt: timeStamp, replies, likes } = comment;
-  const [showReplies, setShowReplies] = useState(replies?.length === 1);
+  const [showReplies, setShowReplies] = useState(false);
   const { addLike, loading: likeActionLoading, removeLike } = useLike();
   const { fetchLikes } = useGetLikes();
 
@@ -99,11 +101,19 @@ export const Comment: FC<CommentProps> = ({
                   : 'Edit'}
               </button>
             )}
+            {isOwnComment && (
+              <button
+                onClick={() => deleteComment(comment.id)}
+                className="text-white-500 text-xs"
+              >
+                Delete
+              </button>
+            )}
             {replies?.length > 0 && (
               <button
                 className="text-white-500 text-xs"
                 onClick={() => {
-                  setShowReplies(replies.length === 1 ? true : !showReplies);
+                  setShowReplies((state) => !state);
                 }}
               >
                 Show replies
