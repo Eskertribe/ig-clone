@@ -127,6 +127,34 @@ export class PostService {
     return newComment.toDto();
   }
 
+  async editComment(postId: UUID, commentId: UUID, updatedComment: string, userId: UUID) {
+    const existingComment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: { post: true, user: true },
+    });
+
+    if (!existingComment) {
+      throw new BadRequestException('Comment not found');
+    }
+
+    if (existingComment.post.id !== postId) {
+      throw new BadRequestException('Comment not found');
+    }
+
+    if (existingComment.user.id !== userId) {
+      throw new BadRequestException('Can only edit own comments');
+    }
+
+    await this.commentRepository.update({ id: existingComment.id }, { text: updatedComment });
+
+    const fromDb = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: { post: true, user: true },
+    });
+
+    return fromDb!.toDto();
+  }
+
   async getPost(postId: UUID): Promise<PostDto> {
     const post = await this.postRepository
       .createQueryBuilder('post')

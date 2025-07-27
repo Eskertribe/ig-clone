@@ -1,45 +1,37 @@
 import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FC, useContext, useMemo, useRef } from 'react';
-import { toast } from 'react-toastify';
+import { FC, useContext, useMemo, useRef, useState } from 'react';
 import { useAddComment } from '../hooks/useAddComment';
 import { useLike } from '../hooks/useLike';
+import { useUpdateComment } from '../hooks/useUpdateComment';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { calculateTimeSince } from '../utils/timeDifference';
 import { Comment } from './Comment';
 
 export const PostModal: FC = () => {
-  const { isOpen, post, postLikes, setModalOpen, fetchLikes } =
+  const [editing, setEditing] = useState<string | undefined>();
+  const { isOpen, post, postLikes, setModalOpen, fetchLikes, fetchPost } =
     useContext(PostModalContext);
   const { addComment, loading } = useAddComment();
   const { addLike, removeLike, loading: likeActionLoading } = useLike();
+  const { updateComment } = useUpdateComment();
+
   const commentRef = useRef<HTMLInputElement>(null);
   const replyRef = useRef<string>(undefined);
 
-  const handleAddCommentSuccess = (newComment: PostComment) => {
-    if (!post) return;
-
-    if (!newComment?.parentId) {
-      post.comments = [...post.comments, newComment];
-    } else {
-      const parentComment = post.comments.find(
-        (comment) => comment.id === newComment.parentId
-      );
-
-      if (!parentComment) {
-        toast.error('Unkown comment');
-        return;
-      }
-
-      parentComment.replies = [...(parentComment.replies || []), newComment];
+  const handleSuccess = () => {
+    if (editing) {
+      setEditing(undefined);
     }
 
-    replyRef.current = undefined;
+    fetchPost(post!.id);
 
     if (commentRef.current) {
       commentRef.current.value = '';
     }
+
+    replyRef.current = undefined;
   };
 
   const isLiked = useMemo(() => {
@@ -131,6 +123,24 @@ export const PostModal: FC = () => {
                     }}
                     comment={comment}
                     post={post}
+                    editing={editing}
+                    edit={(edit) => {
+                      if (!commentRef.current) {
+                        return;
+                      }
+
+                      if (!edit) {
+                        commentRef.current.value = '';
+                        commentRef.current?.blur();
+                        setEditing(undefined);
+
+                        return;
+                      }
+
+                      setEditing(edit);
+                      commentRef.current.value = comment.text;
+                      commentRef.current?.focus();
+                    }}
                   />
                 ))}
               </div>
@@ -178,11 +188,22 @@ export const PostModal: FC = () => {
                   return;
                 }
 
+                if (editing) {
+                  updateComment(
+                    editing,
+                    post.id,
+                    commentRef.current!.value,
+                    handleSuccess
+                  );
+
+                  return;
+                }
+
                 addComment(
                   post.id,
                   commentRef.current.value,
                   replyRef.current,
-                  handleAddCommentSuccess
+                  handleSuccess
                 );
               }}
             >

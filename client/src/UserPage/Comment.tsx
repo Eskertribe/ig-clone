@@ -8,19 +8,23 @@ import { Reply } from './Reply';
 
 type CommentProps = {
   reply: (id: string) => void;
+  edit: (id?: string) => void;
   comment: PostComment;
   isReply?: boolean;
   post: Post;
   parseText: (text: string) => JSX.Element[];
   isOwnComment: boolean;
+  editing?: string;
 };
 
 export const Comment: FC<CommentProps> = ({
   post,
   comment,
   reply,
+  edit,
   parseText,
   isOwnComment,
+  editing,
 }) => {
   const { user, text, createdAt: timeStamp, replies, likes } = comment;
   const [showReplies, setShowReplies] = useState(replies?.length === 1);
@@ -79,6 +83,22 @@ export const Comment: FC<CommentProps> = ({
                 Reply
               </button>
             }
+            {isOwnComment && (
+              <button
+                onClick={() => {
+                  if (editing === comment.id) {
+                    edit();
+                  } else {
+                    edit(comment.id);
+                  }
+                }}
+                className="text-white-500 text-xs"
+              >
+                {editing !== undefined && editing === comment.id
+                  ? 'Cancel edit'
+                  : 'Edit'}
+              </button>
+            )}
             {replies?.length > 0 && (
               <button
                 className="text-white-500 text-xs"

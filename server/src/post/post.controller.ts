@@ -110,7 +110,23 @@ export class PostController {
     return this.postService.addComment(postId, comment, req.user, replytoId);
   }
 
-  @Patch('like')
+  @Patch('edit/comment/:commentId')
+  @UseGuards(AuthGuard('jwt'))
+  async editComment(
+    @Param('commentId') commentId: UUID,
+    @Body() body: { postId: UUID; updatedComment: string },
+    @Req() req,
+  ) {
+    const { postId, updatedComment } = body;
+
+    if (!postId || !commentId || !updatedComment) {
+      throw new BadRequestException('Invalid request');
+    }
+
+    return this.postService.editComment(postId, commentId, updatedComment, req.user.id);
+  }
+
+  @Post('like')
   @UseGuards(AuthGuard('jwt'))
   async addLike(@Body() body: { postId: UUID }, @Req() req) {
     const { postId } = body;
