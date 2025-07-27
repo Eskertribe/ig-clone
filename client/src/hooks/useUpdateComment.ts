@@ -10,11 +10,8 @@ const useUpdateComment = () => {
     commentId: string,
     postId: string,
     updatedComment: string,
-    callBack: (updatedComment: PostComment) => void
+    callBack?: (updatedComment: PostComment) => void
   ) => {
-    console.log(commentId);
-    console.log(postId);
-    console.log(updatedComment);
     if (!token) {
       toast.error('You must be logged in');
       return;
@@ -43,7 +40,7 @@ const useUpdateComment = () => {
         return;
       }
 
-      callBack(await response.json());
+      callBack?.(await response.json());
     } catch {
       toast.error('Error updating message');
     }
