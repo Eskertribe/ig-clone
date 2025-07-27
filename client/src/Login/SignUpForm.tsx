@@ -1,6 +1,6 @@
-import React, { useState } from "react"
-import { SingleFileUploader } from "../AddContent/FileUploader";
-import { toast } from "react-toastify";
+import React, { useState } from 'react';
+import { SingleFileUploader } from '../AddContent/FileUploader';
+import { toast } from 'react-toastify';
 
 interface LoginFormProps {
   handleSignUp: () => void;
@@ -11,37 +11,47 @@ interface LoginFormProps {
   toggleSignUp: (toggle: boolean) => void;
   loading: boolean;
   username: string;
-  setUsername: (username: string) => void
-  profilePicture?: File
-  setProfilePicture: (file: File) => void
+  setUsername: (username: string) => void;
+  profilePicture?: File;
+  setProfilePicture: (file: File) => void;
 }
 
-const SignUpForm: React.FC<LoginFormProps> = ({ handleSignUp, email, setEmail, password, setPassword, toggleSignUp, loading, setUsername, username, profilePicture, setProfilePicture }) => {
+const SignUpForm: React.FC<LoginFormProps> = ({
+  handleSignUp,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  toggleSignUp,
+  loading,
+  setUsername,
+  username,
+  profilePicture,
+  setProfilePicture,
+}) => {
   const [passwordCheck, setPasswordCheck] = useState('');
 
   const handleChange = (file: File) => {
     setProfilePicture(file);
   };
 
-  // Crude validation to ensure passwords match
-  // TODO: Use Yup or other validation library
-  function validateSingUp(): void {
+  function validateSignUp(): void {
     if (!email || !username || !password) {
-      toast.error('Please fill in all fields')
+      toast.error('Please fill in all fields');
       return;
     }
 
     if (password !== passwordCheck) {
-      toast.error('Passwords do not match')
+      toast.error('Passwords do not match');
       return;
     }
 
     if (!profilePicture) {
-      toast.error('Please upload a profile picture')
+      toast.error('Please upload a profile picture');
       return;
     }
 
-    handleSignUp()
+    handleSignUp();
   }
 
   return (
@@ -49,7 +59,12 @@ const SignUpForm: React.FC<LoginFormProps> = ({ handleSignUp, email, setEmail, p
       <h2 className="text-2xl mb-4 text-gray-800">Sign up</h2>
       <form className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Email:
+          </label>
           <input
             type="email"
             id="email"
@@ -59,7 +74,12 @@ const SignUpForm: React.FC<LoginFormProps> = ({ handleSignUp, email, setEmail, p
           />
         </div>
         <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username:</label>
+          <label
+            htmlFor="username"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Username:
+          </label>
           <input
             id="username"
             value={username}
@@ -68,7 +88,12 @@ const SignUpForm: React.FC<LoginFormProps> = ({ handleSignUp, email, setEmail, p
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password:</label>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Password:
+          </label>
           <input
             type="password"
             id="password"
@@ -78,7 +103,12 @@ const SignUpForm: React.FC<LoginFormProps> = ({ handleSignUp, email, setEmail, p
           />
         </div>
         <div>
-          <label htmlFor="passwordAgain" className="block text-sm font-medium text-gray-700">Password again:</label>
+          <label
+            htmlFor="passwordAgain"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Password again:
+          </label>
           <input
             type="password"
             id="passwordAgain"
@@ -88,7 +118,9 @@ const SignUpForm: React.FC<LoginFormProps> = ({ handleSignUp, email, setEmail, p
           />
         </div>
         <div className="custom-class-file-upload h-2/5 mb-4 w-full">
-          <label className="block text-sm font-medium text-gray-700">Upload a profile picture</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Upload a profile picture
+          </label>
           <SingleFileUploader handleChange={handleChange} />
         </div>
         <div className="flex space-x-4 mt-4">
@@ -96,7 +128,7 @@ const SignUpForm: React.FC<LoginFormProps> = ({ handleSignUp, email, setEmail, p
             type="button"
             disabled={loading}
             className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            onClick={() => validateSingUp()}
+            onClick={() => validateSignUp()}
           >
             {loading ? 'Submitting...' : 'Submit'}
           </button>
@@ -111,7 +143,7 @@ const SignUpForm: React.FC<LoginFormProps> = ({ handleSignUp, email, setEmail, p
         </div>
       </form>
     </>
-  )
-}
+  );
+};
 
-export { SignUpForm }
+export { SignUpForm };

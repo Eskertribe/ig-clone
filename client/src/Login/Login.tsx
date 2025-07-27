@@ -18,14 +18,19 @@ const Login: React.FC = () => {
     await login({ email, password });
   };
 
-  const handleSignUp = async ({ email, username, password, profilePicture }: SignUpParams) => {
+  const handleSignUp = async ({
+    email,
+    username,
+    password,
+    profilePicture,
+  }: SignUpParams) => {
     await signUp({ email, username, password, profilePicture });
-  }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen w-full">
       <div className="w-full max-w-md p-4 bg-white shadow-md rounded-md mb-20">
-        {!showSignUp &&
+        {!showSignUp && (
           <LoginForm
             email={email}
             setEmail={setEmail}
@@ -35,16 +40,22 @@ const Login: React.FC = () => {
             loading={loginLoading}
             toggleSignUp={toggleSignUp}
           />
-        }
-        {
-          showSignUp &&
+        )}
+        {showSignUp && (
           <>
             <SignUpForm
               email={email}
               setEmail={setEmail}
               password={password}
               setPassword={setPassword}
-              handleSignUp={async () => handleSignUp({ email, username, password, profilePicture: file })}
+              handleSignUp={async () =>
+                handleSignUp({
+                  email,
+                  username,
+                  password,
+                  profilePicture: file,
+                })
+              }
               toggleSignUp={toggleSignUp}
               loading={signUpLoading}
               username={username}
@@ -53,7 +64,7 @@ const Login: React.FC = () => {
               profilePicture={file}
             />
           </>
-        }
+        )}
       </div>
     </div>
   );
