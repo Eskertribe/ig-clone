@@ -131,7 +131,6 @@ const UserPage: React.FC = () => {
         )}
       </div>
       {isOpen && <PostModal />}
-      {/* TODO: Refactor */}
       {isFollowerModalOpen && (
         <FollowerModal
           dataType="followers"

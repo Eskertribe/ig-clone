@@ -9,8 +9,8 @@ const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load a
 
 const config: DataSourceOptions = {
   type: 'postgres',
-  host: process.env.DB_HOST || 'localhost', // Use `DB_HOST` for CLI
-  port: parseInt(process.env.DB_PORT ?? '5432'),
+  host: process.env.NODE_ENV === 'development' ? process.env.DB_HOST_DEV : process.env.DB_HOST_PROD,
+  port: parseInt(process.env.DB_PORT ?? ''),
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,

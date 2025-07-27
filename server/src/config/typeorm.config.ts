@@ -12,7 +12,7 @@ const { DB, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE } = process.env;
 
 const client = new Client({
   host: DB,
-  port: parseInt(DB_PORT ?? '5432'),
+  port: parseInt(DB_PORT ?? ''),
   user: DB_USERNAME,
   password: DB_PASSWORD,
   database: DB_DATABASE,

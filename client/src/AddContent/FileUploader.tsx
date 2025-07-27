@@ -2,10 +2,15 @@ import React from 'react';
 
 const ALLOWED_FILE_TYPES = ['image/png', 'image/jpeg', 'video/mp4'];
 
-const SingleFileUploader: React.FC<{ handleChange: (file: File) => void }> = ({ handleChange }) => {
+const SingleFileUploader: React.FC<{ handleChange: (file: File) => void }> = ({
+  handleChange,
+}) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0] && !ALLOWED_FILE_TYPES.includes(e.target.files[0].type)) {
-      alert('Invalid file type'); //TODO: TOAST?
+    if (
+      e.target.files?.[0] &&
+      !ALLOWED_FILE_TYPES.includes(e.target.files[0].type)
+    ) {
+      alert('Invalid file type');
       return;
     }
 

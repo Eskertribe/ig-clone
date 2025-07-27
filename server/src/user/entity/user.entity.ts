@@ -37,7 +37,7 @@ export class User {
   bio: string;
 
   @Column({ nullable: true })
-  password?: string; // TODO: Hash the password before saving it
+  password?: string;
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];

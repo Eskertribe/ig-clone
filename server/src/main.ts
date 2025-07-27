@@ -13,7 +13,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: 'your-secret-key', //TODO: Add to .env
+      secret: process.env.SESSIONS_SECRET || '',
       resave: false,
       saveUninitialized: false,
     }),
@@ -23,7 +23,10 @@ async function bootstrap() {
   app.use(passport.session());
 
   app.enableCors({
-    origin: 'http://localhost:5173', // TODO: Add to .env
+    origin:
+      process.env.NODE_ENV === 'development'
+        ? process.env.CLIENT_HOST_DEV
+        : process.env.CLIENT_HOST_PROD,
     credentials: true,
     allowedHeaders: ['Authorization', 'Content-Type'],
   });

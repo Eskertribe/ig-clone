@@ -1,1 +1,1 @@
--- db-init/init.sql //TODO: Remove
+-- db-init/init.sql

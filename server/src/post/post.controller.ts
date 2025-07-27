@@ -23,7 +23,7 @@ import { CreatePostDto } from './dto/post.dto';
 import { PostService } from './post.service';
 // import { ApiResponse } from '../middleware/ApiResponse';
 
-const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4']; // TODO: No hardcoded values
+const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4'];
 
 @Controller('v1/post')
 export class PostController {
