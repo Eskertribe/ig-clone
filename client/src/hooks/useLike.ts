@@ -18,7 +18,7 @@ const useLike = () => {
       : `${import.meta.env.VITE_API_URL}/post/like`;
 
     return fetch(url, {
-      method: 'PATCH',
+      method: 'POST',
       credentials: 'include',
       body: JSON.stringify({ postId, commentId }),
       headers: {

@@ -98,7 +98,7 @@ export class PostController {
     return this.postService.getPostsWithHashTag(hashtag);
   }
 
-  @Patch('comment')
+  @Post('comment')
   @UseGuards(AuthGuard('jwt'))
   async addComment(@Body() body: { postId: UUID; comment: string; replytoId?: UUID }, @Req() req) {
     const { postId, comment, replytoId } = body;
@@ -122,7 +122,7 @@ export class PostController {
     return this.postService.addLike(postId, req.user);
   }
 
-  @Patch('likeComment')
+  @Post('likeComment')
   @UseGuards(AuthGuard('jwt'))
   async addLikeToComment(@Body() body: { postId: UUID; commentId: UUID }, @Req() req) {
     const { postId, commentId } = body;

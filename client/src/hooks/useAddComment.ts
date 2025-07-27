@@ -27,7 +27,7 @@ const useAddComment = () => {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/post/comment`,
         {
-          method: 'PATCH',
+          method: 'POST',
           credentials: 'include',
           body: JSON.stringify({ postId, comment, replytoId }),
           headers: {
