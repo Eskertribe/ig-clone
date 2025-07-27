@@ -56,6 +56,7 @@ export class MessageService {
   async createConversation(senderId: UUID, recipientIds: UUID[]): Promise<Conversation> {
     return this.conversationRepository.save({
       participants: [{ id: senderId }, ...recipientIds.map((id) => ({ id }))],
+      createdBy: { id: senderId },
     });
   }
 
@@ -92,7 +93,7 @@ export class MessageService {
   async deleteConversation(userId: UUID, conversationId: UUID): Promise<void> {
     const conversation = await this.conversationRepository.findOne({
       where: { id: conversationId },
-      relations: { createdBy: true },
+      relations: { createdBy: true, messages: true },
     });
 
     if (!conversation) {
@@ -103,6 +104,9 @@ export class MessageService {
       throw new Error('Conversation not created by user');
     }
 
+    const messageIds = conversation.messages.map(({ id }) => id);
+
+    await this.messageRepository.softDelete(messageIds);
     await this.conversationRepository.softDelete(conversationId);
   }
 }

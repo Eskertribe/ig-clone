@@ -26,7 +26,7 @@ export const Conversation = () => {
 
   return (
     <div className="bg-gray-200 h-screen flex flex-col items-center pt-4">
-      <h2>Your messages with</h2>
+      <h2>Conversating:</h2>
       <p className="truncate">
         {conversation.participants
           .map((participant: User) => participant.username)

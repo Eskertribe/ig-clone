@@ -43,13 +43,15 @@ export const ConversationList = () => {
                     .join(', ')}
                 </p>
                 <p>Messages: {conversation.messages.length}</p>
-                <p className="truncate">
-                  Last message:{' '}
-                  {
-                    conversation.messages[conversation.messages.length - 1]
-                      .content
-                  }
-                </p>
+                {conversation.messages.length > 0 && (
+                  <p className="truncate">
+                    Last message:{' '}
+                    {
+                      conversation.messages[conversation.messages.length - 1]
+                        .content
+                    }
+                  </p>
+                )}
               </div>
               {userId === conversation.createdBy && (
                 <button
