@@ -143,7 +143,9 @@ export const PostModal: FC = () => {
                       commentRef.current.value = comment.text;
                       commentRef.current?.focus();
                     }}
-                    deleteComment={(id) => deleteComment(id)}
+                    deleteComment={(id) =>
+                      deleteComment(id, () => fetchPost(post.id))
+                    }
                   />
                 ))}
               </div>

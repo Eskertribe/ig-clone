@@ -18,7 +18,7 @@ const useDeleteComment = () => {
       }
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/post/remove/comment/${commentId}`,
+        `${import.meta.env.VITE_API_URL}/post/comment/remove/${commentId}`,
         {
           method: 'DELETE',
           credentials: 'include',
