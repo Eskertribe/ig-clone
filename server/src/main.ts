@@ -14,6 +14,9 @@ async function bootstrap() {
     allowedHeaders: ['Authorization', 'Content-Type'],
   });
 
+  // Set global prefix for API routes
+  app.setGlobalPrefix('api');
+
   // Use cookie parser
   app.use(cookieParser());
 

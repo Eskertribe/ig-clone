@@ -7,12 +7,12 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { CreateUserDto, LoginUserDto } from '../user/dto/user.dto';
-import { AuthService } from './auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { CreateUserDto, LoginUserDto } from '../user/dto/user.dto';
+import { AuthService } from './auth.service';
 
 @Controller('v1/auth')
 export class AuthController {
@@ -39,14 +39,20 @@ export class AuthController {
       }),
     }),
   )
-  // @ApiResponse('token')
   async signup(
     @UploadedFile() profilePicture: Express.Multer.File,
-    @Body() createUserDto: CreateUserDto,
+    @Body() body: any, // Use any instead of DTO for multipart data
   ) {
     if (!profilePicture) {
       throw new BadRequestException({ message: 'Profile picture is required' });
     }
+
+    const createUserDto: CreateUserDto = {
+      email: body.email,
+      username: body.username,
+      password: body.password,
+      name: body.name,
+    };
 
     const user = await this.authService.signUp(createUserDto, profilePicture);
     const { token } = await this.authService.generateJwtToken(user);
@@ -55,7 +61,6 @@ export class AuthController {
   }
 
   @Post('login')
-  // @ApiResponse('token', { token: String })
   async login(@Body() loginUserDto: LoginUserDto) {
     const user = await this.authService.login(loginUserDto);
 

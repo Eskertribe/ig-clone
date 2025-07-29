@@ -9,6 +9,7 @@ const Login: React.FC = () => {
   const [showSignUp, toggleSignUp] = useState(false);
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [file, setFile] = useState<File | undefined>();
 
   const { login, loading: loginLoading } = useLogin();
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
     password,
     profilePicture,
   }: SignUpParams) => {
-    await signUp({ email, username, password, profilePicture });
+    await signUp({ email, username, password, profilePicture, name });
   };
 
   return (
@@ -54,6 +55,7 @@ const Login: React.FC = () => {
                   username,
                   password,
                   profilePicture: file,
+                  name,
                 })
               }
               toggleSignUp={toggleSignUp}
@@ -62,6 +64,8 @@ const Login: React.FC = () => {
               setUsername={setUsername}
               setProfilePicture={setFile}
               profilePicture={file}
+              name={name}
+              setName={setName}
             />
           </>
         )}

@@ -65,12 +65,13 @@ export class AuthService {
     createUserDto: CreateUserDto,
     profilePicture: Express.Multer.File,
   ): Promise<UserDto> {
-    const { email: newEmail, password, username: newUserName } = createUserDto;
+    const { email, password, username, name } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = this.userRepository.create({
-      email: newEmail,
+      email,
       password: hashedPassword,
-      username: newUserName,
+      username,
+      name,
       profilePicture: { name: profilePicture.filename, mimeType: profilePicture.mimetype },
     });
     const user = await this.userRepository.save(newUser);

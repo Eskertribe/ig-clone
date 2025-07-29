@@ -10,6 +10,7 @@ interface SignUpResponse {
 export interface SignUpParams {
   email: string;
   username: string;
+  name: string;
   password: string;
   profilePicture?: File;
 }
@@ -22,6 +23,7 @@ const useSignUp = () => {
     email,
     username,
     password,
+    name,
     profilePicture,
   }: SignUpParams): Promise<void> => {
     setLoading(true);
@@ -48,6 +50,7 @@ const useSignUp = () => {
     formData.append('email', email);
     formData.append('username', username);
     formData.append('password', password);
+    formData.append('name', name);
     formData.append('profilePicture', profilePicture);
 
     try {
@@ -56,7 +59,6 @@ const useSignUp = () => {
         {
           method: 'POST',
           body: formData,
-          credentials: 'include',
         }
       );
 

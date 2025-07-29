@@ -5,8 +5,9 @@ import { UUID } from 'crypto';
 export class CreateUserDto {
   username: string;
   email: string;
+  name: string;
   password: string;
-  token: string;
+  token?: string;
 }
 
 export class LoginUserDto {

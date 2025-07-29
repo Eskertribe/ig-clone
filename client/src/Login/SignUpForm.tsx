@@ -14,6 +14,8 @@ interface LoginFormProps {
   setUsername: (username: string) => void;
   profilePicture?: File;
   setProfilePicture: (file: File) => void;
+  setName: (name: string) => void;
+  name: string;
 }
 
 const SignUpForm: React.FC<LoginFormProps> = ({
@@ -28,6 +30,8 @@ const SignUpForm: React.FC<LoginFormProps> = ({
   username,
   profilePicture,
   setProfilePicture,
+  name,
+  setName,
 }) => {
   const [passwordCheck, setPasswordCheck] = useState('');
 
@@ -70,6 +74,20 @@ const SignUpForm: React.FC<LoginFormProps> = ({
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Name:
+          </label>
+          <input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
         </div>
