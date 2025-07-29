@@ -23,14 +23,15 @@ export const SearchDrawer: FC<{ close: () => void }> = ({ close }) => {
   };
 
   return (
-    <div className="fixed translate-x-[50%] h-screen w-[20vw] bg-[#3b3939]">
-      <div className="p-6">
+    <div className="fixed left-0 md:left-auto md:translate-x-0 md:right-0 h-screen w-full sm:w-[80vw] md:w-[50vw] lg:w-[30vw] xl:w-[20vw] bg-[#3b3939] z-50 overflow-y-auto">
+      <div className="p-4 md:p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl text-white">Search</h2>
+          <h2 className="text-xl md:text-2xl text-white">Search</h2>
           <button
-            className=" text-xl leading-none hover:text-gray-700 focus:outline-none"
+            className="text-white text-xl leading-none hover:text-gray-300 focus:outline-none"
             onClick={close}
             type="button"
+            aria-label="Close search"
           >
             x
           </button>
@@ -40,14 +41,14 @@ export const SearchDrawer: FC<{ close: () => void }> = ({ close }) => {
           type="text"
           placeholder="Search user or #hashtag"
           className="w-full p-2 border border-gray-300 rounded-md mb-4"
-          onChange={(e) => handleInputChange(e)}
+          onChange={handleInputChange}
         />
         <div className="space-y-2">
           {!loading && users.length === 0 && hashtags.length === 0 && (
             <p className="text-white">No results</p>
           )}
           {users.length > 0 && (
-            <div className="overflow-y-auto overflow-x-hidden flex-1">
+            <div className="overflow-y-auto max-h-[40vh] overflow-x-hidden flex-1">
               {users.map((user) => (
                 <User
                   key={user.id}
@@ -66,7 +67,7 @@ export const SearchDrawer: FC<{ close: () => void }> = ({ close }) => {
                 {hashtags.map((hashtag) => (
                   <li
                     key={hashtag.id}
-                    className="text-white cursor-pointer hover:underline"
+                    className="text-white cursor-pointer hover:underline py-2"
                     onClick={() => {
                       close();
                       navigate(`/hashtag/${hashtag.name}`);

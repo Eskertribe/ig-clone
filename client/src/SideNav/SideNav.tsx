@@ -50,15 +50,71 @@ const SideNav: React.FC<SideNavProps> = ({ toggleShowAddContent }) => {
 
   return (
     <>
-      <div className="w-1/6 border-r border-gray-300 flex flex-col items-start space-y-5 p-5">
-        <button onClick={navigateToHome}>{home} Home</button>
-        <button onClick={navigateToUser}>{userIcon} Profile</button>
-        <button onClick={navigateToMessages}>{messageIcon} Messages</button>
-        <button onClick={toggleShowAddContent}>
-          {addContentIcon} Add Content
+      <div className="w-1/6 min-w-[4em] border-r border-gray-300 flex flex-col items-start space-y-5 p-5">
+        <button
+          className="flex items-center gap-2 text-sm lg:text-base"
+          onClick={navigateToHome}
+        >
+          <span className="sm:scale-75 md:scale-90 lg:scale-100">{home}</span>
+          <span className="hidden sm:inline text-sm lg:text-base truncate max-w-[90px] md:max-w-[120px]">
+            Home
+          </span>
         </button>
-        <button onClick={toggleSideSearch}>{searchIcon} Search</button>
-        <button onClick={logout}>{logOutIcon} Logout</button>
+        <button
+          className="flex items-center gap-2 text-sm lg:text-base"
+          onClick={navigateToUser}
+        >
+          <span className="sm:scale-75 md:scale-90 lg:scale-100">
+            {userIcon}
+          </span>
+          <span className="hidden sm:inline text-sm lg:text-base truncate max-w-[90px] md:max-w-[120px]">
+            Profile
+          </span>
+        </button>
+        <button
+          className="flex items-center gap-2 text-sm lg:text-base"
+          onClick={navigateToMessages}
+        >
+          <span className="sm:scale-75 md:scale-90 lg:scale-100">
+            {messageIcon}
+          </span>
+          <span className="hidden sm:inline text-sm lg:text-base truncate max-w-[90px] md:max-w-[120px]">
+            Messages
+          </span>
+        </button>
+        <button
+          className="flex items-center gap-2 text-sm lg:text-base"
+          onClick={toggleShowAddContent}
+        >
+          <span className="sm:scale-75 md:scale-90 lg:scale-100">
+            {addContentIcon}
+          </span>
+          <span className="hidden sm:inline text-sm lg:text-base truncate max-w-[90px] md:max-w-[120px]">
+            Add Content
+          </span>
+        </button>
+        <button
+          className="flex items-center gap-2 text-sm lg:text-base"
+          onClick={toggleSideSearch}
+        >
+          <span className="sm:scale-75 md:scale-90 lg:scale-100">
+            {searchIcon}
+          </span>
+          <span className="hidden sm:inline text-sm lg:text-base truncate max-w-[90px] md:max-w-[120px]">
+            Search
+          </span>
+        </button>
+        <button
+          className="flex items-center gap-2 text-sm lg:text-base"
+          onClick={logout}
+        >
+          <span className="sm:scale-75 md:scale-90 lg:scale-100">
+            {logOutIcon}
+          </span>
+          <span className="hidden sm:inline text-sm lg:text-base truncate max-w-[90px] md:max-w-[120px]">
+            Logout
+          </span>
+        </button>
       </div>
       {isSearchOpen && <SearchDrawer close={() => setIsSearchOpen(false)} />}
     </>
