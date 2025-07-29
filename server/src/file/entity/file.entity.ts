@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
-import { Post } from 'src/post/entity/post.entity';
-import { User } from 'src/user/entity/user.entity';
+import { Post } from '../../post/entity/post.entity';
+import { User } from '../../user/entity/user.entity';
 import { UUID } from 'crypto';
 
 @Entity()

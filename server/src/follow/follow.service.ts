@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UUID } from 'crypto';
 import { Repository } from 'typeorm';
 import { User } from '../user/entity/user.entity';
-import { UserFollowerDto } from 'src/user/dto/user.dto';
+import { UserFollowerDto } from '../user/dto/user.dto';
 import { UserFollower } from './entity/userfollower.entity';
 
 @Injectable()

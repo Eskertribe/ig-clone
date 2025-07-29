@@ -6,9 +6,9 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { User } from 'src/user/entity/user.entity';
-import { Post } from 'src/post/entity/post.entity';
-import { Comment } from 'src/comment/entity/comment.entity';
+import { User } from '../../user/entity/user.entity';
+import { Post } from '../../post/entity/post.entity';
+import { Comment } from '../../comment/entity/comment.entity';
 
 @Entity()
 export class Like {

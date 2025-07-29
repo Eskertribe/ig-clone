@@ -1,12 +1,12 @@
 import { UUID } from 'crypto';
-import { Comment } from 'src/comment/entity/comment.entity';
-import { File } from 'src/file/entity/file.entity';
-import { UserFollower } from 'src/follow/entity/userfollower.entity';
-import { Like } from 'src/like/entity/like.entity';
-import { Message } from 'src/messages/entity/message.entity';
-import { Post } from 'src/post/entity/post.entity';
-import { UserSeenPost } from 'src/post/entity/userSeenPost.entity';
-import { imageToStringBuffer } from 'src/utils/imageToBuffer';
+import { Comment } from '../../comment/entity/comment.entity';
+import { File } from '../../file/entity/file.entity';
+import { UserFollower } from '../../follow/entity/userfollower.entity';
+import { Like } from '../../like/entity/like.entity';
+import { Message } from '../../messages/entity/message.entity';
+import { Post } from '../../post/entity/post.entity';
+import { UserSeenPost } from '../../post/entity/userSeenPost.entity';
+import { imageToStringBuffer } from '../../utils/imageToBuffer';
 import {
   Column,
   CreateDateColumn,

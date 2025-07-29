@@ -1,5 +1,5 @@
 import { UUID } from 'crypto';
-import { Hashtag } from 'src/hashtag/entity/hashtag.entity';
+import { Hashtag } from '../../hashtag/entity/hashtag.entity';
 import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Post } from './post.entity';
 

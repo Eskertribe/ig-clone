@@ -1,5 +1,8 @@
 FROM postgres:17.5-alpine
 
+# Copy initialization script
+COPY db-init/init.sql /docker-entrypoint-initdb.d/
+
 # Create a non-root user for better security
 RUN addgroup -g 1001 -S postgres_group && \
     adduser -S -D -H -u 1001 -s /sbin/nologin -G postgres_group postgres_user

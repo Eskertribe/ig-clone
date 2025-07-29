@@ -6,7 +6,7 @@ import { loadEntities } from '../utils/loadEntities';
 
 dotenv.config();
 
-const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entitie
+const entities = loadEntities('../../**/*.entity{.ts,.js}'); // Dynamically load all entitie
 
 const { DB, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE } = process.env;
 

@@ -1,9 +1,9 @@
 import { UUID } from 'crypto';
-import { Comment } from 'src/comment/entity/comment.entity';
-import { File } from 'src/file/entity/file.entity';
-import { Like } from 'src/like/entity/like.entity';
-import { User } from 'src/user/entity/user.entity';
-import { imageToStringBuffer } from 'src/utils/imageToBuffer';
+import { Comment } from '../../comment/entity/comment.entity';
+import { File } from '../../file/entity/file.entity';
+import { Like } from '../../like/entity/like.entity';
+import { User } from '../../user/entity/user.entity';
+import { imageToStringBuffer } from '../../utils/imageToBuffer';
 import {
   Column,
   CreateDateColumn,

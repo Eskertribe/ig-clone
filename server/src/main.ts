@@ -1,36 +1,47 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
-import * as passport from 'passport';
+import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api');
-
-  app.use(cookieParser());
-
-  app.use(
-    session({
-      secret: process.env.SESSIONS_SECRET || '',
-      resave: false,
-      saveUninitialized: false,
-    }),
-  );
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
+  // Enable CORS
   app.enableCors({
-    origin:
-      process.env.NODE_ENV === 'development'
-        ? process.env.CLIENT_HOST_DEV
-        : process.env.CLIENT_HOST_PROD,
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
     credentials: true,
     allowedHeaders: ['Authorization', 'Content-Type'],
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  // Use cookie parser
+  app.use(cookieParser());
+
+  // Use session middleware
+  app.use(
+    session({
+      secret: process.env.SESSIONS_SECRET || 'fallback-secret',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: false, // Set to true in production with HTTPS
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      },
+    }),
+  );
+
+  // Global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
+
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Application is running on: http://localhost:${port}`);
 }
+
 bootstrap();

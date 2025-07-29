@@ -1,5 +1,5 @@
 import { UUID } from 'crypto';
-import { UserCommentDto } from 'src/user/dto/user.dto';
+import { UserCommentDto } from '../../user/dto/user.dto';
 
 export class CommentDto {
   id: UUID;

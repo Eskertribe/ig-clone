@@ -13,7 +13,7 @@ import { PostService } from './post/post.service';
 import { UserModule } from './user/user.module';
 import { loadEntities } from './utils/loadEntities';
 
-const entities = loadEntities('src/**/*.entity{.ts,.js}'); // Dynamically load all entities
+const entities = loadEntities('../../**/*.entity{.ts,.js}'); // Dynamically load all entities
 // TODO: dynamically load all controllers and services
 
 @Module({

@@ -1,7 +1,7 @@
 import { UUID } from 'crypto';
-import { Like } from 'src/like/entity/like.entity';
-import { Post } from 'src/post/entity/post.entity';
-import { User } from 'src/user/entity/user.entity';
+import { Like } from '../../like/entity/like.entity';
+import { Post } from '../../post/entity/post.entity';
+import { User } from '../../user/entity/user.entity';
 import {
   Column,
   CreateDateColumn,
