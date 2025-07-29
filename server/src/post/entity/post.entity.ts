@@ -3,7 +3,6 @@ import { Comment } from '../../comment/entity/comment.entity';
 import { File } from '../../file/entity/file.entity';
 import { Like } from '../../like/entity/like.entity';
 import { User } from '../../user/entity/user.entity';
-import { imageToStringBuffer } from '../../utils/imageToBuffer';
 import {
   Column,
   CreateDateColumn,
@@ -68,7 +67,7 @@ export class Post {
       disableLikes: this.disableLikes,
       file: {
         id: this.file.id,
-        image: await imageToStringBuffer(this.file.name, this.file.mimeType),
+        url: `/uploads/${this.file.name}`,
       },
       user: this.user ? await this.user?.toCommentDto() : undefined,
       comments: this.comments

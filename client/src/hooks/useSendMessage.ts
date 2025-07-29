@@ -7,7 +7,6 @@ const useSendMessage = () => {
   const { token } = useContext(AuthContext);
 
   const sendMessage = async (conversationId: string, message: string) => {
-    console.log(message);
     if (!token) {
       toast.error('You must be logged in');
       return;

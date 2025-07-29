@@ -21,7 +21,6 @@ import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { CreatePostDto } from './dto/post.dto';
 import { PostService } from './post.service';
-// import { ApiResponse } from '../middleware/ApiResponse';
 
 const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4'];
 
@@ -42,11 +41,7 @@ export class PostController {
     }),
   )
   @UseGuards(AuthGuard('jwt'))
-  async createPost(
-    @Req() req,
-    @UploadedFile() file: Express.Multer.File,
-    @Body() post: CreatePostDto,
-  ) {
+  async createPost(@Req() req, @UploadedFile() file: Express.Multer.File, @Body() post: any) {
     if (!file) {
       throw new BadRequestException('File is required');
     }

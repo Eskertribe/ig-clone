@@ -25,6 +25,7 @@ export class File {
       id: this.id,
       name: this.name,
       mimeType: this.mimeType,
+      url: `/uploads/${this.name}`,
     };
   }
 }

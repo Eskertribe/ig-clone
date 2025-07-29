@@ -21,7 +21,7 @@ export class PostDto {
   readonly disableComments?: boolean;
   readonly disableLikes?: boolean;
   readonly user?: UserCommentDto;
-  readonly file: { id: UUID; image: string };
+  readonly file: { id: UUID; url: string };
   readonly createdAt: Date;
   readonly comments: CommentDto[];
   readonly likes?: { userId: UUID }[];

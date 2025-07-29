@@ -39,10 +39,7 @@ export class AuthController {
       }),
     }),
   )
-  async signup(
-    @UploadedFile() profilePicture: Express.Multer.File,
-    @Body() body: any, // Use any instead of DTO for multipart data
-  ) {
+  async signup(@UploadedFile() profilePicture: Express.Multer.File, @Body() body: any) {
     if (!profilePicture) {
       throw new BadRequestException({ message: 'Profile picture is required' });
     }
@@ -61,7 +58,7 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto) {
+  async login(@Body() loginUserDto: any) {
     const user = await this.authService.login(loginUserDto);
 
     if (!user) {

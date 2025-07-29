@@ -9,6 +9,7 @@ import { useUpdateComment } from '../hooks/useUpdateComment';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { calculateTimeSince } from '../utils/timeDifference';
 import { Comment } from './Comment';
+import { getImageUrl } from '../utils/getImage';
 
 export const PostModal: FC = () => {
   const [editing, setEditing] = useState<string | undefined>();
@@ -76,7 +77,7 @@ export const PostModal: FC = () => {
           </button>
         </div>
         <div className="flex-[2] flex justify-center items-center">
-          <img src={post.file.image} />
+          <img src={getImageUrl(post.file.url)} />
         </div>
         <div className="flex-[1] m-4 flex flex-col justify-between">
           <div>

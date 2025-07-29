@@ -33,7 +33,7 @@ type Post = {
   description: string;
   file: {
     id: string;
-    image: string;
+    url: string;
   };
   likes: { user: { id: string } }[];
   text: string;
