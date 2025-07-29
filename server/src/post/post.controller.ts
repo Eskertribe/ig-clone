@@ -19,7 +19,6 @@ import { UUID } from 'crypto';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { CreatePostDto } from './dto/post.dto';
 import { PostService } from './post.service';
 
 const allowedMimeTypes = ['image/png', 'image/jpeg', 'video/mp4'];

@@ -10,8 +10,10 @@ import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { calculateTimeSince } from '../utils/timeDifference';
 import { Comment } from './Comment';
 import { getImageUrl } from '../utils/getImage';
+import { AuthContext } from '../AuthContext/AuthContext';
 
 export const PostModal: FC = () => {
+  const { userId } = useContext(AuthContext);
   const [editing, setEditing] = useState<string | undefined>();
   const { isOpen, post, postLikes, setModalOpen, fetchLikes, fetchPost } =
     useContext(PostModalContext);
@@ -42,8 +44,8 @@ export const PostModal: FC = () => {
       return false;
     }
 
-    return postLikes.some((like) => like.userId === post.user.id);
-  }, [postLikes, post]);
+    return postLikes.some((like) => like.userId === userId);
+  }, [postLikes, post, userId]);
 
   if (!isOpen || !post) {
     return null;
