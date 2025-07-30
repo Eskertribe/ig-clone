@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UUID } from 'crypto';
 import { Repository } from 'typeorm';
-import { User } from '../user/entity/user.entity';
 import { UserFollowerDto } from '../user/dto/user.dto';
+import { User } from '../user/entity/user.entity';
 import { UserFollower } from './entity/userfollower.entity';
 
 @Injectable()
@@ -41,11 +41,11 @@ export class FollowService {
     return await Promise.all(result.map(({ user }) => user.toFollowerDto()));
   }
 
-  async followUser(userId: UUID, username: string): Promise<void> {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+  async followUser(observer: UUID, username: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: observer } });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      throw new NotFoundException(`User with ID ${observer} not found`);
     }
 
     const targetUser = await this.userRepository.findOne({ where: { username } });
@@ -56,16 +56,16 @@ export class FollowService {
 
     // Check if already following
     const existingFollow = await this.userFollowerRepository.findOne({
-      where: { userId, followerId: targetUser.id },
+      where: { userId: targetUser.id, followerId: observer },
     });
 
     if (existingFollow) {
-      return;
+      throw new BadRequestException(`You are already following ${username}`);
     }
 
     this.userFollowerRepository.insert({
-      userId,
-      followerId: targetUser.id,
+      userId: targetUser.id,
+      followerId: observer,
       user: targetUser,
       follower: user,
     });
