@@ -38,7 +38,7 @@ export const FeedPost: React.FC<{ post: Post; openModal: () => void }> = ({
         </span>
       </div>
       {post.file.url && (
-        <div className="aspect-square max-h-[500px] overflow-hidden">
+        <div className="aspect-[4/3] max-h-[500px] overflow-hidden">
           <img
             src={getImageUrl(post.file.url)}
             alt={post.description}
