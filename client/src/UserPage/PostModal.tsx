@@ -211,7 +211,7 @@ export const PostModal: FC = () => {
             </div>
 
             <p className="text-white text-sm font-semibold">
-              {post.likes.length} {post.likes.length === 1 ? 'like' : 'likes'}
+              {postLikes.length} {postLikes.length === 1 ? 'like' : 'likes'}
             </p>
 
             <div className="flex items-center space-x-2 sm:space-x-3">
