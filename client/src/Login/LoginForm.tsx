@@ -1,7 +1,4 @@
-import React, { useContext } from 'react';
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import { AuthContext } from '../AuthContext/AuthContext';
-import { toast } from 'react-toastify';
+import React from 'react';
 
 interface LoginFormProps {
   handleLogin: () => void;
@@ -22,36 +19,36 @@ const LoginForm: React.FC<LoginFormProps> = ({
   loading,
   toggleSignUp,
 }) => {
-  const { setAuthState } = useContext(AuthContext);
+  // const { setAuthState } = useContext(AuthContext);
 
-  const handleSuccess = async (credentialResponse: CredentialResponse) => {
-    try {
-      const response = await fetch(import.meta.env.VITE_GOOGLE_AUTH_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: credentialResponse.credential,
-        }),
-      });
+  // const handleSuccess = async (credentialResponse: CredentialResponse) => {
+  //   try {
+  //     const response = await fetch(import.meta.env.VITE_GOOGLE_AUTH_URL, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         token: credentialResponse.credential,
+  //       }),
+  //     });
 
-      if (!response.ok) {
-        toast.error('Login failed');
-        return;
-      }
+  //     if (!response.ok) {
+  //       toast.error('Login failed');
+  //       return;
+  //     }
 
-      const { token, username, userId } = await response.json();
+  //     const { token, username, userId } = await response.json();
 
-      setAuthState(token, username, userId);
-    } catch {
-      toast.error('Login failed');
-    }
-  };
+  //     setAuthState(token, username, userId);
+  //   } catch {
+  //     toast.error('Login failed');
+  //   }
+  // };
 
-  const handleError = () => {
-    toast.error('Login failed');
-  };
+  // const handleError = () => {
+  //   toast.error('Login failed');
+  // };
 
   return (
     <>
@@ -105,15 +102,15 @@ const LoginForm: React.FC<LoginFormProps> = ({
             Sign Up
           </button>
         </div>
-        <div className="flex justify-center mt-4">Or sign in with Google</div>
-        <div className="flex justify-center mt-4">
+        {/* <div className="flex justify-center mt-4">Or sign in with Google</div> */}
+        {/* <div className="flex justify-center mt-4">
           <GoogleLogin
             onSuccess={(credentialResponse) =>
               handleSuccess(credentialResponse)
             }
             onError={handleError}
           />
-        </div>
+        </div> */}
       </form>
     </>
   );
