@@ -11,6 +11,7 @@ import { calculateTimeSince } from '../utils/timeDifference';
 import { Comment } from './Comment';
 import { getImageUrl } from '../utils/getImage';
 import { AuthContext } from '../AuthContext/AuthContext';
+import { useDeletePost } from '../hooks/useDeletePost';
 
 export const PostModal: FC = () => {
   const { userId } = useContext(AuthContext);
@@ -21,6 +22,7 @@ export const PostModal: FC = () => {
   const { addLike, removeLike, loading: likeActionLoading } = useLike();
   const { updateComment } = useUpdateComment();
   const { deleteComment } = useDeleteComment();
+  const { deletePost } = useDeletePost();
 
   const commentRef = useRef<HTMLInputElement>(null);
   const replyRef = useRef<string>(undefined);
@@ -84,12 +86,25 @@ export const PostModal: FC = () => {
               {post.user.username}
             </span>
           </div>
-          <button
-            onClick={() => setModalOpen()}
-            className="text-white text-xl font-bold hover:text-gray-300"
-          >
-            ×
-          </button>
+          <div className="flex space-x-4">
+            {userId && post.user.id && (
+              <button
+                onClick={() => {
+                  deletePost(post.id);
+                  setModalOpen();
+                }}
+                className="text-white text-sm font-bold hover:text-gray-300"
+              >
+                Delete
+              </button>
+            )}
+            <button
+              onClick={() => setModalOpen()}
+              className="text-white text-xl font-bold hover:text-gray-300"
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 lg:flex-[2] flex justify-center items-center bg-black">
@@ -112,12 +127,25 @@ export const PostModal: FC = () => {
                 {post.user.username}
               </span>
             </div>
-            <button
-              onClick={() => setModalOpen()}
-              className="text-white text-xl font-bold hover:text-gray-300"
-            >
-              ×
-            </button>
+            <div className="flex space-x-4">
+              {userId && post.user.id && (
+                <button
+                  onClick={() => {
+                    deletePost(post.id);
+                    setModalOpen();
+                  }}
+                  className="text-white text-sm font-bold hover:text-gray-300"
+                >
+                  Delete
+                </button>
+              )}
+              <button
+                onClick={() => setModalOpen()}
+                className="text-white text-xl font-bold hover:text-gray-300"
+              >
+                ×
+              </button>
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto p-4 min-h-0">
             <div className="mb-4 pb-4 border-b border-gray-600">

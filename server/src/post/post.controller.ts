@@ -175,4 +175,14 @@ export class PostController {
   async removeComment(@Param('commentId') commentId: UUID, @Req() req) {
     return this.postService.removeComment(commentId, req.user.id);
   }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  async deletePost(@Param('id') postId: UUID, @Req() req) {
+    if (!postId) {
+      throw new BadRequestException('Invalid post ID');
+    }
+
+    return this.postService.deletePost(postId, req.user.id);
+  }
 }

@@ -50,6 +50,18 @@ export class PostService {
     return newPost;
   }
 
+  async deletePost(postId: UUID, userId: UUID): Promise<void> {
+    const post = await this.postRepository.findOne({
+      where: { id: postId, user: { id: userId } },
+    });
+
+    if (!post) {
+      throw new BadRequestException('Post not found or you do not have permission to delete it');
+    }
+
+    await this.postRepository.softDelete(postId);
+  }
+
   async addComment(
     postId: UUID,
     text: string,
