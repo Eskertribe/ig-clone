@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UUID } from 'crypto';
 import { MessageService } from './message.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -11,6 +21,11 @@ export class MessageController {
   @UseGuards(AuthGuard('jwt'))
   async getConversations(@Req() req) {
     const userId = req.user.id;
+
+    if (!userId) {
+      throw new BadRequestException('User ID is required');
+    }
+
     return this.messageService.getConversations(userId);
   }
 
@@ -18,6 +33,15 @@ export class MessageController {
   @UseGuards(AuthGuard('jwt'))
   async getConversation(@Req() req, @Param('conversationId') conversationId: UUID) {
     const userId = req.user.id;
+
+    if (!userId) {
+      throw new BadRequestException('User ID is required');
+    }
+
+    if (!conversationId) {
+      throw new BadRequestException('Conversation ID is required');
+    }
+
     return this.messageService.getConversation(userId, conversationId);
   }
 
@@ -25,6 +49,14 @@ export class MessageController {
   @UseGuards(AuthGuard('jwt'))
   async createConversation(@Body() body: { participants: UUID[] }, @Req() req) {
     const sender = req.user.id;
+
+    if (!sender) {
+      throw new BadRequestException('User ID is required');
+    }
+
+    if (!body.participants || !Array.isArray(body.participants) || body.participants.length === 0) {
+      throw new BadRequestException('Participants array is required');
+    }
 
     const { id } = await this.messageService.createConversation(sender, body.participants);
 
@@ -40,6 +72,18 @@ export class MessageController {
   ) {
     const sender = req.user.id;
 
+    if (!sender) {
+      throw new BadRequestException('User ID is required');
+    }
+
+    if (!conversationId) {
+      throw new BadRequestException('Conversation ID is required');
+    }
+
+    if (!message) {
+      throw new BadRequestException('Message content is required');
+    }
+
     return this.messageService.sendToConversation(conversationId, message, sender);
   }
 
@@ -47,6 +91,15 @@ export class MessageController {
   @UseGuards(AuthGuard('jwt'))
   async deleteMessage(@Param('messageId') messageId: UUID, @Req() req) {
     const userId = req.user.id;
+
+    if (!userId) {
+      throw new BadRequestException('User ID is required');
+    }
+
+    if (!messageId) {
+      throw new BadRequestException('Message ID is required');
+    }
+
     return this.messageService.deleteMessage(userId, messageId);
   }
 
@@ -54,6 +107,15 @@ export class MessageController {
   @UseGuards(AuthGuard('jwt'))
   async deleteConversation(@Param('conversationId') conversationId: UUID, @Req() req) {
     const userId = req.user.id;
+
+    if (!userId) {
+      throw new BadRequestException('User ID is required');
+    }
+
+    if (!conversationId) {
+      throw new BadRequestException('Conversation ID is required');
+    }
+
     return this.messageService.deleteConversation(userId, conversationId);
   }
 }

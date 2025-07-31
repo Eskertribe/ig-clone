@@ -12,6 +12,10 @@ export class FollowController {
   async getFollowers(@Param('userId') userId: UUID, @Req() req) {
     const user = userId || req.user.id;
 
+    if (!user) {
+      throw new BadRequestException('User ID is required');
+    }
+
     return this.followService.getFollowers(user);
   }
 
@@ -20,15 +24,24 @@ export class FollowController {
   async getFollowing(@Param('userId') userId: UUID, @Req() req) {
     const user = userId || req.user.id;
 
+    if (!user) {
+      throw new BadRequestException('User ID is required');
+    }
+
     return this.followService.getFollowing(user);
   }
 
   @Patch('/follow/:username')
   @UseGuards(AuthGuard('jwt'))
   async followUser(@Param('username') username: string, @Req() req) {
+    if (!username) {
+      throw new BadRequestException('Username is required');
+    }
+
     if (username === req.user.username) {
       throw new BadRequestException('You cannot follow yourself');
     }
+
     const userId = req.user.id;
 
     return this.followService.followUser(userId, username);
@@ -37,6 +50,10 @@ export class FollowController {
   @Patch('/unfollow/:username')
   @UseGuards(AuthGuard('jwt'))
   async unfollowUser(@Param('username') username: string, @Req() req) {
+    if (!username) {
+      throw new BadRequestException('Username is required');
+    }
+
     if (username === req.user.username) {
       throw new BadRequestException('You cannot unfollow yourself');
     }

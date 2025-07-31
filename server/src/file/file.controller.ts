@@ -9,6 +9,10 @@ export class FileController {
   @Get(':filename')
   @UseGuards(AuthGuard('jwt'))
   async getFile(@Param('filename') filename: string, @Res() res: Response) {
+    if (!filename) {
+      return res.status(400).send('Filename is required');
+    }
+
     try {
       const filePath = join(__dirname, '..', '..', 'uploads', filename);
       const fileBuffer = await readFile(filePath);

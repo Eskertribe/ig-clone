@@ -95,11 +95,11 @@ export class PostController {
   @Post('comment')
   @UseGuards(AuthGuard('jwt'))
   async addComment(@Body() body: { postId: UUID; comment: string; replytoId?: UUID }, @Req() req) {
-    const { postId, comment, replytoId } = body;
-
-    if (!postId || !comment) {
+    if (!body.postId || !body.comment) {
       throw new BadRequestException('Invalid request');
     }
+
+    const { postId, comment, replytoId } = body;
 
     return this.postService.addComment(postId, comment, req.user, replytoId);
   }
@@ -111,11 +111,11 @@ export class PostController {
     @Body() body: { postId: UUID; updatedComment: string },
     @Req() req,
   ) {
-    const { postId, updatedComment } = body;
-
-    if (!postId || !commentId || !updatedComment) {
+    if (!body.postId || !commentId || !body.updatedComment) {
       throw new BadRequestException('Invalid request');
     }
+
+    const { postId, updatedComment } = body;
 
     return this.postService.editComment(postId, commentId, updatedComment, req.user.id);
   }
@@ -123,11 +123,11 @@ export class PostController {
   @Post('like')
   @UseGuards(AuthGuard('jwt'))
   async addLike(@Body() body: { postId: UUID }, @Req() req) {
-    const { postId } = body;
-
-    if (!postId) {
-      throw new BadRequestException('Invalid request');
+    if (!body.postId) {
+      throw new BadRequestException('Post ID missing');
     }
+
+    const { postId } = body;
 
     return this.postService.addLike(postId, req.user);
   }
@@ -153,6 +153,10 @@ export class PostController {
   @Post('markSeen')
   @UseGuards(AuthGuard('jwt'))
   async markPostSeen(@Body() { postId }: { postId: UUID }, @Req() req) {
+    if (!postId) {
+      throw new BadRequestException('Invalid post ID');
+    }
+
     const userId = req.user.id;
 
     return this.postService.markPostSeen(userId, postId);
@@ -164,7 +168,7 @@ export class PostController {
     const { postId } = body;
 
     if (!postId) {
-      throw new BadRequestException('Invalid request');
+      throw new BadRequestException('Invalid post ID');
     }
 
     return this.postService.removeLike({ postId, user: req.user });
@@ -173,6 +177,10 @@ export class PostController {
   @Delete('/comment/remove/:commentId')
   @UseGuards(AuthGuard('jwt'))
   async removeComment(@Param('commentId') commentId: UUID, @Req() req) {
+    if (!commentId) {
+      throw new BadRequestException('Invalid comment ID');
+    }
+
     return this.postService.removeComment(commentId, req.user.id);
   }
 

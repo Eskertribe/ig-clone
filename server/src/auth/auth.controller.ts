@@ -31,12 +31,12 @@ export class AuthController {
     }),
   )
   async signup(@UploadedFile() profilePicture: Express.Multer.File, @Body() body: any) {
-    if (!profilePicture) {
-      throw new BadRequestException({ message: 'Profile picture is required' });
-    }
-
     if (!body.email || !body.username || !body.password || !body.name) {
       throw new BadRequestException({ message: 'All fields are required' });
+    }
+
+    if (!profilePicture) {
+      throw new BadRequestException({ message: 'Profile picture is required' });
     }
 
     const createUserDto: CreateUserDto = {
