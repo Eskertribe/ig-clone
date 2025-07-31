@@ -67,6 +67,21 @@ export class AuthService {
   ): Promise<UserDto> {
     const { email, password, username, name } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const existingUser = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email OR user.username = :username', {
+        email,
+        username,
+      })
+      .getOne();
+
+    if (existingUser) {
+      throw new BadRequestException({
+        message: `${existingUser.email === email ? 'Email' : 'Username'} already exists`,
+      });
+    }
+
     const newUser = this.userRepository.create({
       email,
       password: hashedPassword,

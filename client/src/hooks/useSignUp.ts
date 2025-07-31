@@ -63,7 +63,8 @@ const useSignUp = () => {
       );
 
       if (!response.ok) {
-        toast.error('Sign up failed');
+        const { message } = await response.json();
+        toast.error(`Sign up failed. ${message}`);
         setLoading(false);
 
         return;
