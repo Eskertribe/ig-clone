@@ -30,7 +30,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen w-full">
-      <div className="w-full max-w-md p-4 bg-white shadow-md rounded-md mb-20">
+      <div className="w-full max-w-md p-4 bg-white shadow-md rounded-md m-5 mb-20">
         {!showSignUp && (
           <LoginForm
             email={email}

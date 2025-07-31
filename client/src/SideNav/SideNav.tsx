@@ -34,6 +34,7 @@ const SideNav: React.FC<SideNavProps> = ({ toggleShowAddContent }) => {
   };
 
   const logout = () => {
+    navigate('/');
     clearToken();
   };
 
