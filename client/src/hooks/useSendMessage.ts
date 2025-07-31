@@ -6,7 +6,11 @@ const useSendMessage = () => {
   const loadingRef = useRef(false);
   const { token } = useContext(AuthContext);
 
-  const sendMessage = async (conversationId: string, message: string) => {
+  const sendMessage = async (
+    conversationId: string,
+    message: string,
+    callback?: () => unknown
+  ) => {
     if (!token) {
       toast.error('You must be logged in');
       return;
@@ -44,6 +48,8 @@ const useSendMessage = () => {
         toast.error('Error sending message');
         return;
       }
+
+      callback?.();
     } catch {
       toast.error('Error sending message');
     }

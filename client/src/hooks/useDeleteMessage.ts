@@ -6,7 +6,7 @@ const useDeleteMessage = () => {
   const loadingRef = useRef(false);
   const { token } = useContext(AuthContext);
 
-  const deleteMessage = async (messageId: string) => {
+  const deleteMessage = async (messageId: string, callback?: () => unknown) => {
     if (!token) {
       toast.error('You must be logged in');
       return;
@@ -32,6 +32,8 @@ const useDeleteMessage = () => {
         toast.error('Error deleting message');
         return;
       }
+
+      callback?.();
     } catch {
       toast.error('Error deleting message');
     }

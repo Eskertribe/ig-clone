@@ -38,7 +38,12 @@ export const Conversation = () => {
       >
         {conversation.messages.length > 0
           ? conversation.messages.map((message: Message) => (
-              <Message key={message.id} message={message} observer={userId} />
+              <Message
+                key={message.id}
+                message={message}
+                observer={userId}
+                deleteCallback={() => (id ? fetchConversation(id) : null)}
+              />
             ))
           : 'No messages... Yet!'}
       </div>
@@ -56,7 +61,9 @@ export const Conversation = () => {
           className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600"
           onClick={() => {
             if (inputRef.current && inputRef.current.value.trim() !== '') {
-              sendMessage(conversation.id, inputRef.current.value);
+              sendMessage(conversation.id, inputRef.current.value, () =>
+                id ? fetchConversation(id) : null
+              );
               inputRef.current.value = '';
             }
           }}
