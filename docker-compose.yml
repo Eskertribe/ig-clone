@@ -37,9 +37,7 @@ services:
     build:
       context: ./client
       args:
-        VITE_API_URL: ${CLIENT_API_URL:-http://localhost:3000/api/v1}
-        VITE_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-504692938992-3h533nn2o1878b5a83lcrgjkujvuo27n.apps.googleusercontent.com}
-        VITE_GOOGLE_AUTH_URL: ${CLIENT_AUTH_URL:-http://localhost:3000/auth/google}
+        VITE_API_URL: /api/v1
     container_name: ig-clone-client
     ports:
       - "80:80"
