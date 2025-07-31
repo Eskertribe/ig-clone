@@ -375,6 +375,7 @@ export class PostService {
       user: {
         id: In(followedUserIds),
       },
+      deletedAt: IsNull(),
     };
 
     const seenPosts = await this.userSeenPostRepository
@@ -383,7 +384,7 @@ export class PostService {
       .leftJoinAndSelect('userSeenPost.post', 'post')
       .select(['userSeenPost.id', 'post.id'])
       .getMany();
-    const seenPostIds = seenPosts.map((usp) => usp.post.id);
+    const seenPostIds = seenPosts.filter((usp) => usp.post).map((usp) => usp.post.id);
 
     if (!showSeen && seenPostIds.length > 0) {
       const unseenPostIds = await this.postRepository
