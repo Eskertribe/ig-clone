@@ -36,8 +36,8 @@ export class User {
   @Column({ nullable: true })
   bio: string;
 
-  @Column({ nullable: true })
-  password?: string;
+  @Column()
+  password: string;
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];

@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from 'react-router-dom';
 
 import { ToastContainer } from 'react-toastify';
 import { AddContent } from './AddContent/AddContent';
@@ -41,6 +46,7 @@ function App() {
                   />
                   <Route path="/conversations" element={<ConversationList />} />
                   <Route path="/conversation/:id" element={<Conversation />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </PostModalProvider>
             </div>
