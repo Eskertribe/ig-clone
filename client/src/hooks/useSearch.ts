@@ -62,7 +62,7 @@ const useSearch = () => {
       setLoading(false);
     } catch {
       setLoading(false);
-      toast.error('Login failed. Please try again.');
+      toast.error('Search failed. Please try again.');
     }
   };
 
@@ -108,7 +108,7 @@ const useSearch = () => {
       setLoading(false);
     } catch {
       setLoading(false);
-      toast.error('Login failed. Please try again.');
+      toast.error('Search failed. Please try again.');
     }
   };
 
