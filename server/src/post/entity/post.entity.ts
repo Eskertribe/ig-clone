@@ -16,6 +16,7 @@ import {
 } from 'typeorm';
 import { PostDto } from '../dto/post.dto';
 import { PostToHashtag } from './postToHashtag.entity';
+import { imageToStringBuffer } from '../../utils/imageToBuffer';
 
 @Entity()
 export class Post {
@@ -67,7 +68,7 @@ export class Post {
       disableLikes: this.disableLikes,
       file: {
         id: this.file.id,
-        url: `/uploads/${this.file.name}`,
+        image: await imageToStringBuffer(this.file.name, this.file.mimeType),
       },
       user: this.user ? await this.user?.toCommentDto() : undefined,
       comments: this.comments

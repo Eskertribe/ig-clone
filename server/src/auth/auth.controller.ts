@@ -18,15 +18,6 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('google')
-  async googleAuth(@Req() req) {
-    const { token } = req.body;
-
-    const { user, token: jwtToken } = await this.authService.verifyGoogleToken(token);
-
-    return { user: user.toUserDto(), token: jwtToken };
-  }
-
   @Post('signUp')
   @UseInterceptors(
     FileInterceptor('profilePicture', {
@@ -44,6 +35,10 @@ export class AuthController {
       throw new BadRequestException({ message: 'Profile picture is required' });
     }
 
+    if (!body.email || !body.username || !body.password || !body.name) {
+      throw new BadRequestException({ message: 'All fields are required' });
+    }
+
     const createUserDto: CreateUserDto = {
       email: body.email,
       username: body.username,
@@ -59,6 +54,10 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() loginUserDto: any) {
+    if (!loginUserDto.email || !loginUserDto.password) {
+      throw new BadRequestException({ message: 'Email and password are required' });
+    }
+
     const user = await this.authService.login(loginUserDto);
 
     if (!user) {

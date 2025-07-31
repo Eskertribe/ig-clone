@@ -9,7 +9,6 @@ import { useUpdateComment } from '../hooks/useUpdateComment';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
 import { calculateTimeSince } from '../utils/timeDifference';
 import { Comment } from './Comment';
-import { getImageUrl } from '../utils/getImage';
 import { AuthContext } from '../AuthContext/AuthContext';
 import { useDeletePost } from '../hooks/useDeletePost';
 
@@ -109,7 +108,7 @@ export const PostModal: FC = () => {
 
         <div className="flex-1 lg:flex-[2] flex justify-center items-center bg-black">
           <img
-            src={getImageUrl(post.file.url)}
+            src={post.file.image}
             alt={post.description}
             className="max-w-full max-h-full object-contain"
           />

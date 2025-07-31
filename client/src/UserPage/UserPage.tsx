@@ -5,7 +5,6 @@ import { useFollow } from '../hooks/useFollow';
 import { useGetPosts } from '../hooks/useGetPosts';
 import { useGetUserProfile } from '../hooks/useGetUserProfile';
 import { PostModalContext } from '../PostModalContext/PostModalContext';
-import { getImageUrl } from '../utils/getImage';
 import { FollowerModal } from './FollowerModal';
 import { PostModal } from './PostModal';
 
@@ -123,14 +122,14 @@ const UserPage: React.FC = () => {
                   key={post.id}
                   className="border m-1 flex items-center justify-center aspect-square w-full overflow-hidden"
                 >
-                  {post.file.url && (
+                  {post.file.image && (
                     <img
-                      src={getImageUrl(post.file.url)}
+                      src={post.file.image}
                       alt={post.description}
                       onClick={() =>
                         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         //@ts-ignore
-                        setModalOpen({ id: post.id, url: post.file.url })
+                        setModalOpen({ id: post.id, url: post.file.image })
                       }
                       className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer"
                       loading="lazy"

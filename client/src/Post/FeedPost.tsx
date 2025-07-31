@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMarkPostSeen } from '../hooks/useMarkPostSeen';
 import { useOnScreen } from '../hooks/useOnScreen';
 import { calculateTimeSince } from '../utils/timeDifference';
-import { getImageUrl } from '../utils/getImage';
 
 export const FeedPost: React.FC<{ post: Post; openModal: () => void }> = ({
   post,
@@ -37,10 +36,10 @@ export const FeedPost: React.FC<{ post: Post; openModal: () => void }> = ({
           {calculateTimeSince(post.createdAt)}
         </span>
       </div>
-      {post.file.url && (
+      {post.file.image && (
         <div className="aspect-[4/3] max-h-[500px] overflow-hidden">
           <img
-            src={getImageUrl(post.file.url)}
+            src={post.file.image}
             alt={post.description}
             onClick={() => openModal()}
             className="w-full h-full object-contain cursor-pointer"
