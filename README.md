@@ -151,7 +151,7 @@ Tietokannan ja backendin välinen liikenne on hoidettu käyttämällä TypeORM-k
 
 Esimerkkinä osa user entitystä.
 
-![User-entity](./dokumentaatio/user_entity.png)
+![User-entity](dokumentaatio/user_entity.png)
 
 Muutoksia tietokantaan voi tehdä lisäämällä uusia kenttiä (property) entityyn. Esimerkiksi syntymäajan lisääminen tapahtuisi lisäämällä. Tämän jälkeen tietokantamuutos ajetaan tietokantaan luomalla migraatio ja ajamalla migraatio tietokantaan. Migraatiot ajetaan yleensä joka kerta kun palvelin käynnistyy uudelleen. Tieto jo ajetuista migraatiosta on tallennettu migrations tauluun.
 
@@ -220,7 +220,7 @@ Tätä tapaa käytetään yleensä monimutkaisempien hakujen tapauksessa eli sil
 
 #### ER-diagrammi
 
-![ER-diagrammi](./dokumentaatio/er-diagram.png)
+![ER-diagrammi](dokumentaatio/er-diagram.png)
 
 Tietokanta koostuu kuvan mukaisesti seitsemästätoista taulusta, joista yksi on TypeORM:n käyttämä migrations taulu. Päätauluja ovat user, post, comment, file, message, conversation ja hashtag ja loput ovat ns. välitauluja.
 
@@ -243,7 +243,7 @@ Tämä on toteutettu käyttämällä NestJS:n `@UseGuard` ja NestJS Passport kir
 
 Käyttö controllerin endpointissa
 
-![Auth guard](./dokumentaatio/auth_guard.PNG)
+![Auth guard](dokumentaatio/auth_guard.PNG)
 
 `JwtStrategy` validaatio, joka purkaa JWT-tokenin HTTP pyynnöstä, validoi tokenin ja tarkistaa onko käyttäjä validi.
 
@@ -269,19 +269,19 @@ Sovellus on suunniteltu kontitettuun ympäristöön (Docker Compose) ja voidaan 
 
 Kun sovellusta käytetään ensimmäistä kertaa on edessä kirjautumislomake.
 
-![Login](./dokumentaatio/login.PNG)
+![Login](dokumentaatio/login.PNG)
 
 Valitsemalla `Sign up` käyttäjälle avautuu käyttäjätunnuksen luontilomake.
 
-![Sign up](./dokumentaatio/sign_up.PNG)
+![Sign up](dokumentaatio/sign_up.PNG)
 
 Lomakkeeseen täytetään sähköposti, nimi, käyttäjänimi, salasana ja profiilikuva. Mikäli sähköposti ja/tai käyttäjänimi on jo käytössä, antaa palvelin siitä virheviestin. Tiedot validoidaan myös käyttöliittymän puolella.
 
-![Sign up filled](./dokumentaatio/sign_up_filled.PNG)
+![Sign up filled](dokumentaatio/sign_up_filled.PNG)
 
 Mikäli käyttäjän luonti onnistuu, ohjataan käyttäjä sovelluksen etusivulle.
 
-![Front page](./dokumentaatio/front_page.PNG)
+![Front page](dokumentaatio/front_page.PNG)
 
 Sovelluksen navigaatio tapahtuu käyttämällä vasemmalla olevaa valikkoa. Valikko ylhäältä alas:
 
@@ -294,7 +294,7 @@ Sovelluksen navigaatio tapahtuu käyttämällä vasemmalla olevaa valikkoa. Vali
 
 Painamalla `Add content` avautuu käyttäjälle modaali:
 
-![Add post](./dokumentaatio/add_post.PNG)
+![Add post](dokumentaatio/add_post.PNG)
 
 Kuva ladataan painamalla `Select file` nappia ja tekstikenttään kirjoitetaan postauksen selite. Postaus tallennetaan painamalla `submit`.
 
