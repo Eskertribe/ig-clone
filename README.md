@@ -307,3 +307,49 @@ Onnistuneen lähetyksen jälkeen tehty postaus löytyy `profile` valikosta.
 Painamalla kuvaa aukeaa postausmodaali, jossa postausta voi kommentoida tai siitä voi tykätä painamalla sydäntä alareunassa. Myös kommenteista voi tykätä painamalla kommentin vieressä näkyvää sydäntä.
 
 ![Post modal](dokumentaatio/post_modal.png)
+
+Haku löytyy valikosta vasemmalta. Painamalla search aukeaa hakuvalikko, jossa voi hakea käyttäjiä tai hashtageja. Hakutulosta klikkaamalla käyttäjä ohjataan joko toisen käyttäjän sivulle tai listaan, jossa on postauksia kyseisellä hashtagilla.
+
+![Search](dokumentaatio/search.png)
+
+Toisen käyttäjän sivulla näkyy käyttäjän postaukset, joita voi kommentoida ja tykätä. Lisäksi käyttäjää voi seurata painamalla `Follow` nappia tai `Unfollow`, jos haluaa lopettaa seuraamisen. Seurattujen käyttäjien postaukset näkyvät etusivulla ja ne poistetaan näkyvistä kun käyttäjä on ne nähnyt.
+
+![Follow](dokumentaatio/follow.png)
+
+Painamalla `Followers` tekstiä käyttäjän sivulla aukeaa lista käyttäjistä, jotka seuraavat kyseistä käyttäjää.
+
+![Followers](dokumentaatio/followers.png)
+
+Vastaavasti myös `Following` tekstistä painamalla aukeaa lista käyttäjistä jota tarkasteltava käyttäjä seuraa.
+
+Kun käyttäjä seuraa muita käyttäjiä ja näillä käyttäjillä on postauksia, näkyvät postaukset etusivulla `/` listana.
+
+![Feed](dokumentaatio/feed.png)
+
+Kun käyttäjä on nähnyt postauksen se merkitään nähdyksi eikä sitä näytetä enää ellei käyttäjä erikseen paina `Show seen posts` nappia.
+
+![Show seen](dokumentaatio/show_seen.png)
+
+Sovelluksessa voi lähettää viestejä käyttäjien välillä valitsemalla `Messages` valikon.
+
+![Conversations](dokumentaatio/conversations.png)
+
+Mikäli käyttäjällä ei ole olemassa olevia keskusteluja tai käyttäjä haluaa aloittaa uuden keskustelun, onnistuu se painamalla plus ikonia yläreunassa.
+
+![Recipients](dokumentaatio/recipients.png)
+
+Käyttämällä hakua voi etsiä vastaanottajia ja lisätä niitä vastaanottajien listalle. Kun kaikki vastaanottajat ovat lisätty keskustelu aloitetaan painamalla `Create conversation` nappia.
+
+Käyttäjän omat viestit näkyvät oikealla vihreällä taustavärillä ja muiden keskustelijoiden viestit näkyvät vasemmalla ja niissä näkyy lähettäjän käyttäjänimi. Omat viestit voi poistaa painamalla punaista roskakorin kuvaa.
+
+![Messages](dokumentaatio/messages.png)
+
+Kun Käyttäjällä on olemassa olevia keskusteluja näkyvät ne listalla. Jokainen keskustelu on listalla omana elementtinään ja elementissä näkyy keskustelun osapuolet, viestien määrä ja viimeisin viesti (jos viestejä on). Keskustelun aloittaja voi poistaa keskustelun painamalla punaista roskakoria. Keskustelu poistetaan kaikilta osapuolilta.
+
+![Conversations with messages](dokumentaatio/conversations_with_messages.png)
+
+Lopuksi käyttäjä voi kirjautua ulos sovelluksesta painamalla `Log out` valikkoa vasemmalta
+
+![Log out](dokumentaatio/logout.png)
+
+Silloin käyttäjän sessiotiedot poistetaan ja käyttäjä ei enää pääse käyttämään sovellusta ilman uudelleen kirjautumista.
