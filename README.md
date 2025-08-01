@@ -243,7 +243,7 @@ Tämä on toteutettu käyttämällä NestJS:n `@UseGuard` ja NestJS Passport kir
 
 Käyttö controllerin endpointissa
 
-![Auth guard](dokumentaatio/auth_guard.PNG)
+![Auth guard](dokumentaatio/auth_guard.png)
 
 `JwtStrategy` validaatio, joka purkaa JWT-tokenin HTTP pyynnöstä, validoi tokenin ja tarkistaa onko käyttäjä validi.
 
@@ -269,19 +269,19 @@ Sovellus on suunniteltu kontitettuun ympäristöön (Docker Compose) ja voidaan 
 
 Kun sovellusta käytetään ensimmäistä kertaa on edessä kirjautumislomake.
 
-![Login](dokumentaatio/login.PNG)
+![Login](dokumentaatio/login.png)
 
 Valitsemalla `Sign up` käyttäjälle avautuu käyttäjätunnuksen luontilomake.
 
-![Sign up](dokumentaatio/sign_up.PNG)
+![Sign up](dokumentaatio/sign_up.png)
 
 Lomakkeeseen täytetään sähköposti, nimi, käyttäjänimi, salasana ja profiilikuva. Mikäli sähköposti ja/tai käyttäjänimi on jo käytössä, antaa palvelin siitä virheviestin. Tiedot validoidaan myös käyttöliittymän puolella.
 
-![Sign up filled](dokumentaatio/sign_up_filled.PNG)
+![Sign up filled](dokumentaatio/sign_up_filled.png)
 
 Mikäli käyttäjän luonti onnistuu, ohjataan käyttäjä sovelluksen etusivulle.
 
-![Front page](dokumentaatio/front_page.PNG)
+![Front page](dokumentaatio/front_page.png)
 
 Sovelluksen navigaatio tapahtuu käyttämällä vasemmalla olevaa valikkoa. Valikko ylhäältä alas:
 
@@ -294,7 +294,7 @@ Sovelluksen navigaatio tapahtuu käyttämällä vasemmalla olevaa valikkoa. Vali
 
 Painamalla `Add content` avautuu käyttäjälle modaali:
 
-![Add post](dokumentaatio/add_post.PNG)
+![Add post](dokumentaatio/add_post.png)
 
 Kuva ladataan painamalla `Select file` nappia ja tekstikenttään kirjoitetaan postauksen selite. Postaus tallennetaan painamalla `submit`.
 
