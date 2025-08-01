@@ -1,5 +1,17 @@
 # Instagram-klooni arkkitehtuuri
 
+## Käynnistys lokaalissa ympäristössä
+
+Sovelluksen ajamiseen tarvitset Dockerin ja Noden.
+
+1. Kloonaa repository
+2. Aja `npm install` `/server` ja `/client` kansiossa
+3. Kopioi `/client/.template.env` ja `/.template.env` `.env` tiedostoihin ja lisää repositoryn juuressa olevaan `.env` tiedostoon puuttuvat tiedot
+4. Käynnistä sovellus `docker-compose up --build` komennolla tai vastaavalla. `server` ja `db` kontit ovat pakollisia, mutta käyttöliittymää voi käyttää myös lokaalissa dev ympäristössä. Ensimmäisen käynnistyksen jälkeen riittää pelkkä `docker-compose up`
+5. Halutessasi voit käynnistää käyttöliittymän erikseen `npm run dev` komennolla `/client` kansiossa, jolloin se pyörii lokaalisti ilman konttia
+6. `server` ottaa vastaan HTTP pyyntöjä porttiin `3000`
+7. Käyttöliittymä löytyy `localhost` osoitteesta tai `localhost:5173` jos käynnistit sen `npm run dev` komennolla. Vite kertoo lokaalin osoitteen tai verkon osoitteen komentolinjalla komennon ajamisen jälkeen.
+
 ## Yleiskuvaus
 
 Sovellus on full-stack web-sovellus, joka on toteutettu kevyenä kloonina Instagram sovelluksesta. Arkkitehtuuri nojaa Docker konttiteknologiaan ja sovellus on jaettu kolmeen eri konttiin: käyttöliittymä, palvelin ja tietokanta.
